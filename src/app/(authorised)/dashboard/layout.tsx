@@ -1,11 +1,16 @@
 import React from 'react';
-import { Sidebar } from '@/components/nav-sidebar';
+import { Sidebar } from '@/components/sidebar';
+import { getUser } from '@/lib/supabase/queries/user.cached';
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+
+  const user = await getUser();
+  console.log(user);
+
   return (
     <div className="flex h-screen">
       <Sidebar />

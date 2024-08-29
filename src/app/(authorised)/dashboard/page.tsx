@@ -59,7 +59,9 @@ async function RecentBroadcasts() {
     <ul className="space-y-2">
       {recentBroadcasts.map((broadcast) => (
         <li key={broadcast.id} className="flex justify-between items-center">
-          <span>{broadcast.subject}</span>
+          <Link href={`/dashboard/broadcasts/${broadcast.id}`} className="hover:underline">
+            <span>{broadcast.subject}</span>
+          </Link>
           <span className="text-sm text-gray-500">
             {new Date(broadcast.created_at).toLocaleDateString()}
           </span>

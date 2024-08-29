@@ -117,7 +117,7 @@ function ContactDetails({ contact }: { contact: Contact }) {
 
   useEffect(() => {
     // Fetch recent broadcasts for the contact
-    // This is a placeholder - replace with actual data fetching logic
+    // TODO: replace with actual data fetching logic from supabase
     const fetchBroadcasts = async () => {
       // Replace this with your actual API call
       const broadcasts = await fetch(`/api/broadcasts?contactId=${contact.id}`).then(res => res.json());
