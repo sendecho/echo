@@ -374,7 +374,7 @@ create policy delete_analytics on analytics for delete to public using (
     select
       id
     from
-      emails
+    emails
     where
       has_account_access (account_id)
   )
@@ -478,3 +478,59 @@ $$ language plpgsql;
 create trigger after_auth_user_created
 after insert on auth_users for each row
 execute function create_user_and_account ();
+
+create table lists (
+  id bigint primary key generated always as identity,
+  account_id bigint references accounts (id),
+  name text not null,
+  description text,
+  unique_identifier text unique,
+  created_at timestamp with time zone default now()
+);
+
+create table list_contacts (
+  id bigint primary key generated always as identity,
+  list_id bigint references lists (id),
+  contact_id bigint references contacts (id),
+  created_at timestamp with time zone default now(),
+  unique (list_id, contact_id)
+);
+
+alter table lists enable row level security;
+alter table list_contacts enable row level security;
+
+create policy select_list on lists for
+select
+  to public using (has_account_access (account_id));
+
+create policy insert_list on lists for insert to public
+with
+  check (has_account_access (account_id));
+
+create policy update_list on lists
+for update
+  to public using (has_account_access (account_id));
+
+create policy delete_list on lists for delete to public using (has_account_access (account_id));
+
+create policy select_list_contact on list_contacts for
+select
+  to public using (
+    list_id in (
+      select id from lists where has_account_access (account_id)
+    )
+  );
+
+create policy insert_list_contact on list_contacts for insert to public
+with
+  check (
+    list_id in (
+      select id from lists where has_account_access (account_id)
+    )
+  );
+
+create policy delete_list_contact on list_contacts for delete to public using (
+  list_id in (
+    select id from lists where has_account_access (account_id)
+  )
+);

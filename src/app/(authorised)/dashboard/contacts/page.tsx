@@ -9,7 +9,15 @@ async function getContacts() {
 
   const { data, error } = await supabase
     .from('contacts')
-    .select('id, first_name, last_name, email, phone_number, created_at');
+    .select(`
+      id, 
+      first_name, 
+      last_name, 
+      email, 
+      phone_number, 
+      created_at,
+      lists:list_contacts(list:lists(id, name))
+    `);
 
   if (error) {
     console.error('Error fetching contacts:', error);
@@ -21,6 +29,7 @@ async function getContacts() {
 
 export default async function ContactsPage() {
   const contacts = await getContacts();
+  console.log(contacts[0].lists)
 
   return (
     <div className="container mx-auto py-10">

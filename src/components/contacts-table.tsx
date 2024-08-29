@@ -22,6 +22,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Badge } from './ui/badge';
+
+interface List {
+  id: number;
+  name: string;
+}
 
 interface Contact {
   id: string;
@@ -30,6 +36,9 @@ interface Contact {
   email: string;
   phone_number: string | null;
   created_at: string;
+  lists: {
+    list: List;
+  }[];
 }
 
 interface Broadcast {
@@ -76,6 +85,22 @@ const columns: ColumnDef<Contact>[] = [
     header: 'Phone Number',
   },
   {
+    accessorKey: 'lists',
+    header: 'Lists',
+    cell: ({ row }) => {
+      const contact = row.original;
+      return (
+        <div className="flex flex-wrap gap-1">
+          {contact.lists?.map(list => (
+            <Badge key={list.list.id} variant="secondary">
+              {list.list.name}
+            </Badge>
+          ))}
+        </div>
+      );
+    },
+  },
+  {
     accessorKey: 'created_at',
     header: 'Created At',
     cell: ({ row }) => {
@@ -114,6 +139,14 @@ function ContactDetails({ contact }: { contact: Contact }) {
         <div>
           <h3 className="font-semibold">Email</h3>
           <p>{contact.email}</p>
+        </div>
+        <div>
+          <h3 className="font-semibold">Phone Number</h3>
+          <p>{contact.phone_number}</p>
+        </div>
+        <div>
+          <h3 className="font-semibold">Lists</h3>
+          <p>{contact.lists?.map(list => list.list.name).join(', ') || 'No lists'}</p>
         </div>
       </div>
       <div className="mt-8">
