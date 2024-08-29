@@ -146,7 +146,17 @@ function ContactDetails({ contact }: { contact: Contact }) {
         </div>
         <div>
           <h3 className="font-semibold">Lists</h3>
-          <p>{contact.lists?.map(list => list.list.name).join(', ') || 'No lists'}</p>
+          <div className="flex flex-wrap gap-2">
+            {contact.lists && contact.lists.length > 0 ? (
+              contact.lists.map(list => (
+                <Badge key={list.list.id} variant="secondary">
+                  {list.list.name}
+                </Badge>
+              ))
+            ) : (
+              <span className="text-muted-foreground">No lists</span>
+            )}
+          </div>
         </div>
       </div>
       <div className="mt-8">

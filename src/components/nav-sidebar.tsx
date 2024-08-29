@@ -21,7 +21,7 @@ const sidebarItems = [
   { name: 'Broadcasts', href: '/dashboard/broadcasts', icon: Send },
   { name: 'Contacts', href: '/dashboard/contacts', icon: Users },
   { name: 'Lists', href: '/dashboard/lists', icon: List },
-  { name: 'Analytics', href: '/dashboard/analytics', icon: BarChart },
+  // { name: 'Analytics', href: '/dashboard/analytics', icon: BarChart },
   { name: 'Settings', href: '/dashboard/settings', icon: SettingsIcon },
 ];
 

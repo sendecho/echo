@@ -111,7 +111,7 @@ export function BroadcastEditor({ initialBroadcast }: BroadcastEditorProps) {
       <div className="flex items-center justify-between">
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button>Send Broadcast</Button>
+            <Button disabled={!broadcast.subject || !broadcast.content}>Send Broadcast</Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
