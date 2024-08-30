@@ -19,24 +19,27 @@ export function BroadcastDetails({ broadcast }: { broadcast: Broadcast }) {
 
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab}>
-      <TabsList>
+      <TabsList className='mb-4'>
         {broadcast.sent_at ? (
           <>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
             <TabsTrigger value="preview">Preview</TabsTrigger>
           </>
         ) : (
-          <TabsTrigger value="edit">Edit</TabsTrigger>
+          <>
+            <TabsTrigger value="edit">Edit</TabsTrigger>
+            <TabsTrigger value="preview">Preview</TabsTrigger>
+          </>
         )}
       </TabsList>
       <TabsContent value="analytics">
         {/* <BroadcastAnalytics broadcastId={broadcast.id} /> */}
       </TabsContent>
-      <TabsContent value="preview">
-        <BroadcastPreview subject={broadcast.subject} content={broadcast.content} />
-      </TabsContent>
       <TabsContent value="edit">
         <BroadcastEditor initialBroadcast={broadcast} />
+      </TabsContent>
+      <TabsContent value="preview">
+        <BroadcastPreview subject={broadcast.subject} content={broadcast.content} />
       </TabsContent>
     </Tabs>
   )

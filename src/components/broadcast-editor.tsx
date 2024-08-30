@@ -12,6 +12,7 @@ import { toast } from '@/components/ui/use-toast'
 import { useDebouncedCallback } from 'use-debounce'
 import { cn } from '@/lib/utils'
 import { ContactSelector } from '@/components/contacts-selector'
+import Editor from './editor/editor'
 
 interface Broadcast {
   id: number | null
@@ -94,19 +95,22 @@ export function BroadcastEditor({ initialBroadcast }: BroadcastEditorProps) {
   }
 
   return (
-    <div className="">
+    <div className="space-y-4">
       <Input
         placeholder="Subject"
         value={broadcast.subject}
         onChange={handleSubjectChange}
-        className="mb-4"
+        className=""
       />
-      <Textarea
-        placeholder="Content"
-        value={broadcast.content}
-        onChange={handleContentChange}
-        className="mb-4"
-        rows={10}
+      <Editor
+        className='min-h-[420px]'
+        defaultValue={broadcast.content}
+        onUpdate={(editor) => {
+          const html = editor.getHTML();
+          const updatedBroadcast = { ...broadcast, content: html };
+          setBroadcast(updatedBroadcast);
+          debouncedSave(updatedBroadcast);
+        }}
       />
       <div className="flex items-center justify-between">
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

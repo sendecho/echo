@@ -1,7 +1,7 @@
 'use server'
 
 import { z } from 'zod'
-import { actionClient } from "@/lib/safe-action"
+import { actionClient, authSafeAction } from "@/lib/safe-action"
 import { createOrUpdateEmailMutation } from '@/lib/supabase/mutations/broadcasts'
 
 const schema = z.object({
@@ -10,8 +10,9 @@ const schema = z.object({
   content: z.string().min(1, 'Content is required'),
 })
 
-export const createUpdateEmailAction = actionClient
+export const createUpdateEmailAction = authSafeAction
   .schema(schema)
+  .metadata({ name: 'create-update-broadcast-action' })
   .action(
     async ({ parsedInput: { id, subject, content } }) => {
       try {
