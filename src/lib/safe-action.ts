@@ -11,6 +11,16 @@ export const actionClient = createSafeActionClient({
     }
 
     return DEFAULT_SERVER_ERROR_MESSAGE;
+  }
+});
+
+export const actionClientWithMetadata = createSafeActionClient({
+  handleReturnedServerError: (e) => {
+    if (e instanceof Error) {
+      return e.message;
+    }
+
+    return DEFAULT_SERVER_ERROR_MESSAGE;
   },
   defineMetadataSchema() {
     return z.object({
@@ -23,7 +33,7 @@ export const actionClient = createSafeActionClient({
   },
 });
 
-export const authSafeAction = actionClient.use(async ({ next, clientInput, metadata }) => {
+export const authSafeAction = actionClientWithMetadata.use(async ({ next, clientInput, metadata }) => {
   const result = await next({ ctx: null });
 
   if (process.env.NODE_ENV === "development") {

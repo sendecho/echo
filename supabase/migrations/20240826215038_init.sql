@@ -496,6 +496,12 @@ create table list_contacts (
   unique (list_id, contact_id)
 );
 
+CREATE TABLE waitlist (
+  id bigint primary key generated always as identity,
+  email text unique not null,
+  created_at timestamp with time zone default now(),
+);
+
 alter table lists enable row level security;
 alter table list_contacts enable row level security;
 

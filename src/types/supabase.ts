@@ -165,6 +165,77 @@ export type Database = {
           },
         ]
       }
+      list_contacts: {
+        Row: {
+          contact_id: number | null
+          created_at: string | null
+          id: number
+          list_id: number | null
+        }
+        Insert: {
+          contact_id?: number | null
+          created_at?: string | null
+          id?: never
+          list_id?: number | null
+        }
+        Update: {
+          contact_id?: number | null
+          created_at?: string | null
+          id?: never
+          list_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "list_contacts_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "list_contacts_list_id_fkey"
+            columns: ["list_id"]
+            isOneToOne: false
+            referencedRelation: "lists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lists: {
+        Row: {
+          account_id: number | null
+          created_at: string | null
+          description: string | null
+          id: number
+          name: string
+          uuid: string | null
+        }
+        Insert: {
+          account_id?: number | null
+          created_at?: string | null
+          description?: string | null
+          id?: never
+          name: string
+          uuid?: string | null
+        }
+        Update: {
+          account_id?: number | null
+          created_at?: string | null
+          description?: string | null
+          id?: never
+          name?: string
+          uuid?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lists_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       outbound_emails: {
         Row: {
           contact_id: number | null
@@ -258,6 +329,24 @@ export type Database = {
           email?: string
           id?: string
           last_login?: string | null
+        }
+        Relationships: []
+      }
+      waitlist: {
+        Row: {
+          created_at: string | null
+          email: string
+          id: number
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          id?: never
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          id?: never
         }
         Relationships: []
       }
