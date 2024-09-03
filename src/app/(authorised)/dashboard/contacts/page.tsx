@@ -10,11 +10,15 @@ export default async function ContactsPage() {
 
   return (
     <DashboardLayout>
-      <h1 className="text-2xl font-bold mb-4">Contacts</h1>
-      <AddContactButton />
-      <Suspense fallback={<TableSkeleton />}>
-        <ContactsTable contacts={contacts} />
-      </Suspense>
+      <div className="flex flex-col gap-8">
+        <div className="flex justify-between items-center">
+          <h1 className="text-2xl font-bold mb-4">Contacts</h1>
+          <AddContactButton />
+        </div>
+        <Suspense fallback={<TableSkeleton />}>
+          <ContactsTable contacts={contacts} />
+        </Suspense>
+      </div>
     </DashboardLayout>
   );
 }

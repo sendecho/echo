@@ -9,8 +9,10 @@ export default async function ListsPage() {
 
   return (
     <DashboardLayout>
-      <h1 className="text-3xl font-bold mb-8">Mailing Lists</h1>
-      <ListManager accountId={accountId} />
+      <div className="flex flex-col gap-8">
+        <h1 className="text-3xl font-bold">Mailing Lists</h1>
+        <ListManager accountId={accountId} />
+      </div>
     </DashboardLayout>
   )
 }

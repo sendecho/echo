@@ -4,21 +4,21 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export function SecondaryMenu({ items }) {
+export function SecondaryMenu({ items }: { items: { path: string; label: string }[] }) {
   const pathname = usePathname();
 
   return (
     <nav className="py-4 w-64">
-      <ul className="flex space-x-6 text-sm overflow-auto scrollbar-hide">
-        {items.map((item) => (
+      <ul className="flex space-x-4 text-sm scrollbar-hide">
+        {items.map((item: { path: string; label: string }) => (
           <li key={item.path}>
             <Link
               prefetch
               href={item.path}
               className={cn(
-                "text-[#606060]",
+                "bg-transparent p-2 px-3 rounded-md text-muted-foreground hover:text-foreground",
                 pathname === item.path &&
-                "text-primary font-medium underline underline-offset-8"
+                "bg-primary/80 text-primary-foreground font-medium"
               )}
             >
               <span>{item.label}</span>

@@ -77,7 +77,7 @@ export default function Dashboard() {
     <DashboardLayout>
       <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
       <div className="grid md:grid-cols-2 gap-6">
-        <Card>
+        <Card className="border-border">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Recent Contacts</CardTitle>
             <Link href="/dashboard/contacts">
@@ -90,7 +90,7 @@ export default function Dashboard() {
             </Suspense>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="border-border">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Recent Broadcasts</CardTitle>
             <Link href="/dashboard/broadcasts">
