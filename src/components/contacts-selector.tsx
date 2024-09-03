@@ -4,8 +4,9 @@ import { useEffect, useState } from 'react'
 import { fetchContacts } from '@/lib/supabase/queries/contacts';
 import { MultiSelect } from '@/components/ui/multi-select'
 import { Button } from '@/components/ui/button'
+import { SubmitButton } from './ui/submit-button';
 
-export function ContactSelector({ onSend }: { onSend: (selectedContacts: number[]) => void }) {
+export function ContactSelector({ onSend, isSendingEmail }: { onSend: (selectedContacts: number[]) => void, isSendingEmail: boolean }) {
   const [selectedContacts, setSelectedContacts] = useState<number[]>([])
   const [contacts, setContacts] = useState<Awaited<ReturnType<typeof fetchContacts>>>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -41,9 +42,9 @@ export function ContactSelector({ onSend }: { onSend: (selectedContacts: number[
         onSelectionChange={(selectedValues) => setSelectedContacts(Array.from(selectedValues).map(Number))}
       />
       <div className="flex justify-between items-center">
-        <Button onClick={() => onSend(selectedContacts)} disabled={selectedContacts.length === 0}>
+        <SubmitButton isSubmitting={isSendingEmail} onClick={() => onSend(selectedContacts)} disabled={selectedContacts.length === 0}>
           Send to Selected Contacts
-        </Button>
+        </SubmitButton>
       </div>
     </div>
   )

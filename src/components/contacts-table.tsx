@@ -23,6 +23,8 @@ import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Badge } from './ui/badge';
+import { getRecentBroadcasts } from '@/lib/supabase/queries/contacts';
+import Link from 'next/link';
 
 interface List {
   id: number;
@@ -43,8 +45,10 @@ interface Contact {
 
 interface Broadcast {
   id: string;
-  title: string;
-  sentAt: string;
+  sent_at: string;
+  email: {
+    subject: string;
+  }
 }
 
 const columns: ColumnDef<Contact>[] = [
@@ -119,8 +123,7 @@ function ContactDetails({ contact }: { contact: Contact }) {
     // Fetch recent broadcasts for the contact
     // TODO: replace with actual data fetching logic from supabase
     const fetchBroadcasts = async () => {
-      // Replace this with your actual API call
-      const broadcasts = await fetch(`/api/broadcasts?contactId=${contact.id}`).then(res => res.json());
+      const broadcasts = await getRecentBroadcasts(contact.id);
       setRecentBroadcasts(broadcasts);
     };
     fetchBroadcasts();
@@ -164,9 +167,11 @@ function ContactDetails({ contact }: { contact: Contact }) {
         {recentBroadcasts.length > 0 ? (
           <ul className="space-y-2">
             {recentBroadcasts.map((broadcast) => (
-              <li key={broadcast.id} className="bg-gray-100 p-2 rounded">
-                <p className="font-medium">{broadcast.title}</p>
-                <p className="text-sm text-gray-500">{new Date(broadcast.sentAt).toLocaleDateString()}</p>
+              <li key={broadcast.id} className="bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition p-2 px-4 text-sm rounded">
+                <Link href={`/dashboard/broadcasts/${broadcast.id}`} aria-label={`View email: ${broadcast?.email?.subject}`}>
+                  <p className="font-medium">{broadcast?.email?.subject}</p>
+                  <p className="text-xs text-gray-500">{new Date(broadcast?.sent_at).toLocaleDateString()}</p>
+                </Link>
               </li>
             ))}
           </ul>

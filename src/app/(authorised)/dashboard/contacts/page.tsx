@@ -1,43 +1,20 @@
 import { Suspense } from 'react';
 import ContactsTable from '@/components/contacts-table';
 import AddContactButton from '@/components/add-contact-button';
-import { createClient } from '@/lib/supabase/server';
 import { TableSkeleton } from '@/components/table-skeleton';
-
-async function getContacts() {
-  const supabase = createClient();
-
-  const { data, error } = await supabase
-    .from('contacts')
-    .select(`
-      id, 
-      first_name, 
-      last_name, 
-      email, 
-      phone_number, 
-      created_at,
-      lists:list_contacts(list:lists(id, name))
-    `);
-
-  if (error) {
-    console.error('Error fetching contacts:', error);
-    return [];
-  }
-
-  return data || [];
-}
+import DashboardLayout from '@/components/layouts/dashboard-layout'
+import { getContacts } from '@/lib/supabase/queries/contacts.cached';
 
 export default async function ContactsPage() {
   const contacts = await getContacts();
-  console.log(contacts[0].lists)
 
   return (
-    <div className="container mx-auto py-10">
+    <DashboardLayout>
       <h1 className="text-2xl font-bold mb-4">Contacts</h1>
       <AddContactButton />
       <Suspense fallback={<TableSkeleton />}>
         <ContactsTable contacts={contacts} />
       </Suspense>
-    </div>
+    </DashboardLayout>
   );
 }

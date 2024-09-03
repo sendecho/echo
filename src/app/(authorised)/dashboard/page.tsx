@@ -2,20 +2,21 @@ import { Suspense } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { fetchContacts } from '@/lib/supabase/queries/contacts';
 import { fetchBroadcasts } from '@/lib/supabase/queries/broadcasts';
 import { TableSkeleton } from '@/components/table-skeleton';
 import { PlusCircle } from 'lucide-react';
+import DashboardLayout from '@/components/layouts/dashboard-layout'
+import { getContacts } from '@/lib/supabase/queries/contacts.cached';
 
 async function RecentContacts() {
-  const contacts = await fetchContacts();
-  const recentContacts = contacts.slice(0, 5);
+  const contacts = await getContacts();
+  const recentContacts = contacts?.slice(0, 5);
 
-  if (recentContacts.length === 0) {
+  if (recentContacts?.length === 0) {
     return (
       <div className="text-center py-4">
         <p className="text-sm text-gray-500 mb-2">No contacts yet</p>
-        <Link href="/dashboard/contacts/new">
+        <Link href="/dashboard/contacts">
           <Button variant="outline" size="sm">
             <PlusCircle className="mr-2 h-4 w-4" />
             Add your first contact
@@ -27,7 +28,7 @@ async function RecentContacts() {
 
   return (
     <ul className="space-y-2">
-      {recentContacts.map((contact) => (
+      {recentContacts?.map((contact) => (
         <li key={contact.id} className="flex justify-between items-center">
           <span>{`${contact.first_name} ${contact.last_name}`}</span>
           <span className="text-sm text-gray-500">{contact.email}</span>
@@ -73,8 +74,8 @@ async function RecentBroadcasts() {
 
 export default function Dashboard() {
   return (
-    <div className="space-y-6">
-      <h1 className="text-3xl font-bold">Dashboard</h1>
+    <DashboardLayout>
+      <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
       <div className="grid md:grid-cols-2 gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -103,6 +104,6 @@ export default function Dashboard() {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </DashboardLayout>
   );
 }

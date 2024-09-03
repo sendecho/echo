@@ -13,11 +13,15 @@ import { useDebouncedCallback } from 'use-debounce'
 import { cn } from '@/lib/utils'
 import { ContactSelector } from '@/components/contacts-selector'
 import Editor from './editor/editor'
+import { sendPreviewBroadcastMutation } from '@/lib/supabase/mutations/broadcasts'
+import { SubmitButton } from './ui/submit-button'
+import { Database } from '@/types/supabase'
 
 interface Broadcast {
   id: number | null
   subject: string
   content: string
+  preview: string | null
 }
 
 interface BroadcastEditorProps {
@@ -26,10 +30,13 @@ interface BroadcastEditorProps {
 
 export function BroadcastEditor({ initialBroadcast }: BroadcastEditorProps) {
   const [broadcast, setBroadcast] = useState<Broadcast>(
-    initialBroadcast || { id: null, subject: '', content: '' }
+    initialBroadcast || { id: null, subject: '', content: '', preview: null }
   )
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [savingStatus, setSavingStatus] = useState<'idle' | 'saving' | 'saved'>(initialBroadcast ? 'saved' : 'idle')
+  const [testEmail, setTestEmail] = useState('')
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false)
+  const [isSendingEmail, setIsSendingEmail] = useState(false)
   const router = useRouter()
 
   const debouncedSave = useDebouncedCallback(async (updatedBroadcast: Broadcast) => {
@@ -54,17 +61,14 @@ export function BroadcastEditor({ initialBroadcast }: BroadcastEditorProps) {
     }
   }, 1000)
 
-  const handleSubjectChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const updatedBroadcast = { ...broadcast, subject: e.target.value }
-    setBroadcast(updatedBroadcast)
-    debouncedSave(updatedBroadcast)
+  function handleChange<T extends keyof Broadcast>(field: T) {
+    return (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      const updatedBroadcast = { ...broadcast, [field]: e.target.value }
+      setBroadcast(updatedBroadcast)
+      debouncedSave(updatedBroadcast)
+    }
   }
 
-  const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const updatedBroadcast = { ...broadcast, content: e.target.value }
-    setBroadcast(updatedBroadcast)
-    debouncedSave(updatedBroadcast)
-  }
 
   async function handleSend(selectedContacts: number[]) {
     if (!broadcast.id) {
@@ -77,6 +81,7 @@ export function BroadcastEditor({ initialBroadcast }: BroadcastEditorProps) {
     }
 
     try {
+      setIsSendingEmail(true)
       const result = await sendBroadcastAction({ emailId: broadcast.id, contactIds: selectedContacts })
       if (result?.data?.success) {
         toast({
@@ -92,6 +97,37 @@ export function BroadcastEditor({ initialBroadcast }: BroadcastEditorProps) {
         variant: 'destructive',
       })
     }
+    setIsSendingEmail(false)
+  }
+
+  async function handleSendTestEmail(email: string) {
+    if (!broadcast.id) {
+      toast({
+        title: 'Error',
+        description: 'Please wait for the email to be saved before sending.',
+        variant: 'destructive',
+      })
+      return
+    }
+
+    try {
+      setIsSendingEmail(true)
+      const result = await sendPreviewBroadcastMutation(broadcast.id, email)
+      if (result?.success) {
+        toast({
+          title: 'Test email sent',
+          description: 'Your test email has been sent successfully.',
+        })
+        // setIsPreviewOpen(false)
+      }
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: error instanceof Error ? error.message : 'Failed to send test email',
+        variant: 'destructive',
+      })
+    }
+    setIsSendingEmail(false)
   }
 
   return (
@@ -99,31 +135,53 @@ export function BroadcastEditor({ initialBroadcast }: BroadcastEditorProps) {
       <Input
         placeholder="Subject"
         value={broadcast.subject}
-        onChange={handleSubjectChange}
+        onChange={handleChange('subject')}
         className=""
+      />
+      <Textarea
+        placeholder="Preview"
+        value={broadcast.preview || ''}
+        onChange={handleChange('preview')}
+        className="min-h-[100px]"
       />
       <Editor
         className='min-h-[420px]'
         defaultValue={broadcast.content}
         onUpdate={(editor) => {
-          const html = editor.getHTML();
+          const html = editor?.getHTML() || '';
           const updatedBroadcast = { ...broadcast, content: html };
           setBroadcast(updatedBroadcast);
           debouncedSave(updatedBroadcast);
         }}
       />
       <div className="flex items-center justify-between">
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button disabled={!broadcast.subject || !broadcast.content}>Send Broadcast</Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Select Contacts</DialogTitle>
-            </DialogHeader>
-            <ContactSelector onSend={handleSend} />
-          </DialogContent>
-        </Dialog>
+        <div className="flex items-center space-x-2">
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button disabled={!broadcast.subject || !broadcast.content}>Send Broadcast</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Select Contacts</DialogTitle>
+              </DialogHeader>
+              <ContactSelector onSend={handleSend} isSendingEmail={isSendingEmail} />
+            </DialogContent>
+          </Dialog>
+
+          <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline" disabled={!broadcast.subject || !broadcast.content}>Send test email</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Send test email</DialogTitle>
+              </DialogHeader>
+              <Input placeholder="Email" value={testEmail} onChange={(e) => setTestEmail(e.target.value)} />
+              <SubmitButton isSubmitting={isSendingEmail} onClick={() => handleSendTestEmail(testEmail)}>Send</SubmitButton>
+            </DialogContent>
+          </Dialog>
+        </div>
+
         <div className="flex items-center space-x-2">
           <div
             className={cn(

@@ -1,25 +1,26 @@
 "use server";
 
 import { z } from 'zod';
-import { actionClient } from "@/lib/safe-action";
+import { actionClient, authSafeAction } from "@/lib/safe-action";
 import { createClient } from '@/lib/supabase/server';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 
 const supabase = createClient();
 
 const schema = z.object({
-  first_name: z.string().min(1, 'First name is required'),
-  last_name: z.string().min(1, 'Last name is required'),
+  first_name: z.string().min(1, 'First name is required').optional(),
+  last_name: z.string().min(1, 'Last name is required').optional(),
   email: z.string().email('Invalid email address'),
 });
 
-export const createContactAction = actionClient
+export const createContactAction = authSafeAction
   .schema(schema)
+  .metadata({ name: 'create-contact' })
   .action(
-    async ({ parsedInput: { first_name, last_name, email } }) => {
+    async ({ parsedInput: { first_name, last_name, email }, ctx: { user } }) => {
       const { data, error } = await supabase
         .from('contacts')
-        .insert({ first_name, last_name, email })
+        .insert({ first_name, last_name, email, account_id: user.account_id })
         .select()
         .single();
 
@@ -27,7 +28,7 @@ export const createContactAction = actionClient
         throw new Error('Failed to add contact');
       }
 
-      revalidatePath('/dashboard', "layout");
+      revalidateTag('contacts');
 
       return data;
     });

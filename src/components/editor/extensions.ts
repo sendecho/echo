@@ -46,7 +46,7 @@ export const defaultExtensions = [
     addProseMirrorPlugins() {
       return [
         UploadImagesPlugin({
-          imageClass: "rounded-lg border border-stone-200",
+          imageClass: "rounded-lg border border-border",
         })
       ]
     },
@@ -54,7 +54,7 @@ export const defaultExtensions = [
     inline: true,
     allowBase64: true,
     HTMLAttributes: {
-      class: "rounded-lg border border-stone-200",
+      class: "rounded-lg border border-border",
     },
   }),
 

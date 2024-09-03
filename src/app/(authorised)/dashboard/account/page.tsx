@@ -1,6 +1,7 @@
 import { Suspense } from 'react'
 import { AccountDetails } from '@/components/account/account-details'
 import { AccountSkeleton } from '@/components/account/account-skeleton'
+import DashboardLayout from '@/components/layouts/dashboard-layout'
 
 export const metadata = {
   title: 'Account Details',
@@ -9,11 +10,11 @@ export const metadata = {
 
 export default function AccountPage() {
   return (
-    <div className="container mx-auto px-4 py-8">
+    <DashboardLayout>
       <h1 className="text-3xl font-bold mb-6">Account Details</h1>
       <Suspense fallback={<AccountSkeleton />}>
         <AccountDetails />
       </Suspense>
-    </div>
+    </DashboardLayout>
   )
 }

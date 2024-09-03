@@ -1,54 +1,83 @@
 "use server"
 
-import { actionClient } from "@/lib/safe-action"
+import { actionClient, authSafeAction } from "@/lib/safe-action"
 import { emailSetupSchema, domainVerificationSchema, mailingAddressSchema } from '@/lib/schemas/onboarding-schema'
 import { createClient } from '@/lib/supabase/server'
 import { Resend } from "resend"
 
-export const emailSetupAction = actionClient
+export const emailSetupAction = authSafeAction
   .schema(emailSetupSchema)
-  .action(async ({ parsedInput: { fromName, domain } }) => {
+  .metadata({
+    name: 'email-setup',
+  })
+  .action(async ({ parsedInput: { fromName, domain }, ctx: { user } }) => {
 
     const supabase = createClient()
 
-    const { error } = await supabase
+    const { data: account, error } = await supabase
       .from('accounts')
-      .upsert({ from_name: fromName, domain: domain })
+      .insert({ from_name: fromName, domain: domain })
+      .select()
+      .single();
 
     if (error) throw new Error('Failed to save email setup data')
 
+    const { error: userAccountError } = await supabase
+      .from('user_accounts')
+      .insert({ user_id: user.id, account_id: account.id, role: 'owner' })
+
+    if (userAccountError) throw new Error('Failed to save user account data')
+
     // Create a domain in Resend
-    const resend = new Resend(process.env.RESEND_API_KEY)
-    const resendDomain = await resend.domains.create({ name: domain })
+    // const resend = new Resend(process.env.RESEND_API_KEY)
+    // const resendDomain = await resend.domains.create({ name: domain })
 
-    console.log('resendDomain', resendDomain)
+    // console.log('resendDomain', resendDomain)
 
-    // If there was an error creating the domain, throw an error
-    if (resendDomain.error) throw new Error('Failed to create domain in Resend')
+    // // If there was an error creating the domain, throw an error
+    // if (resendDomain.error) throw new Error('Failed to create domain in Resend')
 
     // Return the domain details in the response
-    return { success: true, resendDomain }
+    return { success: true }
   })
 
-export const domainVerificationAction = actionClient
+export const domainVerificationAction = authSafeAction
   .schema(domainVerificationSchema)
+  .metadata({
+    name: 'domain-verification',
+  })
   .action(async ({ parsedInput: { domainVerified } }) => {
     const supabase = createClient()
     const { error } = await supabase
-      .from('user_profiles')
+      .from('accounts')
       .upsert({ domain_verified: domainVerified })
 
     if (error) throw new Error('Failed to save domain verification data')
     return { success: true }
   })
 
-export const mailingAddressAction = actionClient
+export const mailingAddressAction = authSafeAction
   .schema(mailingAddressSchema)
-  .action(async ({ parsedInput: mailingAddress }) => {
+  .metadata({
+    name: 'mailing-address',
+  })
+  .action(async ({ parsedInput: { streetAddress, city, state, postalCode, country }, ctx: { user } }) => {
     const supabase = createClient()
+
+    // First, get the account associated with the current user
+    const { data: userAccount, error: userAccountError } = await supabase
+      .from('user_accounts')
+      .select('account_id')
+      .eq('user_id', user.id)
+      .single()
+
+    if (userAccountError) throw new Error('Failed to retrieve user account')
+
+    // Now update the account with the mailing address
     const { error } = await supabase
-      .from('user_profiles')
-      .upsert({ mailing_address: mailingAddress })
+      .from('accounts')
+      .update({ street_address: streetAddress, city, state, postal_code: postalCode, country })
+      .eq('id', userAccount.account_id)
 
     if (error) throw new Error('Failed to save mailing address data')
     return { success: true }

@@ -19,7 +19,7 @@ export async function BroadcastPreview({ subject, content }: BroadcastPreviewPro
 
 
   return (
-    <div className='w-full h-full bg-white border border-gray-200 border-[4px] rounded-md p-4'>
+    <div className='w-full h-full bg-white border border-border border-[4px] rounded-md p-4'>
       <iframe src={iframeSrc} className='w-full h-[800px]' />
     </div>
   )

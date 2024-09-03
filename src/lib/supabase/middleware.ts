@@ -44,6 +44,7 @@ export async function updateSession(request: NextRequest) {
     url.pathname = '/dashboard'
     return NextResponse.redirect(url)
   }
+
   if (
     !user &&
     !request.nextUrl.pathname.startsWith('/login') &&

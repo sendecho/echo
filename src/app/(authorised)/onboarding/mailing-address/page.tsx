@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useAction } from 'next-safe-action/hooks'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import MailingAddress from '@/components/mailing-address'
 import { mailingAddressSchema } from '@/lib/schemas/onboarding-schema'
 import { mailingAddressAction } from '@/actions/onboarding-actions'
@@ -33,7 +33,10 @@ export default function MailingAddressPage() {
     <FormProvider {...methods}>
       <Card className="w-full max-w-2xl mx-auto">
         <CardHeader>
-          <CardTitle>Onboarding: Mailing Address</CardTitle>
+          <CardTitle>Mailing Address</CardTitle>
+          <CardDescription>
+            To comply with anti-spam regulations, we need to know where you&apos;re sending mail from.
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <MailingAddress />

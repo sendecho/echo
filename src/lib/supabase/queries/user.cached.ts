@@ -8,14 +8,14 @@ import { getUserQuery } from "./user";
 export const getSession = cache(async () => {
   const supabase = createClient();
 
-  return supabase.auth.getSession();
+  return supabase.auth.getUser();
 });
 
 export const getUser = async () => {
   const {
-    data: { session },
+    data: { user },
   } = await getSession();
-  const userId = session?.user?.id;
+  const userId = user?.id;
 
   if (!userId) {
     return null;

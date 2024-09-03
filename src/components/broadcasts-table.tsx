@@ -16,7 +16,7 @@ export async function BroadcastsTable() {
       </thead>
       <tbody>
         {broadcasts.map((broadcast) => (
-          <tr key={broadcast.id} className="border-t">
+          <tr key={broadcast.id} className="border-t border-border">
             <td className="p-2">
               <Link href={`/dashboard/broadcasts/${broadcast.id}`} className="text-blue-600 hover:underline">
                 {broadcast.subject}

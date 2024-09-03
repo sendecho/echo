@@ -23,6 +23,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { createClient } from '@/lib/supabase/client';
 
 const listSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -47,13 +48,15 @@ interface Contact {
   email: string;
 }
 
-export function ListManager() {
+export function ListManager({ accountId }: { accountId: string }) {
   const [lists, setLists] = useState<List[]>([]);
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [editingList, setEditingList] = useState<List | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedContacts, setSelectedContacts] = useState<Set<string>>(new Set());
 
+
+  const supabase = createClient();
   const form = useForm<ListFormValues>({
     resolver: zodResolver(listSchema),
     defaultValues: {
@@ -100,7 +103,8 @@ export function ListManager() {
   }
 
   async function refreshContacts() {
-    const fetchedContacts = await fetchContacts();
+
+    const fetchedContacts = await fetchContacts(supabase, accountId);
     setContacts(fetchedContacts);
   }
 
@@ -211,8 +215,6 @@ export function ListManager() {
       </Dialog>
 
       <div className="space-y-4">
-        <h2 className="text-2xl font-bold">Existing Lists</h2>
-
         <Table>
           <TableHeader>
             <TableRow>

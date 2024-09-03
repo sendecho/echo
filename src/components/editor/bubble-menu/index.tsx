@@ -60,7 +60,7 @@ export const BubbleMenu = (props: BubbleMenuProps) => {
   };
 
   return (
-    <TiptapBubbleMenu {...bubbleMenuProps} className="flex w-fit divide-x rounded border bg-background shadow-xl">
+    <TiptapBubbleMenu {...bubbleMenuProps} className="flex w-fit divide-x rounded border border-border bg-background shadow-xl">
       <NodeSelector editor={props.editor!} />
       <div className="flex">
         {items.map((item) => (

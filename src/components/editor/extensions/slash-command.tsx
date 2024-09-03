@@ -155,7 +155,7 @@ const CommandList = ({ items, command }: { items: CommandItemProps[], command: a
   }, [selectedIndex])
 
   return (
-    <div className="bg-white rounded-md shadow-md z-50 h-auto w-36 overflow-y-auto max-h-[300px] border border-gray-200 py-2 px-1 transition-all duration-100">
+    <div className="bg-white rounded-md shadow-md z-50 h-auto w-36 overflow-y-auto max-h-[300px] border border-border py-2 px-1 transition-all duration-100">
       {items.map((item: CommandItemProps, index: number) => (
         <button key={index} className="w-full p-2 hover:bg-gray-100 text-left text-sm" onClick={() => selectItem(index)}>
           <div className="flex items-center gap-2">

@@ -36,12 +36,12 @@ export function WaitlistForm() {
           placeholder="Enter your email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full px-4 py-3 pr-24 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-200"
+          className="w-full h-12 px-4 py-3 pr-24 border border-border rounded focus:outline-none focus:ring-2 focus:ring-gray-200"
           required
         />
         <Button
           type="submit"
-          className="absolute right-1 top-1 px-4 py-2 bg-black text-white font-semibold rounded hover:bg-gray-800 transition-colors"
+          className="absolute right-1 top-1 px-4 py-2 bg-black text-white bg-gradient-to-r from-sky-500 to-indigo-500 font-semibold rounded hover:bg-gray-800 transition-colors"
           disabled={status === 'executing'}
         >
           {status === 'executing' ? 'Joining...' : 'Join waitlist'}

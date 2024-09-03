@@ -1,62 +1,82 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { WaitlistForm } from '@/components/waitlist-form'
+import { Button } from '@/components/ui/button'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-white">
-      <header className="bg-white border-b">
+    <div className="min-h-screen bg-white dark:bg-background">
+      <header className="bg-white dark:bg-background">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold">PersonalCRM+</h1>
-          <Link href="/signin" className="px-4 py-2 text-gray-600 font-semibold hover:text-gray-800 transition-colors">
-            Log in
-          </Link>
+          <p className="text-2xl font-bold">Chord</p>
+          <Button variant="secondary" asChild size="sm">
+            <Link href="/login" >
+              Log in
+            </Link>
+          </Button>
         </div>
       </header>
 
       <main className="container mx-auto px-4 py-16 text-center">
-        <h2 className="text-5xl font-bold mb-4">The easiest way to manage relationships</h2>
-        <p className="text-xl text-gray-600 mb-8">
+        <h1 className="text-5xl lg:text-7xl font-heading tracking-tight font-extrabold bg-gradient-to-r from-gray-700 via-gray-900 to-black  dark:from-sky-200 dark:via-purple-300 dark:to-indigo-300 bg-clip-text text-transparent mb-4">The easiest way to manage relationships</h1>
+        <p className="text-xl text-gray-600 dark:text-white mb-8">
           Contacts, notes, and newsletters — finally connected to elevate your networking.
         </p>
 
         <WaitlistForm />
 
-        {/* Feature tabs */}
-        <div className="mt-16">
-          {/* Add tabs for different features */}
-        </div>
-
         {/* Main feature showcase */}
-        <div className="mt-16">
+        <div className="mt-16 max-w-xl mx-auto">
           <Image
             src="/crm-dashboard.webp"
             alt="PersonalCRM+ Dashboard"
+            className="rounded-lg shadow-lg"
             width={800}
             height={600}
-            className="rounded-lg shadow-lg"
           />
         </div>
 
-        {/* Additional content */}
-        <section className="mt-24 text-left">
-          <h3 className="text-2xl font-semibold mb-4">Modern relationship management is broken.</h3>
-          <p className="text-gray-600 mb-4">Contacts, notes, and communications are disconnected.</p>
-          <p className="text-gray-600 mb-4">Updates are scattered across multiple tools.</p>
-          {/* Add more content explaining the problem and solution */}
+        <section className="mt-24 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-600 dark:text-gray-400 mb-8">Email and newsletter platforms are designed for mass marketing, but personal relationships are personal. Chord is a personal CRM that connects your contacts, notes, and communications in one place, making networking easier and more effective.</p>
         </section>
-
-        <section className="mt-16 text-left">
-          <h3 className="text-2xl font-semibold mb-4">We're building a connected tool that elevates your networking:</h3>
-          <ul className="space-y-4">
-            <li className="flex items-center">
-              <svg className="w-6 h-6 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-              Contacts, notes, and communications in one place — searchable and easy to find.
-            </li>
-            {/* Add more feature points */}
-          </ul>
+        {/* FAQ Section */}
+        <section className="mt-24 max-w-xl mx-auto">
+          <h2 className="text-2xl font-semibold mb-8">Frequently Asked Questions</h2>
+          <Accordion type="single" collapsible className="w-full border border-border rounded-md text-left">
+            <AccordionItem value="item-1" className="px-4">
+              <AccordionTrigger>What is Chord?</AccordionTrigger>
+              <AccordionContent>
+                Chord is a modern relationship management tool that connects your contacts, notes, and communications in one place, making networking easier and more effective.
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="item-2" className="px-4">
+              <AccordionTrigger>How is Chord different from other CRM tools?</AccordionTrigger>
+              <AccordionContent>
+                Chord focuses on personal relationship management, offering a seamless integration of contacts, notes, and newsletters. It&apos;s designed for individuals who want to elevate their networking game.
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="item-3" className="px-4">
+              <AccordionTrigger>When will Chord be available?</AccordionTrigger>
+              <AccordionContent>
+                We&apos;re currently in development. Join our waitlist to be notified when we launch and to get early access!
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="item-4" className="px-4 border-b-0">
+              <AccordionTrigger>Is there a free version of Chord?</AccordionTrigger>
+              <AccordionContent>
+                We plan to offer a free tier with basic features. Premium features will be available in paid plans. Specific details will be announced closer to launch.
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </section>
       </main>
+
+      <footer className="bg-gray-100 dark:bg-gray-900 py-8">
+        <div className="container mx-auto px-4">
+          <p className="text-gray-600 dark:text-gray-400">© 2024 Chord. All rights reserved.</p>
+        </div>
+      </footer>
     </div>
   )
 }

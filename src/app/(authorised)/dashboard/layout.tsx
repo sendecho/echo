@@ -7,10 +7,6 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-
-  const user = await getUser();
-  console.log(user);
-
   return (
     <div className="flex h-screen">
       <Sidebar />

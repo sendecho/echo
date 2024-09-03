@@ -14,7 +14,7 @@ export default function OnboardingPage() {
           <CardTitle>Welcome to Onboarding</CardTitle>
         </CardHeader>
         <CardContent>
-          <p>Let's get you set up with your account. This process will take you through the following steps:</p>
+          <p>Let&apos;s get you set up with your account. This process will take you through the following steps:</p>
           <ol className="list-decimal list-inside mt-4">
             <li>Email Setup</li>
             <li>Domain Verification</li>

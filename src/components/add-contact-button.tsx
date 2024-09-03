@@ -60,13 +60,13 @@ export default function AddContactButton() {
               <Label htmlFor="first_name" className="text-right">
                 First Name
               </Label>
-              <Input id="first_name" name="first_name" className="col-span-3" required />
+              <Input id="first_name" name="first_name" className="col-span-3" />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="last_name" className="text-right">
                 Last Name
               </Label>
-              <Input id="last_name" name="last_name" className="col-span-3" required />
+              <Input id="last_name" name="last_name" className="col-span-3" />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="email" className="text-right">

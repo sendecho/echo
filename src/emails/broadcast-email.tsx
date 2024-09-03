@@ -1,17 +1,16 @@
-import { Html, Text, Container, Hr, Section, Body, Head, Preview, Tailwind, Heading, Link } from '@react-email/components'
-
-
+import { Html, Text, Container, Hr, Section, Body, Head, Preview, Tailwind, Link } from '@react-email/components'
 
 interface BroadcastEmailProps {
   subject: string;
+  preview?: string;
   content: string;
 }
 
-export const BroadcastEmail = ({ subject, content }: BroadcastEmailProps) => {
+export const BroadcastEmail = ({ subject, preview, content }: BroadcastEmailProps) => {
   return (
     <Html>
       <Head />
-      <Preview>{subject}</Preview>
+      <Preview>{preview || subject}</Preview>
 
       <Tailwind>
         <Body className='font-sans px-2 my-auto mx-auto'>
@@ -21,7 +20,8 @@ export const BroadcastEmail = ({ subject, content }: BroadcastEmailProps) => {
             </Section>
             <Hr />
             <Section>
-              <Text>To unsubscribe, click <Link href='https://voyage.dev'>here</Link></Text>
+              {/* TODO: Add unsubscribe link */}
+              <Text>To unsubscribe, click <Link href='https://voyage.dev/unsubscribe/123'>here</Link></Text>
             </Section>
           </Container>
         </Body>

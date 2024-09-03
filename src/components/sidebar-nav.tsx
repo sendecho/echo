@@ -26,7 +26,7 @@ export function SidebarNav() {
   const pathname = usePathname();
 
   return (
-    <ScrollArea className="h-[calc(100vh-64px)] py-6">
+    <div className="flex flex-1">
       <div className="space-y-4">
         <div className="px-3 py-2">
           <div className="space-y-1">
@@ -49,6 +49,6 @@ export function SidebarNav() {
           </div>
         </div>
       </div>
-    </ScrollArea>
+    </div>
   );
 }
