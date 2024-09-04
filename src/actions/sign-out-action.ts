@@ -8,14 +8,14 @@ import { redirect } from "next/navigation";
 export async function signOutAction() {
   const supabase = createClient();
   const {
-    data: { session },
+    data: { user },
   } = await getSession();
 
   await supabase.auth.signOut({
     scope: "local",
   });
 
-  revalidateTag(`user_${session?.user.id}`);
+  revalidateTag(`user_${user?.id}`);
 
   return redirect("/login");
 }
