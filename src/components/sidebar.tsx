@@ -13,7 +13,7 @@ export function Sidebar() {
       <div className="p-4 flex items-center justify-between">
         <div className="flex items-center">
           <Image src="/logo.png" alt="Logo" width={32} height={32} />
-          <span className="ml-2 font-semibold text-lg">Circles</span>
+          <span className="ml-2 font-semibold text-lg">Echo</span>
         </div>
         <Suspense>
           <UserMenu />
@@ -23,7 +23,7 @@ export function Sidebar() {
       <SidebarNav />
 
       <div className='border-t border-border text-muted-foreground text-sm mt-auto p-2'>
-        <Link href="mailto:hello@circles.so" className="flex items-center p-2 hover:bg-stone-100 rounded-md">
+        <Link href="mailto:hello@useecho.co" className="flex items-center p-2 hover:bg-stone-100 rounded-md">
           <CircleHelpIcon className="w-4 h-4" />
           <span className="ml-2">Help</span>
         </Link>

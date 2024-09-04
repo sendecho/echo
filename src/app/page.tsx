@@ -9,7 +9,7 @@ export default function Home() {
     <div className="min-h-screen bg-white dark:bg-background">
       <header className="bg-white dark:bg-background">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <p className="text-2xl font-bold">Chord</p>
+          <p className="text-2xl font-bold">Echo</p>
           <Button variant="secondary" asChild size="sm">
             <Link href="/login" >
               Log in
@@ -38,32 +38,32 @@ export default function Home() {
         </div>
 
         <section className="mt-24 max-w-2xl mx-auto">
-          <p className="text-xl text-gray-600 dark:text-gray-400 mb-8">Email and newsletter platforms are designed for mass marketing, but personal relationships are personal. Chord is a personal CRM that connects your contacts, notes, and communications in one place, making networking easier and more effective.</p>
+          <p className="text-xl text-gray-600 dark:text-gray-400 mb-8">Email and newsletter platforms are designed for mass marketing, but personal relationships are personal. Echo is a personal CRM that connects your contacts, notes, and communications in one place, making networking easier and more effective.</p>
         </section>
         {/* FAQ Section */}
         <section className="mt-24 max-w-xl mx-auto">
           <h2 className="text-2xl font-semibold mb-8">Frequently Asked Questions</h2>
           <Accordion type="single" collapsible className="w-full border border-border rounded-md text-left">
             <AccordionItem value="item-1" className="px-4">
-              <AccordionTrigger>What is Chord?</AccordionTrigger>
+              <AccordionTrigger>What is Echo?</AccordionTrigger>
               <AccordionContent>
-                Chord is a modern relationship management tool that connects your contacts, notes, and communications in one place, making networking easier and more effective.
+                Echo is a modern relationship management tool that connects your contacts, notes, and communications in one place, making networking easier and more effective.
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-2" className="px-4">
-              <AccordionTrigger>How is Chord different from other CRM tools?</AccordionTrigger>
+              <AccordionTrigger>How is Echo different from other CRM tools?</AccordionTrigger>
               <AccordionContent>
-                Chord focuses on personal relationship management, offering a seamless integration of contacts, notes, and newsletters. It&apos;s designed for individuals who want to elevate their networking game.
+                Echo focuses on personal relationship management, offering a seamless integration of contacts, notes, and newsletters. It&apos;s designed for individuals who want to elevate their networking game.
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-3" className="px-4">
-              <AccordionTrigger>When will Chord be available?</AccordionTrigger>
+              <AccordionTrigger>When will Echo be available?</AccordionTrigger>
               <AccordionContent>
                 We&apos;re currently in development. Join our waitlist to be notified when we launch and to get early access!
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-4" className="px-4 border-b-0">
-              <AccordionTrigger>Is there a free version of Chord?</AccordionTrigger>
+              <AccordionTrigger>Is there a free version of Echo?</AccordionTrigger>
               <AccordionContent>
                 We plan to offer a free tier with basic features. Premium features will be available in paid plans. Specific details will be announced closer to launch.
               </AccordionContent>
@@ -74,7 +74,7 @@ export default function Home() {
 
       <footer className="bg-gray-100 dark:bg-gray-900 py-8">
         <div className="container mx-auto px-4">
-          <p className="text-gray-600 dark:text-gray-400">© 2024 Chord. All rights reserved.</p>
+          <p className="text-gray-600 dark:text-gray-400">© 2024 Echo. All rights reserved.</p>
         </div>
       </footer>
     </div>

@@ -8,8 +8,8 @@ import { ThemeProvider } from "next-themes";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Chord",
-  description: "Chord",
+  title: "Echo",
+  description: "Run your personal newsletters with ease.",
 };
 
 export default function RootLayout({
