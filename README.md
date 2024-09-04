@@ -1,13 +1,13 @@
-# PersonalCRM+ Newsletter App
+# Echo
 
-PersonalCRM+ is an all-in-one solution for personal CRM and newsletter management. This application allows users to manage contacts, send personalized newsletters, and track interactions.
+Echo is an all-in-one solution for personal CRM and newsletter platform. This application allows users to manage contacts, send personalized newsletters, and track interactions.
 
 ## Local Setup
 
 1. Clone the repository:
    ```
-   git clone https://github.com/your-username/personalcrm-plus.git
-   cd personalcrm-plus
+   git clone https://github.com/sendecho/echo.git
+   cd echo
    ```
 2. Install dependencies:
 

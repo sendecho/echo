@@ -30,7 +30,7 @@ export default function Home() {
         <div className="mt-16 max-w-xl mx-auto">
           <Image
             src="/crm-dashboard.webp"
-            alt="PersonalCRM+ Dashboard"
+            alt="Echo Dashboard"
             className="rounded-lg shadow-lg"
             width={800}
             height={600}
