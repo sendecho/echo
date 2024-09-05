@@ -16,7 +16,7 @@ export default async function ContactsPage() {
           <AddContactButton />
         </div>
         <Suspense fallback={<TableSkeleton />}>
-          <ContactsTable contacts={contacts} />
+          <ContactsTable contacts={contacts || []} />
         </Suspense>
       </div>
     </DashboardLayout>

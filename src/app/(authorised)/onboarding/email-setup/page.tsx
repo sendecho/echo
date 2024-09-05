@@ -23,7 +23,7 @@ export default function EmailSetupPage() {
       toast({ title: 'Email setup completed successfully' })
       router.push('/onboarding/domain-verification')
     },
-    onError: (error) => toast({ title: 'Error', description: error.message, variant: 'destructive' }),
+    onError: (error) => toast({ title: 'Error', description: error?.error.serverError, variant: 'destructive' }),
   })
 
   const onSubmit = methods.handleSubmit((data) => execute(data))
@@ -32,7 +32,7 @@ export default function EmailSetupPage() {
     <FormProvider {...methods}>
       <Card className="w-full max-w-2xl mx-auto">
         <CardHeader>
-          <CardTitle>Onboarding: Email Setup</CardTitle>
+          <CardTitle>Email Setup</CardTitle>
         </CardHeader>
         <CardContent>
           <EmailSetup />

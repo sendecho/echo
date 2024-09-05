@@ -14,19 +14,15 @@ export const emailSetupAction = authSafeAction
 
     const supabase = createClient()
 
-    const { data: account, error } = await supabase
-      .from('accounts')
-      .insert({ from_name: fromName, domain: domain })
-      .select()
-      .single();
+    const { data, error } = await supabase.rpc('create_account_and_link_user', {
+      domain: domain,
+      from_name: fromName,
+      user_id: user.id,
+    })
 
-    if (error) throw new Error('Failed to save email setup data')
+    if (error) throw new Error('Failed to create account and link user')
 
-    const { error: userAccountError } = await supabase
-      .from('user_accounts')
-      .insert({ user_id: user.id, account_id: account.id, role: 'owner' })
-
-    if (userAccountError) throw new Error('Failed to save user account data')
+    console.log('data', data)
 
     // Create a domain in Resend
     // const resend = new Resend(process.env.RESEND_API_KEY)

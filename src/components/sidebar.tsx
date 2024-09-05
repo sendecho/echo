@@ -12,8 +12,7 @@ export function Sidebar() {
     <div className="w-64 h-full flex flex-col bg-background border-r border-border">
       <div className="p-4 flex items-center justify-between">
         <div className="flex items-center">
-          <Image src="/logo.png" alt="Logo" width={32} height={32} />
-          <span className="ml-2 font-semibold text-lg">Echo</span>
+          <span className="ml-2 font-semibold text-lg">echo</span>
         </div>
         <Suspense>
           <UserMenu />

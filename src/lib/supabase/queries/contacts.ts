@@ -24,6 +24,7 @@ export async function fetchContacts(supabase: Client, accountId: string): Promis
     `)
     .eq('account_id', accountId)
     .order('last_name', { ascending: true })
+    .throwOnError()
 
   if (error) {
     console.error('Error fetching contacts:', error)

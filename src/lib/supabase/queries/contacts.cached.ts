@@ -19,9 +19,9 @@ export const getContacts = async () => {
     async () => {
       return fetchContacts(supabase, accountId);
     },
-    ["contacts"],
+    ["contacts", accountId],
     {
-      tags: [`contacts`],
+      tags: [`contacts_${accountId}`],
       revalidate: 180,
     },
   )();
