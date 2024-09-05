@@ -16,8 +16,7 @@ export const addToWaitlistAction = actionClient
     const { data, error } = await supabase
       .from('waitlist')
       .insert({ email })
-      .select()
-      .single()
+      .throwOnError()
 
     if (error) {
       if (error.code === '23505') {
