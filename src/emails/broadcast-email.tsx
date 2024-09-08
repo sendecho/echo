@@ -4,9 +4,10 @@ interface BroadcastEmailProps {
   subject: string;
   preview?: string;
   content: string;
+  unsubscribeId: string;
 }
 
-export const BroadcastEmail = ({ subject, preview, content }: BroadcastEmailProps) => {
+export const BroadcastEmail = ({ subject, preview, content, unsubscribeId }: BroadcastEmailProps) => {
   return (
     <Html>
       <Head />
@@ -21,7 +22,7 @@ export const BroadcastEmail = ({ subject, preview, content }: BroadcastEmailProp
             <Hr />
             <Section>
               {/* TODO: Add unsubscribe link */}
-              <Text>To unsubscribe, click <Link href='https://voyage.dev/unsubscribe/123'>here</Link></Text>
+              <Text>To unsubscribe, click <Link href={`https://sendecho.co/unsubscribe/${unsubscribeId}`}>here</Link></Text>
             </Section>
           </Container>
         </Body>

@@ -5,8 +5,12 @@ import { fetchContacts } from '@/lib/supabase/queries/contacts';
 import { MultiSelect } from '@/components/ui/multi-select'
 import { Button } from '@/components/ui/button'
 import { SubmitButton } from './ui/submit-button';
+import { createClient } from '@/lib/supabase/client';
 
 export function ContactSelector({ onSend, isSendingEmail }: { onSend: (selectedContacts: number[]) => void, isSendingEmail: boolean }) {
+
+  const supabase = createClient();
+
   const [selectedContacts, setSelectedContacts] = useState<number[]>([])
   const [contacts, setContacts] = useState<Awaited<ReturnType<typeof fetchContacts>>>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -16,7 +20,7 @@ export function ContactSelector({ onSend, isSendingEmail }: { onSend: (selectedC
     async function loadContacts() {
       try {
         setIsLoading(true)
-        const fetchedContacts = await fetchContacts()
+        const fetchedContacts = await fetchContacts(supabase, '')
         setContacts(fetchedContacts)
       } catch (err) {
         setError(err instanceof Error ? err : new Error('Failed to fetch contacts'))

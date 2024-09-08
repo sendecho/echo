@@ -17,15 +17,17 @@ import { sendPreviewBroadcastMutation } from '@/lib/supabase/mutations/broadcast
 import { SubmitButton } from './ui/submit-button'
 import { Database } from '@/types/supabase'
 
+type Email = Database['public']['Tables']['emails']['Row']
+
 interface Broadcast {
-  id: number | null
-  subject: string
-  content: string
-  preview: string | null
+  id: Email['id'] | null
+  subject: Email['subject']
+  content: Email['content']
+  preview: Email['preview']
 }
 
 interface BroadcastEditorProps {
-  initialBroadcast?: Broadcast
+  initialBroadcast?: Email
 }
 
 export function BroadcastEditor({ initialBroadcast }: BroadcastEditorProps) {
@@ -112,7 +114,7 @@ export function BroadcastEditor({ initialBroadcast }: BroadcastEditorProps) {
 
     try {
       setIsSendingEmail(true)
-      const result = await sendPreviewBroadcastMutation(broadcast.id, email)
+      const result = await sendPreviewBroadcastMutation({ emailId: broadcast.id, emailAddress: email })
       if (result?.success) {
         toast({
           title: 'Test email sent',

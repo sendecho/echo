@@ -3,10 +3,18 @@
 import { sendEmail } from '@/emails'
 import BroadcastEmail from '@/emails/broadcast-email'
 import { createClient } from '@/lib/supabase/server'
+import { Database } from '@/types'
 
 const supabase = createClient()
 
-export async function createOrUpdateEmailMutation(id: number | null, subject: string, content: string, preview: string | null) {
+type Email = Database['public']['Tables']['emails']['Row']
+
+interface CreateOrUpdateEmailMutationProps extends Omit<Email, 'id' | 'account_id' | 'created_at' | 'updated_at' | 'sent_at'> {
+  id: string | null
+  account_id: string
+}
+
+export async function createOrUpdateEmailMutation({ id, subject, content, preview, account_id }: CreateOrUpdateEmailMutationProps) {
   if (id) {
     const { data, error } = await supabase
       .from('emails')
@@ -14,13 +22,15 @@ export async function createOrUpdateEmailMutation(id: number | null, subject: st
       .eq('id', id)
       .select()
       .single()
+      .throwOnError()
 
     if (error) throw new Error(`Failed to update email: ${error.message}`)
     return data
   } else {
+    console.log('Creating new email')
     const { data, error } = await supabase
       .from('emails')
-      .insert({ subject, content, preview })
+      .insert({ subject, content, preview, account_id })
       .select()
       .single()
       .throwOnError()
@@ -32,7 +42,12 @@ export async function createOrUpdateEmailMutation(id: number | null, subject: st
   }
 }
 
-export async function sendBroadcastMutation(emailId: number, contactIds: number[]) {
+interface SendBroadcastMutationProps {
+  emailId: string
+  contactIds: string[]
+}
+
+export async function sendBroadcastMutation({ emailId, contactIds }: SendBroadcastMutationProps) {
   // For each contact, send the emails content to the contact
   // Fetch the email content
   const { data: emailData, error: emailError } = await supabase
@@ -57,7 +72,7 @@ export async function sendBroadcastMutation(emailId: number, contactIds: number[
       const { data: sendData, error: sendError } = await sendEmail({
         email: contact.email,
         subject: emailData.subject,
-        react: BroadcastEmail({ subject: emailData.subject, content: emailData.content, preview: emailData.preview }),
+        react: BroadcastEmail({ subject: emailData.subject, content: emailData.content, preview: emailData.preview, unsubscribeId: contact.id }),
       })
 
       if (sendError) throw new Error(`Failed to send email: ${sendError.message}`)
@@ -86,8 +101,14 @@ export async function sendBroadcastMutation(emailId: number, contactIds: number[
   return { success: true, emailId }
 }
 
+interface SendPreviewBroadcastMutationProps {
+  emailId: string
+  emailAddress: string
+}
 
-export async function sendPreviewBroadcastMutation(emailId: number, emailAddress: string) {
+export async function sendPreviewBroadcastMutation({ emailId, emailAddress }: SendPreviewBroadcastMutationProps) {
+  console.log('Sending preview broadcast to', emailAddress)
+  console.log('Email ID:', emailId)
   // Fetch the email content
   const { data: emailData, error: emailError } = await supabase
     .from('emails')
@@ -101,7 +122,7 @@ export async function sendPreviewBroadcastMutation(emailId: number, emailAddress
     const { data: sendData, error: sendError } = await sendEmail({
       email: emailAddress,
       subject: emailData.subject,
-      react: BroadcastEmail({ subject: emailData.subject, content: emailData.content, preview: emailData.preview }),
+      react: BroadcastEmail({ subject: emailData.subject, content: emailData.content, preview: emailData.preview, unsubscribeId: '' }),
     })
 
     if (sendError) throw new Error(`Failed to send email: ${sendError.message}`)

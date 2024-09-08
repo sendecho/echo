@@ -1,5 +1,6 @@
 create table accounts (
   id uuid primary key default gen_random_uuid(),
+  name text not null,
   domain text not null,
   domain_verified boolean default false,
   from_name text not null,
@@ -51,10 +52,11 @@ create table contacts (
   state text,
   zip_code text,
   country text,
-  subscribed_at timestamp with time zone default now(),
-  verified_at timestamp with time zone,
-  unsubscribed_at timestamp with time zone,
-  imported_at timestamp with time zone,
+  source text, -- how the contact was added (e.g. "imported", "manual", "api", etc.)
+  subscribed_at timestamp with time zone default now(), -- when the contact was subscribed
+  verified_at timestamp with time zone, -- when the contact was verified
+  unsubscribed_at timestamp with time zone, -- when the contact was unsubscribed
+  imported_at timestamp with time zone, -- when the contact was imported
   created_at timestamp with time zone default now()
 );
 
@@ -103,23 +105,23 @@ create or replace function create_account_and_link_user(
   user_id uuid
 ) returns uuid as $$
 declare
-  account_id uuid;
+  new_account_id uuid;
 begin
   -- Insert into accounts
   insert into accounts (domain, from_name)
   values (domain, from_name)
-  returning id into account_id;
+  returning id into new_account_id;
 
   -- Insert into user_accounts
   insert into user_accounts (user_id, account_id, role)
-  values (user_id, account_id, 'owner');
+  values (user_id, new_account_id, 'owner');
 
   -- Update the user with the new account_id
   update users
-  set account_id = account_id
+  set account_id = new_account_id
   where id = user_id;
 
-  return account_id;
+  return new_account_id;
 end;
 $$ language plpgsql security definer;
 
@@ -166,14 +168,7 @@ CREATE POLICY "Users can view their own account" ON public.accounts
 
 CREATE POLICY "Account owners can update their account" ON public.accounts
   FOR UPDATE USING (
-    id IN (SELECT public.get_accounts_for_authenticated_user())
-    AND EXISTS (
-      SELECT 1 FROM public.user_accounts
-      WHERE user_accounts.account_id = accounts.id
-        AND user_accounts.user_id = auth.uid()
-        AND user_accounts.role = 'owner'
-    )
-  );
+    id IN (SELECT public.get_accounts_for_authenticated_user()));
 
 -- RLS Policies for emails
 CREATE POLICY "Users can view emails in their account" ON public.emails

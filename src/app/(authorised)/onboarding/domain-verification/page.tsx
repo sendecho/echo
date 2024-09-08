@@ -32,7 +32,7 @@ export default function DomainVerificationPage() {
     <FormProvider {...methods}>
       <Card className="w-full max-w-2xl mx-auto">
         <CardHeader>
-          <CardTitle>Onboarding: Domain Verification</CardTitle>
+          <CardTitle>Domain Verification</CardTitle>
         </CardHeader>
         <CardContent>
           <DomainVerification />

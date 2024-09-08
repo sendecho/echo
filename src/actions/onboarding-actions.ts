@@ -18,7 +18,7 @@ export const emailSetupAction = authSafeAction
       domain: domain,
       from_name: fromName,
       user_id: user.id,
-    })
+    }).throwOnError()
 
     if (error) throw new Error('Failed to create account and link user')
 
@@ -60,20 +60,12 @@ export const mailingAddressAction = authSafeAction
   .action(async ({ parsedInput: { streetAddress, city, state, postalCode, country }, ctx: { user } }) => {
     const supabase = createClient()
 
-    // First, get the account associated with the current user
-    const { data: userAccount, error: userAccountError } = await supabase
-      .from('user_accounts')
-      .select('account_id')
-      .eq('user_id', user.id)
-      .single()
-
-    if (userAccountError) throw new Error('Failed to retrieve user account')
-
     // Now update the account with the mailing address
     const { error } = await supabase
       .from('accounts')
       .update({ street_address: streetAddress, city, state, postal_code: postalCode, country })
-      .eq('id', userAccount.account_id)
+      .eq('id', user.account_id)
+      .throwOnError()
 
     if (error) throw new Error('Failed to save mailing address data')
     return { success: true }

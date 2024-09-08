@@ -53,12 +53,13 @@ interface Broadcast {
 
 const columns: ColumnDef<Contact>[] = [
   {
-    accessorKey: 'name',
-    header: 'Name',
+    accessorKey: 'email',
+    header: 'Email',
     cell: ({ row }) => {
       const contact = row.original;
       const fullName = `${contact.first_name || ''} ${contact.last_name || ''}`.trim();
       const initials = fullName.split(' ').map(n => n[0]).join('').toUpperCase();
+
 
       return (
         <Sheet>
@@ -69,7 +70,7 @@ const columns: ColumnDef<Contact>[] = [
                   <AvatarImage src={`https://api.dicebear.com/9.x/open-peeps/svg?seed=${contact.email}`} alt={fullName} />
                   <AvatarFallback>{initials}</AvatarFallback>
                 </Avatar>
-                <span>{fullName}</span>
+                <span>{contact.email}</span>
               </div>
             </Button>
           </SheetTrigger>
@@ -81,8 +82,12 @@ const columns: ColumnDef<Contact>[] = [
     },
   },
   {
-    accessorKey: 'email',
-    header: 'Email',
+    accessorKey: 'first_name',
+    header: 'First Name',
+  },
+  {
+    accessorKey: 'last_name',
+    header: 'Last Name',
   },
   {
     accessorKey: 'phone_number',
