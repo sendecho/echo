@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -40,13 +40,22 @@ export function BroadcastEditor({ initialBroadcast }: BroadcastEditorProps) {
   const [isPreviewOpen, setIsPreviewOpen] = useState(false)
   const [isSendingEmail, setIsSendingEmail] = useState(false)
   const router = useRouter()
+  const pathname = usePathname()
 
   const debouncedSave = useDebouncedCallback(async (updatedBroadcast: Broadcast) => {
     if (updatedBroadcast.subject.trim() && updatedBroadcast.content.trim()) {
       try {
         setSavingStatus('saving')
         const result = await createUpdateEmailAction(updatedBroadcast)
-        setBroadcast(prev => ({ ...prev, id: result?.data.id ?? null }))
+
+        console.log('result', result)
+        const newId = result?.data.id ?? null
+        setBroadcast(prev => ({ ...prev, id: newId }))
+
+        // Update URL if it's a new broadcast and we got an ID
+        if (newId && pathname === '/dashboard/broadcasts/new') {
+          router.push(`/dashboard/broadcasts/${newId}`)
+        }
 
         setTimeout(() => setSavingStatus('saved'), 1000)
       } catch (error) {
@@ -84,7 +93,10 @@ export function BroadcastEditor({ initialBroadcast }: BroadcastEditorProps) {
 
     try {
       setIsSendingEmail(true)
-      const result = await sendBroadcastAction({ emailId: broadcast.id, contactIds: selectedContacts })
+      const result = await sendBroadcastAction({
+        emailId: broadcast.id,
+        contactIds: selectedContacts.map(String) // Convert numbers to strings
+      })
       if (result?.data?.success) {
         toast({
           title: 'Broadcast sent',

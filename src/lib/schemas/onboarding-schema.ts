@@ -1,6 +1,7 @@
 import { z } from 'zod'
 
 export const emailSetupSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
   fromName: z.string().min(1, 'From Name is required'),
   domain: z.string().min(1, 'Invalid domain name'),
 })

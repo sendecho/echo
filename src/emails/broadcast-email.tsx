@@ -1,4 +1,4 @@
-import { Html, Text, Container, Hr, Section, Body, Head, Preview, Tailwind, Link } from '@react-email/components'
+import { Html, Text, Container, Hr, Section, Body, Head, Preview, Tailwind, Link, Img, Button } from '@react-email/components'
 
 interface BroadcastEmailProps {
   subject: string;
@@ -21,8 +21,12 @@ export const BroadcastEmail = ({ subject, preview, content, unsubscribeId }: Bro
             </Section>
             <Hr />
             <Section>
-              {/* TODO: Add unsubscribe link */}
-              <Text>To unsubscribe, click <Link href={`https://sendecho.co/unsubscribe/${unsubscribeId}`}>here</Link></Text>
+              <Text style={styles.footer}>To unsubscribe, click <Link href={`https://sendecho.co/unsubscribe/${unsubscribeId}`}>here</Link></Text>
+            </Section>
+            <Section>
+              <Button style={styles.button} href="https://sendecho.co">
+                Powered by Echo
+              </Button>
             </Section>
           </Container>
         </Body>
@@ -30,6 +34,24 @@ export const BroadcastEmail = ({ subject, preview, content, unsubscribeId }: Bro
     </Html>
   )
 }
+
+const styles = {
+  button: {
+    backgroundColor: '#ffffff',
+    border: '1px solid #e5e5e5',
+    borderRadius: '4px',
+    padding: '6px 8px',
+    display: 'inline-block',
+    fontFamily: 'sans-serif',
+    fontSize: '12px',
+    color: '#4b5563'
+  },
+  footer: {
+    fontSize: '12px',
+    color: '#4b5563'
+  }
+}
+
 
 BroadcastEmail.PreviewProps = {
   subject: "Test Subject",

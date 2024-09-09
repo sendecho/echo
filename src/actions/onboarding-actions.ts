@@ -10,11 +10,12 @@ export const emailSetupAction = authSafeAction
   .metadata({
     name: 'email-setup',
   })
-  .action(async ({ parsedInput: { fromName, domain }, ctx: { user } }) => {
+  .action(async ({ parsedInput: { name, fromName, domain }, ctx: { user } }) => {
 
     const supabase = createClient()
 
     const { data, error } = await supabase.rpc('create_account_and_link_user', {
+      name: name,
       domain: domain,
       from_name: fromName,
       user_id: user.id,

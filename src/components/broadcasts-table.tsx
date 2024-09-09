@@ -2,6 +2,15 @@ import Link from 'next/link'
 import { fetchBroadcasts } from '@/lib/supabase/queries/broadcasts'
 import { Badge } from './ui/badge'
 import { Button } from './ui/button'
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableHead,
+  TableRow,
+  TableCell,
+} from './ui/table'
+import { BroadcastTableActions } from './broadcast-table-actions'
 
 export async function BroadcastsTable() {
   const broadcasts = await fetchBroadcasts()
@@ -22,31 +31,35 @@ export async function BroadcastsTable() {
   }
 
   return (
-    <table className="w-full">
-      <thead>
-        <tr>
-          <th className="text-left p-2">Subject</th>
-          <th className="text-left p-2">Date</th>
-          <th className="text-left p-2">Status</th>
-        </tr>
-      </thead>
-      <tbody>
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Subject</TableHead>
+          <TableHead>Date</TableHead>
+          <TableHead>Status</TableHead>
+          <TableHead className="w-[100px]">Actions</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
         {broadcasts.map((broadcast) => (
-          <tr key={broadcast.id} className="border-t border-border">
-            <td className="p-2">
+          <TableRow key={broadcast.id}>
+            <TableCell>
               <Link href={`/dashboard/broadcasts/${broadcast.id}`} className="text-blue-600 hover:underline">
                 {broadcast.subject}
               </Link>
-            </td>
-            <td className="p-2">{new Date(broadcast.created_at).toLocaleDateString()}</td>
-            <td className="p-2">
+            </TableCell>
+            <TableCell>{new Date(broadcast.created_at).toLocaleDateString()}</TableCell>
+            <TableCell>
               <Badge variant={broadcast.sent_at ? "default" : "secondary"}>
                 {broadcast.sent_at ? 'Sent' : 'Draft'}
               </Badge>
-            </td>
-          </tr>
+            </TableCell>
+            <TableCell>
+              <BroadcastTableActions id={broadcast.id} subject={broadcast.subject} />
+            </TableCell>
+          </TableRow>
         ))}
-      </tbody>
-    </table>
+      </TableBody>
+    </Table>
   )
 }

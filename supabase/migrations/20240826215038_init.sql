@@ -100,6 +100,7 @@ CREATE TABLE waitlist (
 
 -- Create account and user_accounts for the initial user
 create or replace function create_account_and_link_user(
+  name text,
   domain text,
   from_name text,
   user_id uuid
@@ -108,8 +109,8 @@ declare
   new_account_id uuid;
 begin
   -- Insert into accounts
-  insert into accounts (domain, from_name)
-  values (domain, from_name)
+  insert into accounts (name, domain, from_name)
+  values (name, domain, from_name)
   returning id into new_account_id;
 
   -- Insert into user_accounts
@@ -176,6 +177,9 @@ CREATE POLICY "Users can view emails in their account" ON public.emails
 
 CREATE POLICY "Users can insert emails in their account" ON public.emails
   FOR INSERT WITH CHECK (account_id IN (SELECT public.get_accounts_for_authenticated_user()));
+
+CREATE POLICY "Users can update emails in their account" ON public.emails
+  FOR UPDATE USING (account_id IN (SELECT public.get_accounts_for_authenticated_user()));
 
 -- RLS Policies for contacts
 CREATE POLICY "Users can view contacts in their account" ON public.contacts

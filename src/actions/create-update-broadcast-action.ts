@@ -17,6 +17,9 @@ export const createUpdateEmailAction = authSafeAction
   .action(
     async ({ parsedInput: { id, subject, content, preview }, ctx: { user } }) => {
       try {
+
+        console.log(id, subject, content, preview, user.account_id)
+
         const result = await createOrUpdateEmailMutation({ id, subject, content, preview: preview || null, account_id: user.account_id as string })
         return result
       } catch (error) {

@@ -15,7 +15,7 @@ export default function EmailSetupPage() {
   const router = useRouter()
   const methods = useForm({
     resolver: zodResolver(emailSetupSchema),
-    defaultValues: { fromName: '', emailAddress: '' },
+    defaultValues: { name: '', fromName: '', emailAddress: '' },
   })
 
   const { execute, status } = useAction(emailSetupAction, {

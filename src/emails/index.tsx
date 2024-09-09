@@ -3,9 +3,8 @@ import { Resend } from "resend";
 import { env } from "@/env";
 
 const resend = new Resend(env.RESEND_API_KEY || '');
-const TEST_EMAIL = env.TEST_EMAIL || env.NODE_ENV === 'development';
 
-console.log("TEST_EMAIL", TEST_EMAIL);
+const TEST_EMAIL = env.TEST_EMAIL === true || (env.NODE_ENV === 'development' && env.TEST_EMAIL !== false);
 
 interface SendEmailProps {
   from?: string;

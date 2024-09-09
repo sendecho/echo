@@ -133,3 +133,32 @@ export async function sendPreviewBroadcastMutation({ emailId, emailAddress }: Se
 
   return { success: true }
 }
+
+export async function duplicateBroadcast(id: string, newSubject: string) {
+
+  // Fetch the original email
+  const { data: originalEmail, error: fetchError } = await supabase
+    .from('emails')
+    .select('*')
+    .eq('id', id)
+    .single()
+
+  if (fetchError) throw fetchError
+
+  // Create a new email with copied data
+  const { data: newEmail, error: insertError } = await supabase
+    .from('emails')
+    .insert({
+      ...originalEmail,
+      id: undefined, // Let Supabase generate a new ID
+      subject: newSubject,
+      sent_at: null, // Ensure the new broadcast is not marked as sent
+      created_at: new Date().toISOString(), // Set the current timestamp
+    })
+    .select()
+    .single()
+
+  if (insertError) throw insertError
+
+  return newEmail
+}
