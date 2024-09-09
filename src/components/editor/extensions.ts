@@ -17,8 +17,10 @@ import Underline from "@tiptap/extension-underline";
 import TiptapImage from "@tiptap/extension-image";
 import Dropcursor from '@tiptap/extension-dropcursor'
 import GapCursor from '@tiptap/extension-gapcursor'
+import Youtube from '@tiptap/extension-youtube'
 import SlashCommand from './extensions/slash-command'
 import { UploadImagesPlugin } from './plugins/upload-images'
+import { TweetExtension } from './extensions/tweet-extension'
 
 import { cx } from "class-variance-authority";
 
@@ -57,6 +59,8 @@ export const defaultExtensions = [
       class: "rounded-lg border border-border",
     },
   }),
+  Youtube,
+  TweetExtension,
 
   // Formatting
   Bold,
@@ -74,4 +78,5 @@ export const defaultExtensions = [
     class: "drop-cursor"
   }),
   GapCursor,
+
 ]

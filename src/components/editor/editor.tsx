@@ -10,7 +10,6 @@ import { useDebouncedCallback } from "use-debounce";
 import Toolbar from "./toolbar";
 import { cn } from "@/lib/utils";
 
-
 interface EditorProps {
   className?: string;
 
@@ -31,7 +30,6 @@ interface EditorProps {
   onDebouncedUpdate?: (editor?: EditorClass) => void;
   debounceDuration?: number;
 }
-
 
 export default function Editor({
   className,
@@ -85,8 +83,6 @@ export default function Editor({
       },
     }
   })
-
-
 
   return (
     <div className={cn("relative w-full border border-border rounded-md p-2", className)}>
