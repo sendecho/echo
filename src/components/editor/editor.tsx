@@ -4,11 +4,13 @@ import { EditorContent, Extension, JSONContent, useEditor, Editor as EditorClass
 import { defaultExtensions } from "./extensions";
 import BubbleMenu from "./bubble-menu";
 import "./prosemirror.css";
-import { useUpload } from "@/lib/hooks/use-upload";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import Toolbar from "./toolbar";
 import { cn } from "@/lib/utils";
+import { uploadFn } from "./image-upload";
+import { handleImagePaste, handleImageDrop } from "./plugins/upload-images";
+import { UploadOptions } from "./image-upload";
 
 interface EditorProps {
   className?: string;
@@ -29,6 +31,7 @@ interface EditorProps {
    */
   onDebouncedUpdate?: (editor?: EditorClass) => void;
   debounceDuration?: number;
+  uploadOptions?: UploadOptions;
 }
 
 export default function Editor({
@@ -37,14 +40,14 @@ export default function Editor({
   extensions = [],
   defaultValue,
   onDebouncedUpdate = () => { },
-  debounceDuration = 500
+  debounceDuration = 500,
+  uploadOptions
 }: EditorProps) {
-  const { upload } = useUpload();
-  const [isUploading, setIsUploading] = useState(false);
-
   const debouncedUpdates = useDebouncedCallback(async ({ editor }) => {
     onDebouncedUpdate(editor);
   }, debounceDuration);
+
+  const upload = useMemo(() => uploadOptions ? uploadFn(uploadOptions) : undefined, [uploadOptions]);
 
   const editor = useEditor({
     extensions: [...defaultExtensions, ...extensions],
@@ -55,29 +58,9 @@ export default function Editor({
       debouncedUpdates({ editor });
     },
     editorProps: {
-      // TODO: fix this
-      handleDrop: async (view, event, _slice, moved) => {
-        if (!moved && event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0]) {
-          event.preventDefault();
-          const file = event.dataTransfer.files[0];
-          if (file.type.startsWith('image/')) {
-            setIsUploading(true);
-            try {
-              const { publicUrl } = await upload({ file, bucket: 'images', path: 'editor' });
-              const { schema } = view.state;
-              const node = schema.nodes.image.create({ src: publicUrl });
-              const transaction = view.state.tr.replaceSelectionWith(node);
-              view.dispatch(transaction);
-            } catch (error) {
-              console.error('Error uploading image:', error);
-            } finally {
-              setIsUploading(false);
-            }
-            return true;
-          }
-        }
-        return false;
-      },
+      handlePaste: (view, event) => upload ? handleImagePaste(view, event, upload) : undefined,
+      handleDrop: (view, event, _slice, moved) =>
+        upload ? handleImageDrop(view, event, moved, upload) : undefined,
       attributes: {
         class: `prose prose-sm sm:prose-base dark:prose-invert prose-headings:font-title font-default focus:outline-none max-w-full`,
       },

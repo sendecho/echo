@@ -167,6 +167,9 @@ export function BroadcastEditor({ initialBroadcast }: BroadcastEditorProps) {
           setBroadcast(updatedBroadcast);
           debouncedSave(updatedBroadcast);
         }}
+        uploadOptions={{
+          path: `${broadcast.id}`
+        }}
       />
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2">

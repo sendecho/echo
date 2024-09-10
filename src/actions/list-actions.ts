@@ -1,7 +1,7 @@
 'use server'
 
 import { z } from 'zod'
-import { actionClient } from "@/lib/safe-action"
+import { actionClient, authSafeAction } from "@/lib/safe-action"
 import { createClient } from '@/lib/supabase/server'
 
 const listSchema = z.object({
@@ -10,13 +10,16 @@ const listSchema = z.object({
   contactIds: z.array(z.number()).optional(),
 })
 
-export const createListAction = actionClient
+export const createListAction = authSafeAction
   .schema(listSchema)
-  .action(async ({ parsedInput: { contactIds, ...listData } }) => {
+  .metadata({
+    name: 'create-list'
+  })
+  .action(async ({ parsedInput: { contactIds, ...listData }, ctx: { user } }) => {
     const supabase = createClient()
     const { data, error } = await supabase
       .from('lists')
-      .insert(listData)
+      .insert({ ...listData, account_id: user.account_id })
       .select()
       .single()
       .throwOnError()
@@ -46,9 +49,12 @@ export const createListAction = actionClient
     return data
   })
 
-export const updateListAction = actionClient
+export const updateListAction = authSafeAction
   .schema(listSchema.extend({ id: z.number() }))
-  .action(async ({ parsedInput: { id, contactIds, ...updateData } }) => {
+  .metadata({
+    name: 'update-list'
+  })
+  .action(async ({ parsedInput: { id, contactIds, ...updateData }, ctx: { user } }) => {
 
     const supabase = createClient()
     const { data, error } = await supabase
@@ -102,9 +108,12 @@ export const updateListAction = actionClient
     return data
   })
 
-export const deleteListAction = actionClient
+export const deleteListAction = authSafeAction
   .schema(z.object({ id: z.number() }))
-  .action(async ({ parsedInput }) => {
+  .metadata({
+    name: 'delete-list'
+  })
+  .action(async ({ parsedInput, ctx: { user } }) => {
     const supabase = createClient()
     const { error } = await supabase
       .from('lists')

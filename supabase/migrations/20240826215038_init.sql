@@ -271,3 +271,16 @@ create policy "Avatar images are publicly accessible." on storage.objects
 
 create policy "Anyone can upload an avatar." on storage.objects
   for insert with check (bucket_id = 'avatars');
+
+
+  -- Set up Storage!
+insert into storage.buckets (id, name)
+  values ('images', 'images');
+
+-- Set up access controls for storage.
+-- See https://supabase.com/docs/guides/storage#policy-examples for more details.
+create policy "Email images are publicly accessible." on storage.objects
+  for select using (bucket_id = 'images');
+
+create policy "Anyone can upload an image." on storage.objects
+  for insert with check (bucket_id = 'images');
