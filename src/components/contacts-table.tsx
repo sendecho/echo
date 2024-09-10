@@ -25,6 +25,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 import { Badge } from './ui/badge';
 import { getRecentBroadcasts } from '@/lib/supabase/queries/contacts';
 import Link from 'next/link';
+import { createClient } from '@/lib/supabase/client';
 
 interface List {
   id: number;
@@ -122,14 +123,16 @@ const columns: ColumnDef<Contact>[] = [
 ];
 
 function ContactDetails({ contact }: { contact: Contact }) {
+
+  const supabase = createClient();
   const [recentBroadcasts, setRecentBroadcasts] = useState<Broadcast[]>([]);
 
   useEffect(() => {
     // Fetch recent broadcasts for the contact
     // TODO: replace with actual data fetching logic from supabase
     const fetchBroadcasts = async () => {
-      const broadcasts = await getRecentBroadcasts(contact.id);
-      setRecentBroadcasts(broadcasts);
+      const broadcasts = await getRecentBroadcasts(supabase, contact.id);
+      setRecentBroadcasts(broadcasts as Broadcast[]);
     };
     fetchBroadcasts();
   }, [contact.id]);

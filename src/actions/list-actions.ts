@@ -7,7 +7,7 @@ import { createClient } from '@/lib/supabase/server'
 const listSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   description: z.string().optional(),
-  contactIds: z.array(z.number()).optional(),
+  contactIds: z.array(z.string()).optional(),
 })
 
 export const createListAction = authSafeAction
@@ -50,11 +50,13 @@ export const createListAction = authSafeAction
   })
 
 export const updateListAction = authSafeAction
-  .schema(listSchema.extend({ id: z.number() }))
+  .schema(listSchema.extend({ id: z.string() }))
   .metadata({
     name: 'update-list'
   })
   .action(async ({ parsedInput: { id, contactIds, ...updateData }, ctx: { user } }) => {
+
+    console.log(id, contactIds, updateData)
 
     const supabase = createClient()
     const { data, error } = await supabase

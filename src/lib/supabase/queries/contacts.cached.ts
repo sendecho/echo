@@ -9,7 +9,7 @@ export const getContacts = async () => {
   const supabase = createClient();
   const user = await getUser();
 
-  const accountId = user?.data.account_id;
+  const accountId = user?.data?.account_id;
 
   if (!accountId) {
     return null;

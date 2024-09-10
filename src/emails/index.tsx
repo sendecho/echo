@@ -4,7 +4,7 @@ import { env } from "@/env";
 
 const resend = new Resend(env.RESEND_API_KEY || '');
 
-const TEST_EMAIL = env.TEST_EMAIL === true || (env.NODE_ENV === 'development' && env.TEST_EMAIL !== false);
+const SEND_TO_TEST_EMAIL = env.USE_TEST_EMAIL === true || (env.NODE_ENV === 'development' && env.USE_TEST_EMAIL !== false);
 
 interface SendEmailProps {
   from?: string;
@@ -14,7 +14,7 @@ interface SendEmailProps {
 }
 
 export const sendEmail = async ({ from = "Ryan O'Hara <ryan@voyage.dev>", email, subject, react }: SendEmailProps) => {
-  const toEmail = TEST_EMAIL ? "delivered@resend.dev" : email;
+  const toEmail = SEND_TO_TEST_EMAIL ? "delivered@resend.dev" : email;
 
   return await resend.emails.send({
     from: from,

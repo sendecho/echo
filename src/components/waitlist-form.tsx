@@ -41,7 +41,7 @@ export function WaitlistForm() {
         />
         <Button
           type="submit"
-          className="absolute right-1 top-1 px-4 py-2 bg-black text-white bg-gradient-to-r from-sky-500 to-indigo-500 font-semibold rounded hover:bg-gray-800 transition-colors"
+          className="absolute right-1 top-1 px-4 py-2 bg-black text-white bg-gradient-to-r from-green-400 to-green-500 font-semibold rounded hover:bg-gray-800 transition-colors"
           disabled={status === 'executing'}
         >
           {status === 'executing' ? 'Joining...' : 'Join waitlist'}

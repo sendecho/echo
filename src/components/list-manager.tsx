@@ -34,7 +34,7 @@ const listSchema = z.object({
 type ListFormValues = z.infer<typeof listSchema>;
 
 interface List {
-  id: number;
+  id: string;
   name: string;
   description: string | null;
   unique_identifier: string;
@@ -42,15 +42,15 @@ interface List {
 }
 
 interface Contact {
-  id: number;
+  id: string;
   first_name: string | null;
   last_name: string | null;
   email: string;
 }
 
-export function ListManager({ accountId }: { accountId: string }) {
-  const [lists, setLists] = useState<List[]>([]);
-  const [contacts, setContacts] = useState<Contact[]>([]);
+export function ListManager({ accountId, contacts, lists }: { accountId: string, contacts: Contact[], lists: List[] }) {
+  // const [lists, setLists] = useState<List[]>([]);
+  // const [contacts, setContacts] = useState<Contact[]>([]);
   const [editingList, setEditingList] = useState<List | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedContacts, setSelectedContacts] = useState<Set<string>>(new Set());
@@ -70,7 +70,6 @@ export function ListManager({ accountId }: { accountId: string }) {
     onSuccess: () => {
       toast({ title: 'List created successfully' });
       handleCloseModal();
-      refreshLists();
     },
     onError: (error) => toast({ title: 'Error', description: error.error.serverError || 'An error occurred', variant: 'destructive' }),
   });
@@ -79,7 +78,6 @@ export function ListManager({ accountId }: { accountId: string }) {
     onSuccess: () => {
       toast({ title: 'List updated successfully' });
       handleCloseModal();
-      refreshLists();
     },
     onError: (error) => toast({ title: 'Error', description: error.error.serverError || 'An error occurred', variant: 'destructive' }),
   });
@@ -87,29 +85,13 @@ export function ListManager({ accountId }: { accountId: string }) {
   const { execute: executeDelete, status: deleteStatus } = useAction(deleteListAction, {
     onSuccess: () => {
       toast({ title: 'List deleted successfully' });
-      refreshLists();
     },
     onError: (error) => toast({ title: 'Error', description: error.error.serverError || 'An error occurred', variant: 'destructive' }),
   });
 
-  useEffect(() => {
-    refreshLists();
-    refreshContacts();
-  }, []);
-
-  async function refreshLists() {
-    const fetchedLists = await fetchLists();
-    setLists(fetchedLists);
-  }
-
-  async function refreshContacts() {
-
-    const fetchedContacts = await fetchContacts(supabase, accountId);
-    setContacts(fetchedContacts);
-  }
-
   function onSubmit(data: ListFormValues) {
-    const contactIds = Array.from(selectedContacts).map(Number);
+    const contactIds = Array.from(selectedContacts);
+    console.log(contactIds)
     if (editingList) {
       executeUpdate({ id: editingList.id, ...data, contactIds });
     } else {
@@ -126,7 +108,7 @@ export function ListManager({ accountId }: { accountId: string }) {
       });
       try {
         const contacts = await fetchContactsForList(list.id);
-        setSelectedContacts(new Set(contacts.map(contact => contact.id.toString())));
+        setSelectedContacts(new Set(contacts.map(contact => contact.id)));
       } catch (error) {
         console.error('Error fetching contacts for list:', error);
         toast({ title: 'Error', description: 'Failed to fetch contacts for list', variant: 'destructive' });
@@ -148,8 +130,6 @@ export function ListManager({ accountId }: { accountId: string }) {
     setSelectedContacts(new Set());
     setIsModalOpen(false);
   }
-
-  console.log(lists)
 
   return (
     <div className="space-y-8">
@@ -193,9 +173,9 @@ export function ListManager({ accountId }: { accountId: string }) {
                 <FormLabel>Contacts</FormLabel>
                 <MultiSelect
                   title="Select Contacts"
-                  options={contacts.map(contact => ({
+                  options={contacts?.map(contact => ({
                     label: `${contact.first_name} ${contact.last_name} (${contact.email})`,
-                    value: contact.id.toString(),
+                    value: contact.id,
                   }))}
                   selectedValues={selectedContacts}
                   onSelectionChange={setSelectedContacts}

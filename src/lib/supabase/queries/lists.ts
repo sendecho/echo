@@ -22,7 +22,7 @@ export async function fetchLists() {
 }
 
 
-export async function fetchContactsForList(listId: number) {
+export async function fetchContactsForList(listId: string) {
   const supabase = createClient()
 
   const { data, error } = await supabase

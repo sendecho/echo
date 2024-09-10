@@ -1,16 +1,7 @@
-'use server'
+import type { Client } from '@/types'
 
-import { createClient } from '@/lib/supabase/server'
-import { Client } from '@/types'
 
-interface Contact {
-  id: number
-  first_name: string
-  last_name: string
-  email: string
-}
-
-export async function fetchContacts(supabase: Client, accountId: string): Promise<Contact[]> {
+export async function fetchContacts(supabase: Client, accountId: string) {
   const { data, error } = await supabase
     .from('contacts')
     .select(`
@@ -34,8 +25,7 @@ export async function fetchContacts(supabase: Client, accountId: string): Promis
   return data || []
 }
 
-export async function getRecentBroadcasts(contactId: string) {
-  const supabase = createClient()
+export async function getRecentBroadcasts(supabase: Client, contactId: string) {
   const { data, error } = await supabase
     .from('outbound_emails')
     .select('id, sent_at, email:emails(*)')

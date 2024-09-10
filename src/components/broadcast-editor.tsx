@@ -81,7 +81,7 @@ export function BroadcastEditor({ initialBroadcast }: BroadcastEditorProps) {
   }
 
 
-  async function handleSend(selectedContacts: number[]) {
+  async function handleSend(selectedContacts: string[]) {
     if (!broadcast.id) {
       toast({
         title: 'Error',
@@ -95,7 +95,7 @@ export function BroadcastEditor({ initialBroadcast }: BroadcastEditorProps) {
       setIsSendingEmail(true)
       const result = await sendBroadcastAction({
         emailId: broadcast.id,
-        contactIds: selectedContacts.map(String) // Convert numbers to strings
+        contactIds: selectedContacts // Convert numbers to strings
       })
       if (result?.data?.success) {
         toast({

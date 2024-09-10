@@ -80,9 +80,9 @@ export async function sendBroadcastMutation({ emailId, contactIds }: SendBroadca
       // if sent successfully, update the outbound_emails table
       await supabase
         .from('outbound_emails')
-        .update({ sent_at: new Date().toISOString() })
-        .eq('id', contact.id)
-
+        .insert({ email_id: emailId, contact_id: contact.id, sent_at: new Date().toISOString() })
+        .select()
+        .throwOnError()
 
     } catch (error) {
       console.error(`Failed to send email to ${contact.email}:`, error)
