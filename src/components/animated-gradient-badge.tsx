@@ -5,7 +5,7 @@ import AnimatedGradientText from "@/components/ui/animated-gradient-text";
 
 export async function AnimatedGradientBadge() {
   return (
-    <AnimatedGradientText>
+    <AnimatedGradientText className="mx-0">
       <span>🎉{" "}</span>
       <span
         className={cn(
