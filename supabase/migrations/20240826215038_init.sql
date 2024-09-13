@@ -45,7 +45,7 @@ create table contacts (
   account_id uuid references accounts (id),
   first_name text,
   last_name text,
-  email text unique not null,
+  email text not null,
   phone_number text,
   address text,
   city text,

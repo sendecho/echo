@@ -11,15 +11,15 @@ export default async function SettingsPage() {
 
   return (
     <div className="space-y-12">
-      <AccountNameSettings name={accountSettings.name} />
-      <DomainSettings domain={accountSettings.domain} />
-      <FromNameSettings fromName={accountSettings.from_name} />
+      <AccountNameSettings name={accountSettings?.name} />
+      <DomainSettings domain={accountSettings?.domain} />
+      <FromNameSettings fromName={accountSettings?.from_name} />
       <MailingAddressSettings
-        streetAddress={accountSettings.street_address}
-        city={accountSettings.city}
-        state={accountSettings.state}
-        postalCode={accountSettings.postal_code}
-        country={accountSettings.country}
+        streetAddress={accountSettings?.street_address}
+        city={accountSettings?.city}
+        state={accountSettings?.state}
+        postalCode={accountSettings?.postal_code}
+        country={accountSettings?.country}
       />
     </div>
   )

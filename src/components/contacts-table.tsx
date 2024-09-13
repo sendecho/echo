@@ -26,6 +26,7 @@ import { Badge } from './ui/badge';
 import { getRecentBroadcasts } from '@/lib/supabase/queries/contacts';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
+import AddContactButton from './add-contact-button';
 
 interface List {
   id: number;
@@ -208,6 +209,17 @@ export default function ContactsTable({ contacts }: { contacts: Contact[] }) {
     onGlobalFilterChange: setGlobalFilter,
   });
 
+  if (table.getRowCount() === 0) {
+    return (
+      <div className="flex items-center justify-center h-full min-h-[400px] w-full border border-border rounded-md border-dashed">
+        <div className="flex flex-col items-center justify-center gap-4">
+          <div className="text-muted-foreground">No contacts found</div>
+          <AddContactButton variant="outline" size="sm" />
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div>
       <Input
@@ -240,24 +252,26 @@ export default function ContactsTable({ contacts }: { contacts: Contact[] }) {
           ))}
         </TableBody>
       </Table>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Previous
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Next
-        </Button>
-      </div>
+      {table.getRowCount() > 0 && (
+        <div className="flex items-center justify-end space-x-2 py-4">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            Previous
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            Next
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

@@ -15,7 +15,12 @@ import { useAction } from 'next-safe-action/hooks';
 import { createContactAction } from '@/actions/create-contact-action';
 import { toast } from '@/components/ui/use-toast';
 
-export default function AddContactButton() {
+type AddContactButtonProps = {
+  variant?: 'outline' | 'default';
+  size?: 'default' | 'sm' | 'lg';
+}
+
+export default function AddContactButton({ variant = 'default', size = 'default' }: AddContactButtonProps) {
   const [open, setOpen] = useState(false);
   const { executeAsync, status } = useAction(createContactAction, {
     onSuccess: () => {
@@ -48,7 +53,7 @@ export default function AddContactButton() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="mb-4">Add Contact</Button>
+        <Button variant={variant} size={size}>Add Contact</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
