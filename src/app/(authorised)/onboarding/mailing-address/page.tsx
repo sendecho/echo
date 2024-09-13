@@ -1,53 +1,31 @@
-'use client'
+import { getUser } from '@/lib/supabase/queries/user.cached';
+import { fetchAccountSettings } from '@/lib/supabase/queries/account-settings';
+import { redirect } from 'next/navigation';
+import MailingAddressForm from './mailing-address-form';
 
-import { useForm, FormProvider } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useAction } from 'next-safe-action/hooks'
-import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import MailingAddress from '@/components/mailing-address'
-import { mailingAddressSchema } from '@/lib/schemas/onboarding-schema'
-import { mailingAddressAction } from '@/actions/onboarding-actions'
-import { toast } from '@/components/ui/use-toast'
+export default async function MailingAddressPage() {
+  const user = await getUser();
+  const accountData = await fetchAccountSettings(user?.data?.account_id || undefined);
 
-export default function MailingAddressPage() {
-  const router = useRouter()
-  const methods = useForm({
-    resolver: zodResolver(mailingAddressSchema),
-    defaultValues: { streetAddress: '', city: '', state: '', postalCode: '', country: '' },
-  })
+  if (!accountData) {
+    redirect('/onboarding/domain-verification');
+  }
 
-  const { execute, status } = useAction(mailingAddressAction, {
-    onSuccess: () => {
-      toast({ title: 'Mailing address saved successfully' })
-      // Redirect to dashboard or next step after onboarding
-      router.push('/dashboard')
-    },
-    onError: (error) => toast({ title: 'Error', description: error.message, variant: 'destructive' }),
-  })
+  const {
+    street_address,
+    city,
+    state,
+    postal_code,
+    country
+  } = accountData;
 
-  const onSubmit = methods.handleSubmit((data) => execute(data))
+  const initialMailingAddress = {
+    street_address: street_address || '',
+    city: city || '',
+    state: state || '',
+    postal_code: postal_code || '',
+    country: country || ''
+  };
 
-  return (
-    <FormProvider {...methods}>
-      <Card className="w-full max-w-2xl mx-auto">
-        <CardHeader>
-          <CardTitle>Mailing Address</CardTitle>
-          <CardDescription>
-            To comply with anti-spam regulations, we need to know where you&apos;re sending mail from.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <MailingAddress />
-        </CardContent>
-        <CardFooter className="flex justify-between">
-          <Button onClick={() => router.push('/onboarding/domain-verification')}>Back</Button>
-          <Button onClick={onSubmit} disabled={status === 'executing'}>
-            {status === 'executing' ? 'Submitting...' : 'Finish'}
-          </Button>
-        </CardFooter>
-      </Card>
-    </FormProvider>
-  )
+  return <MailingAddressForm initialMailingAddress={initialMailingAddress} />;
 }

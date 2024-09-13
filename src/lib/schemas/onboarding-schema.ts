@@ -1,9 +1,9 @@
 import { z } from 'zod'
 
 export const emailSetupSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  fromName: z.string().min(1, 'From Name is required'),
-  domain: z.string().min(1, 'Invalid domain name'),
+  name: z.string().min(1, 'Account name is required'),
+  fromName: z.string().min(1, 'From name is required'),
+  domain: z.string().min(1, 'Domain is required'),
 })
 
 export const domainVerificationSchema = z.object({
@@ -11,10 +11,10 @@ export const domainVerificationSchema = z.object({
 })
 
 export const mailingAddressSchema = z.object({
-  streetAddress: z.string().min(1, 'Street Address is required'),
+  street_address: z.string().min(1, 'Street Address is required'),
   city: z.string().min(1, 'City is required'),
   state: z.string().min(1, 'State is required'),
-  postalCode: z.string().min(1, 'Postal Code is required'),
+  postal_code: z.string().min(1, 'Postal Code is required'),
   country: z.string().min(1, 'Country is required'),
 })
 

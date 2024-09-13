@@ -23,7 +23,7 @@ export default function EmailSetup() {
       </div>
       <div className="flex flex-col gap-2">
         <Label htmlFor="domain">Domain name</Label>
-        <Input id="domain" type="email" {...register('domain')} placeholder="sendecho.co" />
+        <Input id="domain" {...register('domain')} placeholder="sendecho.co" />
         <FormDescription>This is the domain name that will be used to send the emails.</FormDescription>
         {errors.domain && <p className="text-sm text-red-500">{errors.domain.message}</p>}
       </div>

@@ -22,7 +22,7 @@ create table users (
   last_login timestamp with time zone
 );
 
-create table user_accounts (
+create table account_users (
   id uuid primary key default gen_random_uuid(),
   user_id uuid references users (id),
   account_id uuid references accounts (id),
@@ -98,7 +98,7 @@ CREATE TABLE waitlist (
   created_at timestamp with time zone default now()
 );
 
--- Create account and user_accounts for the initial user
+-- Create account and account_users for the initial user
 create or replace function create_account_and_link_user(
   name text,
   domain text,
@@ -113,8 +113,8 @@ begin
   values (name, domain, from_name)
   returning id into new_account_id;
 
-  -- Insert into user_accounts
-  insert into user_accounts (user_id, account_id, role)
+  -- Insert into account_users
+  insert into account_users (user_id, account_id, role)
   values (user_id, new_account_id, 'owner');
 
   -- Update the user with the new account_id
@@ -135,7 +135,7 @@ LANGUAGE sql STABLE SECURITY DEFINER
 SET search_path TO 'public'
 AS $$
   SELECT account_id
-  FROM user_accounts
+  FROM account_users
   WHERE user_id = auth.uid()
 $$;
 
@@ -145,7 +145,7 @@ GRANT EXECUTE ON FUNCTION public.get_accounts_for_authenticated_user() TO authen
 -- Secure the tables
 alter table public.users enable row level security;
 alter table public.accounts enable row level security;
-alter table public.user_accounts enable row level security;
+alter table public.account_users enable row level security;
 alter table public.emails enable row level security;
 alter table public.contacts enable row level security;
 alter table public.outbound_emails enable row level security;
