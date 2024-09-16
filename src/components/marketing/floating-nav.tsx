@@ -64,7 +64,12 @@ export const FloatingNav = ({
             borderColor: `hsla(var(--border) / ${isScrolled ? 0.1 : 0})`,
             padding: isScrolled ? '0.75rem 1rem' : '0'
           }}
-          transition={{ duration: 0.2 }}
+          transition={{
+            duration: 0.6,
+            ease: [0.23, 1, 0.32, 1],
+            backgroundColor: { duration: 0.2 }, // Faster transition for background color
+            backdropFilter: { duration: 0.2 }, // Faster transition for backdrop filter
+          }}
           className={cn(
             "hidden md:flex relative justify-between items-center px-4 py-3 rounded-lg transition duration-200 mx-auto border",
             className

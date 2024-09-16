@@ -3,12 +3,14 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import Link from 'next/link'
+import Image from 'next/image'
+import { ArrowLeft } from "lucide-react";
 
 interface LoginFormData {
   email: string
@@ -44,49 +46,70 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <Card className="w-full max-w-md shadow-lg">
-        <CardHeader>
-          <CardTitle className="text-center">Login</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {error && (
-            <Alert variant="destructive" className="mb-4">
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                required
-              />
+    <div className="h-screen bg-background flex flex-col">
+      <header className="p-4 flex justify-between items-center">
+        <Button
+          variant="ghost"
+          onClick={() => router.push('/')}
+          className="flex items-center group"
+        >
+          <ArrowLeft className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1" />
+          Back
+        </Button>
+        <Button variant="ghost" onClick={() => router.push('/signup')}>
+          Sign up
+        </Button>
+      </header>
+      <div className="flex-grow flex items-center justify-center px-4">
+        <Card className="w-full max-w-md shadow-sm">
+          <CardHeader className="text-center space-y-2 items-center">
+            <div className="flex items-center justify-center">
+              <Image src="/echo.svg" alt="Logo" width={24} height={24} />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                type="password"
-                id="password"
-                name="password"
-                value={formData.password}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? 'Logging in...' : 'Log In'}
-            </Button>
-          </form>
-        </CardContent>
-        <CardFooter className="justify-center">
-          <p className="text-sm text-gray-500">Don&apos;t have an account? <Link href="/signup" className="text-blue-500 hover:underline">Register</Link></p>
-        </CardFooter>
-      </Card>
+            <CardTitle>Welcome back</CardTitle>
+            <CardDescription>Enter your email to sign in to your account</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {error && (
+              <Alert variant="destructive" className="mb-4">
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+            <form onSubmit={handleLogin} className="space-y-2">
+              <div className="space-y-2">
+                <Label htmlFor="email" className="sr-only">Email</Label>
+                <Input
+                  type="email"
+                  id="email"
+                  name="email"
+                  placeholder="Email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="password" className="sr-only">Password</Label>
+                <Input
+                  type="password"
+                  id="password"
+                  name="password"
+                  placeholder="Password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading ? 'Signing in...' : 'Sign In'}
+              </Button>
+            </form>
+          </CardContent>
+          <CardFooter className="justify-center">
+            <p className="text-sm text-gray-500"><Link href="/signup" className="text-gray-500 underline hover:text-primary transition-colors">Don&apos;t have an account? Sign up</Link></p>
+          </CardFooter>
+        </Card>
+      </div>
     </div>
   )
 }

@@ -59,10 +59,10 @@ export default function Home() {
           <p className="text-xl text-gray-900 dark:text-gray-400 mb-8 leading-relaxed">In a world of endless notifications and fleeting interactions, we're on a mission to make networking personal again. Echo isn't just another tool it's your partner in building meaningful relationships. We've stripped away the complexity of traditional CRMs and the impersonal nature of mass email platforms. With Echo, you can effortlessly nurture your network, share your voice, and grow your influence—all from one simple, intuitive interface. Whether you're a solo entrepreneur, a creative professional, or a seasoned networker, Echo adapts to your unique style. We're not about vanity metrics or endless contact lists. We're about quality connections, authentic communication, and amplifying your unique voice. Join us in reimagining how we connect in the digital age. Let's make every interaction count.
             <br /><br />Welcome to Echo. Your network, amplified.</p>
         </section>
-        {/* 
+
         <Audiences />
 
-        <section className="container mt-24  mx-auto pb-24 space-y-8">
+        {/* <section className="container mt-24  mx-auto pb-24 space-y-8">
           <div className="mb-12">
             <h2 className={cn("text-4xl font-heading", headingFont.className)}>Key Features</h2>
             <p>Send with ease, leave the complexities behind</p>
