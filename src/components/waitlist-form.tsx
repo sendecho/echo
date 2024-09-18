@@ -29,7 +29,7 @@ export function WaitlistForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex justify-center items-center max-w-md">
+    <form onSubmit={handleSubmit} className="flex justify-center items-center max-w-md w-full">
       <div className="relative w-full">
         <Input
           type="email"

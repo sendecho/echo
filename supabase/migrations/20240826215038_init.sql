@@ -36,6 +36,8 @@ create table emails (
   subject text not null,
   content text not null,
   preview text,
+  from_name text,
+  from_email text,
   created_at timestamp with time zone default now(),
   sent_at timestamp with time zone
 );
@@ -204,6 +206,14 @@ CREATE POLICY "Users can update lists in their account" ON public.lists
 -- RLS Policies for outbound_emails
 CREATE POLICY "Users can view outbound_emails in their account" ON public.outbound_emails
   FOR SELECT USING (
+    email_id IN (
+      SELECT id FROM public.emails 
+      WHERE account_id IN (SELECT public.get_accounts_for_authenticated_user())
+    )
+  );
+
+CREATE POLICY "Users can insert outbound_emails in their account" ON public.outbound_emails
+  FOR INSERT WITH CHECK (
     email_id IN (
       SELECT id FROM public.emails 
       WHERE account_id IN (SELECT public.get_accounts_for_authenticated_user())

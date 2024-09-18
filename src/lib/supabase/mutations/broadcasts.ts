@@ -14,11 +14,11 @@ interface CreateOrUpdateEmailMutationProps extends Omit<Email, 'id' | 'account_i
   account_id: string
 }
 
-export async function createOrUpdateEmailMutation({ id, subject, content, preview, account_id }: CreateOrUpdateEmailMutationProps) {
+export async function createOrUpdateEmailMutation({ id, subject, content, preview, account_id, from_name, from_email }: CreateOrUpdateEmailMutationProps) {
   if (id) {
     const { data, error } = await supabase
       .from('emails')
-      .update({ subject, content, preview })
+      .update({ subject, content, preview, from_name, from_email })
       .eq('id', id)
       .select()
       .single()
@@ -30,7 +30,7 @@ export async function createOrUpdateEmailMutation({ id, subject, content, previe
     console.log('Creating new email')
     const { data, error } = await supabase
       .from('emails')
-      .insert({ subject, content, preview, account_id })
+      .insert({ subject, content, preview, account_id, from_name, from_email })
       .select()
       .single()
       .throwOnError()
@@ -52,7 +52,7 @@ export async function sendBroadcastMutation({ emailId, contactIds }: SendBroadca
   // Fetch the email content
   const { data: emailData, error: emailError } = await supabase
     .from('emails')
-    .select('subject, content, preview')
+    .select('subject, content, preview, from_name, from_email')
     .eq('id', emailId)
     .single()
 
@@ -70,6 +70,7 @@ export async function sendBroadcastMutation({ emailId, contactIds }: SendBroadca
   for (const contact of contactsData) {
     try {
       const { data: sendData, error: sendError } = await sendEmail({
+        from: `${emailData.from_name} <${emailData.from_email}>`,
         email: contact.email,
         subject: emailData.subject,
         react: BroadcastEmail({ subject: emailData.subject, content: emailData.content, preview: emailData.preview, unsubscribeId: contact.id }),

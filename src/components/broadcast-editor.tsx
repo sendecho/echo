@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { createUpdateEmailAction } from '@/actions/create-update-broadcast-action'
 import { sendBroadcastAction } from '@/actions/send-broadcast-action'
@@ -16,6 +15,7 @@ import Editor from './editor/editor'
 import { sendPreviewBroadcastMutation } from '@/lib/supabase/mutations/broadcasts'
 import { SubmitButton } from './ui/submit-button'
 import { Database } from '@/types/supabase'
+import { Label } from './ui/label'
 
 type Email = Database['public']['Tables']['emails']['Row']
 
@@ -24,6 +24,8 @@ interface Broadcast {
   subject: Email['subject']
   content: Email['content']
   preview: Email['preview']
+  from_name: Email['from_name']
+  from_email: Email['from_email']
 }
 
 interface BroadcastEditorProps {
@@ -32,10 +34,11 @@ interface BroadcastEditorProps {
 
 export function BroadcastEditor({ initialBroadcast }: BroadcastEditorProps) {
   const [broadcast, setBroadcast] = useState<Broadcast>(
-    initialBroadcast || { id: null, subject: '', content: '', preview: null }
+    initialBroadcast || { id: null, subject: '', content: '', preview: null, from_name: '', from_email: '' }
   )
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [savingStatus, setSavingStatus] = useState<'idle' | 'saving' | 'saved'>(initialBroadcast ? 'saved' : 'idle')
+  const [selectedContacts, setSelectedContacts] = useState<string[]>([])
   const [testEmail, setTestEmail] = useState('')
   const [isPreviewOpen, setIsPreviewOpen] = useState(false)
   const [isSendingEmail, setIsSendingEmail] = useState(false)
@@ -74,9 +77,10 @@ export function BroadcastEditor({ initialBroadcast }: BroadcastEditorProps) {
 
   function handleChange<T extends keyof Broadcast>(field: T) {
     return (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      const updatedBroadcast = { ...broadcast, [field]: e.target.value }
-      setBroadcast(updatedBroadcast)
-      debouncedSave(updatedBroadcast)
+      let value = e.target.value;
+      const updatedBroadcast = { ...broadcast, [field]: value };
+      setBroadcast(updatedBroadcast);
+      debouncedSave(updatedBroadcast);
     }
   }
 
@@ -146,18 +150,56 @@ export function BroadcastEditor({ initialBroadcast }: BroadcastEditorProps) {
 
   return (
     <div className="space-y-4">
-      <Input
-        placeholder="Subject"
-        value={broadcast.subject}
-        onChange={handleChange('subject')}
-        className=""
-      />
-      <Textarea
-        placeholder="Preview"
-        value={broadcast.preview || ''}
-        onChange={handleChange('preview')}
-        className="min-h-[100px]"
-      />
+      <div className="flex items-center gap-2 border-b border-border">
+        <Label htmlFor="from" className="w-24 text-muted-foreground">From</Label>
+        <div className="flex items-center w-full gap-2">
+          <Input
+            id="from"
+            placeholder="Name"
+            value={broadcast.from_name}
+            onChange={handleChange('from_name')}
+            className="border-none rounded-none outline-none focus-visible:ring-transparent focus-visible:ring-offset-0 focus-visible:ring-0 w-auto"
+          />
+          <div className="flex items-center border-l border-border pl-2">
+            <div className="relative inline-flex items-center">
+              <Input
+                id="from_email"
+                placeholder="email"
+                value={broadcast.from_email}
+                onChange={handleChange('from_email')}
+                className="border-none rounded-none outline-none focus-visible:ring-transparent focus-visible:ring-offset-0 focus-visible:ring-0 px-0 w-[1ch] peer"
+                style={{ width: `${Math.max((broadcast.from_email?.length || 0) + 1, 5)}ch` }}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* TODO: work out if we can / need to show the to options here. otherwise we handle this when we send the broadcast */}
+
+      {/* <div className="flex items-center gap-2 border-b border-border">
+        <Label htmlFor="from" className="w-24 text-muted-foreground">To</Label>
+        <ContactSelector onChange={(selectedContacts) => console.log(selectedContacts)} />
+      </div> */}
+      <div className="flex items-center gap-2 border-b border-border">
+        <Label htmlFor="subject" className="w-24 text-muted-foreground">Subject</Label>
+        <Input
+          id="subject"
+          placeholder="Subject"
+          value={broadcast.subject}
+          onChange={handleChange('subject')}
+          className="flex-grow border-none rounded-none outline-none focus-visible:ring-transparent focus-visible:ring-offset-0 focus-visible:ring-0"
+        />
+      </div>
+      <div className="flex items-center gap-2 border-b border-border">
+        <Label htmlFor="preview" className="w-24 text-muted-foreground">Preview</Label>
+        <Input
+          id="preview"
+          placeholder="Preview"
+          value={broadcast.preview || ''}
+          onChange={handleChange('preview')}
+          className="flex-grow border-none rounded-none outline-none focus-visible:ring-transparent focus-visible:ring-offset-0 focus-visible:ring-0"
+        />
+      </div>
       <Editor
         className='min-h-[420px]'
         defaultValue={broadcast.content}
@@ -181,7 +223,8 @@ export function BroadcastEditor({ initialBroadcast }: BroadcastEditorProps) {
               <DialogHeader>
                 <DialogTitle>Select Contacts</DialogTitle>
               </DialogHeader>
-              <ContactSelector onSend={handleSend} isSendingEmail={isSendingEmail} />
+              <ContactSelector onChange={(selectedContacts) => setSelectedContacts(selectedContacts)} />
+              <SubmitButton isSubmitting={isSendingEmail} onClick={() => handleSend(selectedContacts)}>Send</SubmitButton>
             </DialogContent>
           </Dialog>
 

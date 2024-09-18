@@ -11,6 +11,7 @@ export type Database = {
     Tables: {
       accounts: {
         Row: {
+          api_key: string
           city: string | null
           country: string | null
           created_at: string | null
@@ -18,11 +19,14 @@ export type Database = {
           domain_verified: boolean | null
           from_name: string
           id: string
+          name: string
           postal_code: string | null
+          resend_domain_id: string | null
           state: string | null
           street_address: string | null
         }
         Insert: {
+          api_key?: string
           city?: string | null
           country?: string | null
           created_at?: string | null
@@ -30,11 +34,14 @@ export type Database = {
           domain_verified?: boolean | null
           from_name: string
           id?: string
+          name: string
           postal_code?: string | null
+          resend_domain_id?: string | null
           state?: string | null
           street_address?: string | null
         }
         Update: {
+          api_key?: string
           city?: string | null
           country?: string | null
           created_at?: string | null
@@ -42,7 +49,9 @@ export type Database = {
           domain_verified?: boolean | null
           from_name?: string
           id?: string
+          name?: string
           postal_code?: string | null
+          resend_domain_id?: string | null
           state?: string | null
           street_address?: string | null
         }
@@ -93,6 +102,7 @@ export type Database = {
           imported_at: string | null
           last_name: string | null
           phone_number: string | null
+          source: string | null
           state: string | null
           subscribed_at: string | null
           unsubscribed_at: string | null
@@ -111,6 +121,7 @@ export type Database = {
           imported_at?: string | null
           last_name?: string | null
           phone_number?: string | null
+          source?: string | null
           state?: string | null
           subscribed_at?: string | null
           unsubscribed_at?: string | null
@@ -129,6 +140,7 @@ export type Database = {
           imported_at?: string | null
           last_name?: string | null
           phone_number?: string | null
+          source?: string | null
           state?: string | null
           subscribed_at?: string | null
           unsubscribed_at?: string | null
@@ -150,6 +162,8 @@ export type Database = {
           account_id: string | null
           content: string
           created_at: string | null
+          from_email: string | null
+          from_name: string | null
           id: string
           preview: string | null
           sent_at: string | null
@@ -159,6 +173,8 @@ export type Database = {
           account_id?: string | null
           content: string
           created_at?: string | null
+          from_email?: string | null
+          from_name?: string | null
           id?: string
           preview?: string | null
           sent_at?: string | null
@@ -168,6 +184,8 @@ export type Database = {
           account_id?: string | null
           content?: string
           created_at?: string | null
+          from_email?: string | null
+          from_name?: string | null
           id?: string
           preview?: string | null
           sent_at?: string | null
@@ -399,6 +417,7 @@ export type Database = {
     Functions: {
       create_account_and_link_user: {
         Args: {
+          name: string
           domain: string
           from_name: string
           user_id: string

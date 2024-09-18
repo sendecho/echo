@@ -14,7 +14,12 @@ type Contact = {
   last_name?: string
 }
 
-export function ContactSelector({ onSend, isSendingEmail }: { onSend: (selectedContacts: string[]) => void, isSendingEmail: boolean }) {
+type ContactSelectorProps = {
+  onChange: (selectedContacts: string[]) => void
+  selectedContacts?: string[]
+}
+
+export function ContactSelector({ onChange }: ContactSelectorProps) {
 
   const supabase = createClient();
 
@@ -48,18 +53,16 @@ export function ContactSelector({ onSend, isSendingEmail }: { onSend: (selectedC
 
 
   return (
-    <div className="space-y-4">
+    <div className="py-2">
       <MultiSelect
         title="Select contacts"
         options={contacts.map(contact => ({ value: contact.id, label: `${contact.first_name} ${contact.last_name}` }))}
         selectedValues={new Set(selectedContacts)}
-        onSelectionChange={(selectedValues) => setSelectedContacts(Array.from(selectedValues))}
+        onSelectionChange={(selectedValues) => {
+          setSelectedContacts(Array.from(selectedValues))
+          onChange(Array.from(selectedValues))
+        }}
       />
-      <div className="flex justify-between items-center">
-        <SubmitButton isSubmitting={isSendingEmail} onClick={() => onSend(selectedContacts)} disabled={selectedContacts.length === 0}>
-          Send to Selected Contacts
-        </SubmitButton>
-      </div>
     </div>
   )
 }

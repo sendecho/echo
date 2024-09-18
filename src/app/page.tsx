@@ -108,7 +108,7 @@ export default function Home() {
           </Accordion>
         </section>
 
-        <section className="mt-24 container max-w-xl mx-auto space-y-8 pb-24">
+        <section className="mt-24 container max-w-xl flex flex-col items-center mx-auto space-y-8 pb-24">
           <h2 className="text-3xl font-semibold">Ready to Let Your Voice Echo?</h2>
           <p className="text-xl text-gray-600 dark:text-gray-400">
             Sign up for our waitlist to be the first to know when we launch and to get early access!
@@ -119,7 +119,9 @@ export default function Home() {
 
       <footer className="bg-gray-100 dark:bg-gray-900 py-8">
         <div className="container mx-auto px-4">
-          <p className="text-gray-600 dark:text-gray-400">© 2024 Echo. All rights reserved.</p>
+          <div className="flex flex-row justify-between w-full items-center">
+            <p className="text-gray-600 dark:text-gray-400">© 2024 Echo. All rights reserved.</p>
+          </div>
         </div>
       </footer>
     </div>

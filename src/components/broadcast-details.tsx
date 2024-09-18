@@ -7,10 +7,15 @@ import { BroadcastEditor } from '@/components/broadcast-editor'
 import { BroadcastPreview } from '@/components/broadcast-preview'
 
 interface Broadcast {
-  id: number
+  id: string
   subject: string
   content: string
   sent_at: string | null
+  account_id: string | null
+  created_at: string | null
+  from_email: string | null
+  from_name: string | null
+  preview: string | null
   // Add other relevant fields
 }
 

@@ -68,7 +68,7 @@ export default function Editor({
   })
 
   return (
-    <div className={cn("relative w-full border border-border rounded-md p-2", className)}>
+    <div className={cn("relative w-full rounded-md", className)}>
       {editor && <Toolbar editor={editor} />}
       {editor && <BubbleMenu editor={editor} />}
       <EditorContent editor={editor} spellCheck="false" />
