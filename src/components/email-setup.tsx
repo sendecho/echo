@@ -16,12 +16,6 @@ export default function EmailSetup() {
         {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
       </div>
       <div className="flex flex-col gap-2">
-        <Label htmlFor="fromName">From name</Label>
-        <Input id="fromName" {...register('fromName')} placeholder="Ryan at Echo" />
-        <FormDescription>This is the name that will be used in the &quot;from&quot; field of the emails.</FormDescription>
-        {errors.fromName && <p className="text-sm text-red-500">{errors.fromName.message}</p>}
-      </div>
-      <div className="flex flex-col gap-2">
         <Label htmlFor="domain">Domain name</Label>
         <Input id="domain" {...register('domain')} placeholder="sendecho.co" />
         <FormDescription>This is the domain name that will be used to send the emails.</FormDescription>

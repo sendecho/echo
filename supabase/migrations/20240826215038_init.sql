@@ -3,13 +3,14 @@ create table accounts (
   name text not null,
   domain text not null,
   domain_verified boolean default false,
-  from_name text not null,
+  from_name text,
   street_address text,
   city text,
   state text,
   postal_code text,
   country text,
-  created_at timestamp with time zone default now()
+  created_at timestamp with time zone default now(),
+  resend_domain_id text unique
 );
 
 create table users (
@@ -104,15 +105,14 @@ CREATE TABLE waitlist (
 create or replace function create_account_and_link_user(
   name text,
   domain text,
-  from_name text,
   user_id uuid
 ) returns uuid as $$
 declare
   new_account_id uuid;
 begin
   -- Insert into accounts
-  insert into accounts (name, domain, from_name)
-  values (name, domain, from_name)
+  insert into accounts (name, domain)
+  values (name, domain)
   returning id into new_account_id;
 
   -- Insert into account_users

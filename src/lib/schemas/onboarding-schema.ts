@@ -2,12 +2,15 @@ import { z } from 'zod'
 
 export const emailSetupSchema = z.object({
   name: z.string().min(1, 'Account name is required'),
-  fromName: z.string().min(1, 'From name is required'),
   domain: z.string().min(1, 'Domain is required'),
 })
 
 export const domainVerificationSchema = z.object({
   domainVerified: z.boolean(),
+})
+
+export const userSchema = z.object({
+  fromName: z.string().min(1, 'From name is required'),
 })
 
 export const mailingAddressSchema = z.object({
@@ -21,3 +24,4 @@ export const mailingAddressSchema = z.object({
 export type EmailSetupData = z.infer<typeof emailSetupSchema>
 export type DomainVerificationData = z.infer<typeof domainVerificationSchema>
 export type MailingAddressData = z.infer<typeof mailingAddressSchema>
+export type UserData = z.infer<typeof userSchema>

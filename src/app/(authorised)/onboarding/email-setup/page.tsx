@@ -7,14 +7,17 @@ export default async function EmailSetupPage() {
   const user = await getUser();
   const accountData = await fetchAccountSettings(user?.data?.account_id || undefined)
 
+  const initialData = {
+    name: null,
+    domain: user?.data?.email?.split('@')[1]
+  }
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <EmailSetupForm initialData={accountData ? {
         name: accountData.name,
-        domain: accountData.domain,
-        fromName: accountData.from_name
-      } : null} />
+        domain: accountData.domain
+      } : initialData} />
     </Suspense>
   )
 }

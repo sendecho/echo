@@ -13,7 +13,7 @@ interface SendEmailProps {
   react: ReactElement<any, string | JSXElementConstructor<any>>;
 }
 
-export const sendEmail = async ({ from = "Ryan O'Hara <ryan@voyage.dev>", email, subject, react }: SendEmailProps) => {
+export const sendEmail = async ({ from = "Echo <no-reply@sendecho.co>", email, subject, react }: SendEmailProps) => {
   const toEmail = SEND_TO_TEST_EMAIL ? "delivered@resend.dev" : email;
 
   return await resend.emails.send({

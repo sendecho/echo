@@ -113,7 +113,7 @@ export async function sendPreviewBroadcastMutation({ emailId, emailAddress }: Se
   // Fetch the email content
   const { data: emailData, error: emailError } = await supabase
     .from('emails')
-    .select('subject, content, preview')
+    .select('subject, content, preview, from_name, from_email')
     .eq('id', emailId)
     .single()
 
@@ -121,6 +121,7 @@ export async function sendPreviewBroadcastMutation({ emailId, emailAddress }: Se
 
   try {
     const { data: sendData, error: sendError } = await sendEmail({
+      from: `${emailData.from_name} <${emailData.from_email}>`,
       email: emailAddress,
       subject: emailData.subject,
       react: BroadcastEmail({ subject: emailData.subject, content: emailData.content, preview: emailData.preview, unsubscribeId: '' }),
