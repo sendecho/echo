@@ -144,6 +144,9 @@ $$;
 -- Grant execute permission to authenticated users
 GRANT EXECUTE ON FUNCTION public.get_accounts_for_authenticated_user() TO authenticated;
 
+-- Ensure email can only be added once per account
+ALTER TABLE contacts ADD CONSTRAINT unique_email_per_account UNIQUE (email, account_id);
+
 -- Secure the tables
 alter table public.users enable row level security;
 alter table public.accounts enable row level security;
@@ -240,6 +243,22 @@ CREATE POLICY "Users can view list_contacts in their account" ON public.list_con
 
 CREATE POLICY "Users can insert list_contacts in their account" ON public.list_contacts
   FOR INSERT WITH CHECK (
+    list_id IN (
+      SELECT id FROM public.lists 
+      WHERE account_id IN (SELECT public.get_accounts_for_authenticated_user())
+    )
+  );
+
+CREATE POLICY "Users can upsert list_contacts in their account" ON public.list_contacts
+  FOR UPDATE USING (
+    list_id IN (
+      SELECT id FROM public.lists 
+      WHERE account_id IN (SELECT public.get_accounts_for_authenticated_user())
+    )
+  );
+
+CREATE POLICY "Users can delete list_contacts in their account" ON public.list_contacts
+  FOR DELETE USING (
     list_id IN (
       SELECT id FROM public.lists 
       WHERE account_id IN (SELECT public.get_accounts_for_authenticated_user())

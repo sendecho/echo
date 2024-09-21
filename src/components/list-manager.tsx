@@ -198,6 +198,7 @@ export function ListManager({ accountId, contacts, lists }: { accountId: string,
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead>ID</TableHead>
               <TableHead>List Name</TableHead>
               <TableHead>Number of Contacts</TableHead>
               <TableHead>Actions</TableHead>
@@ -206,6 +207,7 @@ export function ListManager({ accountId, contacts, lists }: { accountId: string,
           <TableBody>
             {lists.map((list) => (
               <TableRow key={list.id}>
+                <TableCell>{list.id}</TableCell>
                 <TableCell>{list.name}</TableCell>
                 <TableCell>{list.contactCount}</TableCell>
                 <TableCell>
