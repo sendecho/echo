@@ -4,15 +4,17 @@ import { getUser } from '@/lib/supabase/queries/user.cached';
 import { fetchContacts } from '@/lib/supabase/queries/contacts';
 import { fetchLists } from '@/lib/supabase/queries/lists';
 import { getContacts } from '@/lib/supabase/queries/contacts.cached';
+import { createClient } from '@/lib/supabase/server';
 
 export default async function ListsPage() {
 
+  const supabase = createClient();
   const user = await getUser();
   const accountId = user?.data?.account_id;
 
   const [contacts, lists] = await Promise.all([
     getContacts(),
-    fetchLists(),
+    fetchLists(supabase, accountId),
   ]);
 
   return (

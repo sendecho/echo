@@ -1,13 +1,10 @@
-'use server'
+import { Client } from '@/types'
 
-import { createClient } from '@/lib/supabase/server'
-
-export async function fetchLists() {
-  const supabase = createClient()
-
+export async function fetchLists(supabase: Client, accountId: string) {
   const { data: lists, error } = await supabase
     .from('lists')
     .select('*, list_contacts (count)')
+    .eq('account_id', accountId)
     .order('created_at', { ascending: false })
 
   if (error) {
@@ -22,9 +19,7 @@ export async function fetchLists() {
 }
 
 
-export async function fetchContactsForList(listId: string) {
-  const supabase = createClient()
-
+export async function fetchContactsForList(supabase: Client, listId: string) {
   const { data, error } = await supabase
     .from('list_contacts')
     .select(`

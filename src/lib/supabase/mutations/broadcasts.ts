@@ -44,11 +44,11 @@ export async function createOrUpdateEmailMutation({ id, subject, content, previe
 
 interface SendBroadcastMutationProps {
   emailId: string
-  contactIds: string[]
+  listIds?: string[]
+  contactIds?: string[]
 }
 
-export async function sendBroadcastMutation({ emailId, contactIds }: SendBroadcastMutationProps) {
-  // For each contact, send the emails content to the contact
+export async function sendBroadcastMutation({ emailId, listIds, contactIds }: SendBroadcastMutationProps) {
   // Fetch the email content
   const { data: emailData, error: emailError } = await supabase
     .from('emails')
@@ -58,16 +58,32 @@ export async function sendBroadcastMutation({ emailId, contactIds }: SendBroadca
 
   if (emailError) throw new Error(`Failed to fetch email content: ${emailError.message}`)
 
-  // Fetch the contacts' email addresses
-  const { data: contactsData, error: contactsError } = await supabase
+  // Fetch contacts from individual contactIds
+  const { data: individualContacts, error: individualContactsError } = await supabase
     .from('contacts')
     .select('id, email')
-    .in('id', contactIds)
+    .in('id', contactIds ?? [])
 
-  if (contactsError) throw new Error(`Failed to fetch contact emails: ${contactsError.message}`)
+  if (individualContactsError) throw new Error(`Failed to fetch individual contacts: ${individualContactsError.message}`)
+
+  // Fetch contacts from listIds
+  const { data: listContacts, error: listContactsError } = await supabase
+    .from('list_contacts')
+    .select('contacts(id, email)')
+    .in('list_id', listIds ?? [])
+
+  if (listContactsError) throw new Error(`Failed to fetch list contacts: ${listContactsError.message}`)
+
+  // Combine and deduplicate contacts
+  const allContacts = [
+    ...individualContacts,
+    ...listContacts.map(lc => lc.contacts).filter(Boolean)
+  ].filter((contact, index, self) =>
+    index === self.findIndex((t) => t.id === contact.id)
+  )
 
   // Send emails using Resend
-  for (const contact of contactsData) {
+  for (const contact of allContacts) {
     try {
       const { data: sendData, error: sendError } = await sendEmail({
         from: `${emailData.from_name} <${emailData.from_email}>`,
@@ -81,7 +97,7 @@ export async function sendBroadcastMutation({ emailId, contactIds }: SendBroadca
       // if sent successfully, update the outbound_emails table
       await supabase
         .from('outbound_emails')
-        .insert({ email_id: emailId, contact_id: contact.id, sent_at: new Date().toISOString() })
+        .insert({ email_id: emailId, contact_id: contact.id, sent_at: new Date().toISOString(), resend_id: sendData?.id })
         .select()
         .throwOnError()
 

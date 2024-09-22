@@ -7,7 +7,8 @@ import { revalidatePath } from 'next/cache'
 
 const schema = z.object({
   emailId: z.string(),
-  contactIds: z.array(z.string()).min(1, 'At least one contact must be selected'),
+  listIds: z.array(z.string()).optional(),
+  contactIds: z.array(z.string()).optional(),
 })
 
 export const sendBroadcastAction = authSafeAction
@@ -16,9 +17,9 @@ export const sendBroadcastAction = authSafeAction
     name: 'send-broadcast',
   })
   .action(
-    async ({ parsedInput: { emailId, contactIds } }) => {
+    async ({ parsedInput: { emailId, listIds, contactIds } }) => {
       try {
-        const result = await sendBroadcastMutation({ emailId, contactIds })
+        const result = await sendBroadcastMutation({ emailId, listIds, contactIds })
         revalidatePath('/dashboard/broadcasts')
         return result
       } catch (error) {

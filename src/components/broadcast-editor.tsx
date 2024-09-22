@@ -16,6 +16,7 @@ import { sendPreviewBroadcastMutation } from '@/lib/supabase/mutations/broadcast
 import { SubmitButton } from './ui/submit-button'
 import { Database } from '@/types/supabase'
 import { Label } from './ui/label'
+import { ListSelector } from '@/components/list-selector';
 
 type Email = Database['public']['Tables']['emails']['Row']
 
@@ -39,6 +40,7 @@ export function BroadcastEditor({ initialBroadcast }: BroadcastEditorProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [savingStatus, setSavingStatus] = useState<'idle' | 'saving' | 'saved'>(initialBroadcast ? 'saved' : 'idle')
   const [selectedContacts, setSelectedContacts] = useState<string[]>([])
+  const [selectedLists, setSelectedLists] = useState<string[]>([])
   const [testEmail, setTestEmail] = useState('')
   const [isPreviewOpen, setIsPreviewOpen] = useState(false)
   const [isSendingEmail, setIsSendingEmail] = useState(false)
@@ -99,6 +101,7 @@ export function BroadcastEditor({ initialBroadcast }: BroadcastEditorProps) {
       setIsSendingEmail(true)
       const result = await sendBroadcastAction({
         emailId: broadcast.id,
+        listIds: selectedLists,
         contactIds: selectedContacts // Convert numbers to strings
       })
       if (result?.data?.success) {
@@ -223,6 +226,7 @@ export function BroadcastEditor({ initialBroadcast }: BroadcastEditorProps) {
               <DialogHeader>
                 <DialogTitle>Select Contacts</DialogTitle>
               </DialogHeader>
+              <ListSelector onChange={(selectedLists) => setSelectedLists(selectedLists)} />
               <ContactSelector onChange={(selectedContacts) => setSelectedContacts(selectedContacts)} />
               <SubmitButton isSubmitting={isSendingEmail} onClick={() => handleSend(selectedContacts)}>Send</SubmitButton>
             </DialogContent>

@@ -107,7 +107,7 @@ export function ListManager({ accountId, contacts, lists }: { accountId: string,
         description: list.description || '',
       });
       try {
-        const contacts = await fetchContactsForList(list.id);
+        const contacts = await fetchContactsForList(supabase, list.id);
         setSelectedContacts(new Set(contacts.map(contact => contact.id)));
       } catch (error) {
         console.error('Error fetching contacts for list:', error);
