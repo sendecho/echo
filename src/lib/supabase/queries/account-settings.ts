@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { Client } from '@/types'
 
 export async function fetchAccountSettings(accountId?: string) {
   // If no accountId is provided, return null
@@ -12,10 +13,21 @@ export async function fetchAccountSettings(accountId?: string) {
 
   const { data, error } = await supabase
     .from('accounts')
-    .select('name, domain, from_name, street_address, city, state, postal_code, country, resend_domain_id')
+    .select('name, domain, from_name, street_address, city, state, postal_code, country, resend_domain_id, stripe_customer_id, stripe_subscription_id, stripe_product_id, plan_name, subscription_status')
     .eq('id', accountId)
     .single()
 
   if (error) throw new Error(`Failed to fetch account settings: ${error.message}`)
+  return data
+}
+
+export async function getAccountByStripeCustomerId(supabase: Client, stripeCustomerId: string) {
+  console.log('stripeCustomerId', stripeCustomerId)
+
+  const { data, error } = await supabase
+    .rpc('get_account_by_stripe_customer_id', { p_stripe_customer_id: stripeCustomerId })
+    .single()
+
+  if (error) throw new Error(`Failed to fetch account by Stripe customer ID: ${error.message}`)
   return data
 }

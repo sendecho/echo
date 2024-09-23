@@ -3,7 +3,7 @@
 import { sendEmail } from '@/emails'
 import BroadcastEmail from '@/emails/broadcast-email'
 import { createClient } from '@/lib/supabase/server'
-import { Database } from '@/types'
+import type { Database } from '@/types'
 
 const supabase = createClient()
 
@@ -26,20 +26,21 @@ export async function createOrUpdateEmailMutation({ id, subject, content, previe
 
     if (error) throw new Error(`Failed to update email: ${error.message}`)
     return data
-  } else {
-    console.log('Creating new email')
-    const { data, error } = await supabase
-      .from('emails')
-      .insert({ subject, content, preview, account_id, from_name, from_email })
-      .select()
-      .single()
-      .throwOnError()
-
-    console.log(data, error)
-
-    if (error) throw new Error(`Failed to create email: ${error.message}`)
-    return data
   }
+
+  // Otherwise create a new email
+  console.log('Creating new email')
+  const { data, error } = await supabase
+    .from('emails')
+    .insert({ subject, content, preview, account_id, from_name, from_email })
+    .select()
+    .single()
+    .throwOnError()
+
+  console.log(data, error)
+
+  if (error) throw new Error(`Failed to create email: ${error.message}`)
+  return data
 }
 
 interface SendBroadcastMutationProps {

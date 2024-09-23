@@ -10,7 +10,12 @@ create table accounts (
   postal_code text,
   country text,
   created_at timestamp with time zone default now(),
-  resend_domain_id text unique
+  resend_domain_id text unique,
+  stripe_customer_id text unique,
+  stripe_subscription_id text unique,
+  stripe_product_id text,
+  plan_name text,
+  subscription_status text
 );
 
 create table users (
@@ -314,3 +319,18 @@ create policy "Email images are publicly accessible." on storage.objects
 
 create policy "Anyone can upload an image." on storage.objects
   for insert with check (bucket_id = 'images');
+
+-- Create an RPC function to get account by stripe_customer_id
+create or replace function get_account_by_stripe_customer_id(p_stripe_customer_id text)
+returns setof accounts
+language sql
+security definer
+as $$
+  select *
+  from accounts
+  where stripe_customer_id = p_stripe_customer_id
+  limit 1;
+$$;
+
+-- Grant execute permission to authenticated users
+grant execute on function get_account_by_stripe_customer_id(text) to authenticated;

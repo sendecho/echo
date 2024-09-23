@@ -1,16 +1,17 @@
 "use server";
 
-import { z } from 'zod';
+import { z } from "zod";
 import { actionClient, authSafeAction } from "@/lib/safe-action";
-import { createClient } from '@/lib/supabase/server';
-import { revalidatePath } from 'next/cache';
+import { createClient } from "@/lib/supabase/server";
+import { revalidatePath } from "next/cache";
+import { getCurrentPlan } from "@/lib/pricing";
 
 const supabase = createClient();
 
 const schema = z.object({
   first_name: z.string().optional(),
   last_name: z.string().optional(),
-  email: z.string().email('Invalid email address'),
+  email: z.string().email("Invalid email address"),
   phone_number: z.string().optional(),
   address: z.string().optional(),
   city: z.string().optional(),
@@ -21,21 +22,37 @@ const schema = z.object({
 
 export const createContactAction = authSafeAction
   .schema(schema)
-  .metadata({ name: 'create-contact' })
-  .action(
-    async ({ parsedInput, ctx: { user } }) => {
-      const { data, error } = await supabase
-        .from('contacts')
-        .insert({ ...parsedInput, account_id: user.account_id })
-        .select()
-        .single()
-        .throwOnError();
+  .metadata({ name: "create-contact" })
+  .action(async ({ parsedInput, ctx: { user } }) => {
+    // Check if the account has reached the max number of contacts for their plan
+    const { count: usageData } = await supabase
+      .from("contacts")
+      .select("*", { count: "exact" })
+      .eq("account_id", user.account_id);
+    const currentPlan = getCurrentPlan(user.account?.plan_name || "Free");
 
-      if (error) {
-        throw new Error('Failed to add contact');
-      }
+    if (
+      currentPlan?.limits.contacts &&
+      usageData &&
+      usageData >= currentPlan.limits.contacts
+    ) {
+      throw new Error(
+        "You have reached the maximum number of contacts for your plan. Please upgrade to a higher plan to add more contacts.",
+      );
+    }
 
-      revalidatePath('/dashboard/contacts');
+    const { data, error } = await supabase
+      .from("contacts")
+      .insert({ ...parsedInput, account_id: user.account_id })
+      .select()
+      .single()
+      .throwOnError();
 
-      return data;
-    });
+    if (error) {
+      throw new Error("Failed to add contact");
+    }
+
+    revalidatePath("/dashboard/contacts");
+
+    return data;
+  });
