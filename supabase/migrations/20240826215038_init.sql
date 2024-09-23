@@ -73,7 +73,7 @@ create table outbound_emails (
   contact_id uuid references contacts (id),
   email_id uuid references emails (id),
   sent_at timestamp with time zone default now(),
-  resend_id text,
+  resend_id text
 );
 
 create table analytics (
