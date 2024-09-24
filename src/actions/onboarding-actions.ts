@@ -40,16 +40,24 @@ export const emailSetupAction = authSafeAction
       }).throwOnError()
 
       if (newAccountError) throw new Error('Failed to create account and link user')
-      accountId = newAccountData.id
 
+      accountId = newAccountData
     }
 
 
     // Create a domain in Resend
     const resend = new Resend(process.env.RESEND_API_KEY)
-    const resendDomain = await resend.domains.create({ name: domain })
+    const domains = await resend.domains.list();
 
-    console.log('resendDomain', resendDomain)
+    // Check if the domain already exists
+    const domainExists = domains?.data?.data.find((d) => d.name === domain)
+    if (domainExists) {
+      // TODO: Should we update the domain instead of throwing an error?
+      // What's the privacy concern here?
+      throw new Error('Domain already exists')
+    }
+
+    const resendDomain = await resend.domains.create({ name: domain })
 
     // If there was an error creating the domain, throw an error unless it's a 403 
     if (resendDomain.error) {

@@ -4,7 +4,6 @@ import { z } from "zod";
 export const env = createEnv({
   server: {
     RESEND_API_KEY: z.string().min(1),
-    DISABLE_SIGNUP: z.string().transform((s) => s !== "false" && s !== "0"),
     USE_TEST_EMAIL: z.string().transform((s) => s !== "false" && s !== "0"),
     NODE_ENV: z.string().optional(),
     STRIPE_SECRET_KEY_LIVE: z.string().optional(),
@@ -12,6 +11,7 @@ export const env = createEnv({
     BASE_URL: z.string().min(1),
     STRIPE_WEBHOOK_SECRET: z.string().min(1),
     SUPABASE_SERVICE_KEY: z.string().min(1),
+    SIGNUP_SECRET_TOKEN: z.string().optional(),
   },
   client: {
     NEXT_PUBLIC_SUPABASE_URL: z.string().min(1),
@@ -20,13 +20,15 @@ export const env = createEnv({
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string().optional(),
     NEXT_PUBLIC_POSTHOG_KEY: z.string().optional(),
     NEXT_PUBLIC_POSTHOG_HOST: z.string().optional(),
+    NEXT_PUBLIC_DISABLE_SIGNUP: z.string().transform((s) => s !== "false" && s !== "0"),
   },
   runtimeEnv: {
     BASE_URL: process.env.BASE_URL,
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     RESEND_API_KEY: process.env.RESEND_API_KEY,
-    DISABLE_SIGNUP: process.env.DISABLE_SIGNUP,
+    NEXT_PUBLIC_DISABLE_SIGNUP: process.env.NEXT_PUBLIC_DISABLE_SIGNUP,
+    SIGNUP_SECRET_TOKEN: process.env.SIGNUP_SECRET_TOKEN,
     USE_TEST_EMAIL: process.env.USE_TEST_EMAIL,
     NODE_ENV: process.env.NODE_ENV,
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY_LIVE: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY_LIVE,

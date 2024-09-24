@@ -58,10 +58,15 @@ export async function updateSession(request: NextRequest) {
   }
 
   // If the user is trying to access signup but this is disabled, redirect to the login page
-  if (env.DISABLE_SIGNUP && request.nextUrl.pathname.startsWith('/signup')) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/login'
-    return NextResponse.redirect(url)
+  // unless they have a valid token in the URL parameters
+  if (env.NEXT_PUBLIC_DISABLE_SIGNUP && request.nextUrl.pathname.startsWith('/signup')) {
+    const token = request.nextUrl.searchParams.get('token');
+    const isValidToken = token === env.SIGNUP_SECRET_TOKEN;
+    if (!isValidToken) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/login'
+      return NextResponse.redirect(url)
+    }
   }
 
   // If the user is trying to access signup but this is disabled, redirect to the login page
