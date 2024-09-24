@@ -3,28 +3,27 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
-import { ThemeProvider } from "next-themes";
-
+import Providers from "./providers";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Echo",
-  description: "Run your personal newsletters with ease.",
+	title: "Echo",
+	description: "Run your personal newsletters with ease.",
 };
 
 export default function RootLayout({
-  children,
+	children,
 }: Readonly<{
-  children: React.ReactNode;
+	children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={cn(inter.className, "bg-background")}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          {children}
-          <Toaster />
-        </ThemeProvider>
-      </body>
-    </html>
-  );
+	return (
+		<html lang="en" suppressHydrationWarning>
+			<body className={cn(inter.className, "bg-background")}>
+				<Providers>
+					{children}
+					<Toaster />
+				</Providers>
+			</body>
+		</html>
+	);
 }

@@ -67,6 +67,7 @@
     "next": "14.2.6",
     "next-safe-action": "^7.7.1",
     "next-themes": "^0.3.0",
+    "posthog-js": "^1.164.1",
     "postmark": "^4.0.5",
     "react": "^18",
     "react-dom": "^18",
