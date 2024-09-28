@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import type { Client } from '@/types'
 
 export async function fetchBroadcasts() {
   const supabase = createClient()
@@ -79,4 +80,27 @@ export async function deleteBroadcast(id: string) {
   }
 
   return data
+}
+
+export async function getBroadcastStats(supabase: Client, broadcastId: string): Promise<{ totalSent: number; sentAt: string | null }> {
+  const { count, error: countError } = await supabase
+    .from('outbound_emails')
+    .select('*', { count: 'exact', head: true })
+    .eq('email_id', broadcastId)
+
+  const { data: emailData, error: emailError } = await supabase
+    .from('emails')
+    .select('sent_at')
+    .eq('id', broadcastId)
+    .single()
+
+  if (countError || emailError) {
+    console.error('Error fetching broadcast stats:', countError || emailError)
+    throw countError || emailError
+  }
+
+  return {
+    totalSent: count ?? 0,
+    sentAt: emailData?.sent_at ?? null
+  }
 }

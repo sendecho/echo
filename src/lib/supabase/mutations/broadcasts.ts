@@ -62,7 +62,7 @@ export async function sendBroadcastMutation({ emailId, listIds, contactIds }: Se
   // Fetch contacts from individual contactIds
   const { data: individualContacts, error: individualContactsError } = await supabase
     .from('contacts')
-    .select('id, email')
+    .select('id, first_name, last_name, email')
     .in('id', contactIds ?? [])
 
   if (individualContactsError) throw new Error(`Failed to fetch individual contacts: ${individualContactsError.message}`)
@@ -70,7 +70,7 @@ export async function sendBroadcastMutation({ emailId, listIds, contactIds }: Se
   // Fetch contacts from listIds
   const { data: listContacts, error: listContactsError } = await supabase
     .from('list_contacts')
-    .select('contacts(id, email)')
+    .select('contacts(id, first_name, last_name, email)')
     .in('list_id', listIds ?? [])
 
   if (listContactsError) throw new Error(`Failed to fetch list contacts: ${listContactsError.message}`)
@@ -86,11 +86,23 @@ export async function sendBroadcastMutation({ emailId, listIds, contactIds }: Se
   // Send emails using Resend
   for (const contact of allContacts) {
     try {
+      const variables = {
+        first_name: contact?.first_name || '',
+        last_name: contact?.last_name || '',
+        email: contact?.email || '',
+        // Add more variables as needed
+      };
+
       const { data: sendData, error: sendError } = await sendEmail({
         from: `${emailData.from_name} <${emailData.from_email}>`,
         email: contact.email,
         subject: emailData.subject,
-        react: BroadcastEmail({ subject: emailData.subject, content: emailData.content, preview: emailData.preview, unsubscribeId: contact.id }),
+        react: BroadcastEmail({
+          content: emailData.content,
+          preview: emailData.preview,
+          unsubscribeId: contact.id,
+          variables
+        }),
       })
 
       if (sendError) throw new Error(`Failed to send email: ${sendError.message}`)
@@ -141,7 +153,12 @@ export async function sendPreviewBroadcastMutation({ emailId, emailAddress }: Se
       from: `${emailData.from_name} <${emailData.from_email}>`,
       email: emailAddress,
       subject: emailData.subject,
-      react: BroadcastEmail({ subject: emailData.subject, content: emailData.content, preview: emailData.preview, unsubscribeId: '' }),
+      react: BroadcastEmail({
+        content: emailData.content,
+        preview: emailData.preview,
+        unsubscribeId: '',
+        variables: {}
+      }),
     })
 
     if (sendError) throw new Error(`Failed to send email: ${sendError.message}`)

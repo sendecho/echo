@@ -7,7 +7,10 @@ import Providers from "./providers";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-	title: "Echo",
+	title: {
+		template: "%s - Echo",
+		default: "Echo",
+	},
 	description: "Run your personal newsletters with ease.",
 };
 

@@ -14,6 +14,7 @@ import Bold from "@tiptap/extension-bold";
 import Italic from "@tiptap/extension-italic";
 import Highlight from "@tiptap/extension-highlight";
 import Underline from "@tiptap/extension-underline";
+import HardBreak from "@tiptap/extension-hard-break";
 import TiptapImage from "@tiptap/extension-image";
 import Dropcursor from '@tiptap/extension-dropcursor'
 import GapCursor from '@tiptap/extension-gapcursor'
@@ -21,6 +22,7 @@ import Youtube from '@tiptap/extension-youtube'
 import SlashCommand from './extensions/slash-command'
 import { UploadImagesPlugin } from './plugins/upload-images'
 import { TweetExtension } from './extensions/tweet-extension'
+import { VariableExtension } from './extensions/variable-extension'
 
 import { cx } from "class-variance-authority";
 
@@ -68,10 +70,10 @@ export const defaultExtensions = [
   Highlight,
   Underline,
   Code,
+  HardBreak,
 
   // Extensions
   SlashCommand,
-
   Dropcursor.configure({
     width: 3,
     color: "#BFE5F4",
@@ -79,4 +81,6 @@ export const defaultExtensions = [
   }),
   GapCursor,
 
+  // Custom Variable Extension
+  VariableExtension,
 ]

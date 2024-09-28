@@ -1,4 +1,4 @@
-import { Client } from '@/types'
+import type { Client } from '@/types'
 
 export async function fetchLists(supabase: Client, accountId: string) {
   const { data: lists, error } = await supabase
