@@ -1,16 +1,16 @@
-import React from 'react';
-import { Sidebar } from '@/components/sidebar';
-import { getUser } from '@/lib/supabase/queries/user.cached';
+import React from "react";
+import { Sidebar } from "@/components/sidebar";
+import { getUser } from "@/lib/supabase/queries/user.cached";
 
 export default async function DashboardLayout({
-  children,
+	children,
 }: {
-  children: React.ReactNode;
+	children: React.ReactNode;
 }) {
-  return (
-    <div className="flex h-screen">
-      <Sidebar />
-      <main className="flex-1 overflow-y-auto p-6">{children}</main>
-    </div>
-  );
+	return (
+		<div className="flex h-screen">
+			<Sidebar />
+			<main className="flex-1 overflow-y-auto">{children}</main>
+		</div>
+	);
 }
