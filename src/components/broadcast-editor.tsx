@@ -174,79 +174,80 @@ export function BroadcastEditor({ initialBroadcast }: BroadcastEditorProps) {
 	}
 
 	return (
-		<div className="space-y-4">
-			<div className="flex items-center gap-2 border-b border-border">
-				<Label htmlFor="from" className="w-24 text-muted-foreground">
-					From
-				</Label>
-				<div className="flex items-center w-full gap-2">
-					<Input
-						id="from"
-						placeholder="Name"
-						value={broadcast.from_name}
-						onChange={handleChange("from_name")}
-						className="border-none rounded-none outline-none focus-visible:ring-transparent focus-visible:ring-offset-0 focus-visible:ring-0 w-auto"
-					/>
-					<div className="flex items-center border-l border-border pl-2">
-						<div className="relative inline-flex items-center">
-							<Input
-								id="from_email"
-								placeholder="email"
-								value={broadcast.from_email}
-								onChange={handleChange("from_email")}
-								className="border-none rounded-none outline-none focus-visible:ring-transparent focus-visible:ring-offset-0 focus-visible:ring-0 px-0 w-[1ch] peer"
-								style={{
-									width: `${Math.max((broadcast.from_email?.length || 0) + 1, 5)}ch`,
-								}}
-							/>
+		<div className="flex flex-col h-full">
+			<div className="flex-grow overflow-y-auto space-y-4 pb-20">
+				<div className="flex items-center gap-2 border-b border-border">
+					<Label htmlFor="from" className="w-24 text-muted-foreground">
+						From
+					</Label>
+					<div className="flex items-center w-full gap-2">
+						<Input
+							id="from"
+							placeholder="Name"
+							value={broadcast.from_name}
+							onChange={handleChange("from_name")}
+							className="border-none rounded-none outline-none focus-visible:ring-transparent focus-visible:ring-offset-0 focus-visible:ring-0 w-auto"
+						/>
+						<div className="flex items-center border-l border-border pl-2">
+							<div className="relative inline-flex items-center">
+								<Input
+									id="from_email"
+									placeholder="email"
+									value={broadcast.from_email}
+									onChange={handleChange("from_email")}
+									className="border-none rounded-none outline-none focus-visible:ring-transparent focus-visible:ring-offset-0 focus-visible:ring-0 px-0 w-[1ch] peer"
+									style={{
+										width: `${Math.max((broadcast.from_email?.length || 0) + 1, 5)}ch`,
+									}}
+								/>
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-			{/* TODO: work out if we can / need to show the to options here. otherwise we handle this when we send the broadcast */}
-
-			{/* <div className="flex items-center gap-2 border-b border-border">
+				{/* TODO: work out if we can / need to show the to options here. otherwise we handle this when we send the broadcast */}
+				{/* <div className="flex items-center gap-2 border-b border-border">
         <Label htmlFor="from" className="w-24 text-muted-foreground">To</Label>
         <ContactSelector onChange={(selectedContacts) => console.log(selectedContacts)} />
       </div> */}
-			<div className="flex items-center gap-2 border-b border-border">
-				<Label htmlFor="subject" className="w-24 text-muted-foreground">
-					Subject
-				</Label>
-				<Input
-					id="subject"
-					placeholder="Subject"
-					value={broadcast.subject}
-					onChange={handleChange("subject")}
-					className="flex-grow border-none rounded-none outline-none focus-visible:ring-transparent focus-visible:ring-offset-0 focus-visible:ring-0"
+				<div className="flex items-center gap-2 border-b border-border">
+					<Label htmlFor="subject" className="w-24 text-muted-foreground">
+						Subject
+					</Label>
+					<Input
+						id="subject"
+						placeholder="Subject"
+						value={broadcast.subject}
+						onChange={handleChange("subject")}
+						className="flex-grow border-none rounded-none outline-none focus-visible:ring-transparent focus-visible:ring-offset-0 focus-visible:ring-0"
+					/>
+				</div>
+				<div className="flex items-center gap-2 border-b border-border">
+					<Label htmlFor="preview" className="w-24 text-muted-foreground">
+						Preview
+					</Label>
+					<Input
+						id="preview"
+						placeholder="Preview"
+						value={broadcast.preview || ""}
+						onChange={handleChange("preview")}
+						className="flex-grow border-none rounded-none outline-none focus-visible:ring-transparent focus-visible:ring-offset-0 focus-visible:ring-0"
+					/>
+				</div>
+				<Editor
+					className="min-h-[420px]"
+					defaultValue={broadcast.content}
+					onUpdate={(editor) => {
+						const html = editor?.getHTML() || "";
+						const updatedBroadcast = { ...broadcast, content: html };
+						setBroadcast(updatedBroadcast);
+						debouncedSave(updatedBroadcast);
+					}}
+					uploadOptions={{
+						path: `${broadcast.id}`,
+					}}
 				/>
 			</div>
-			<div className="flex items-center gap-2 border-b border-border">
-				<Label htmlFor="preview" className="w-24 text-muted-foreground">
-					Preview
-				</Label>
-				<Input
-					id="preview"
-					placeholder="Preview"
-					value={broadcast.preview || ""}
-					onChange={handleChange("preview")}
-					className="flex-grow border-none rounded-none outline-none focus-visible:ring-transparent focus-visible:ring-offset-0 focus-visible:ring-0"
-				/>
-			</div>
-			<Editor
-				className="min-h-[420px]"
-				defaultValue={broadcast.content}
-				onUpdate={(editor) => {
-					const html = editor?.getHTML() || "";
-					const updatedBroadcast = { ...broadcast, content: html };
-					setBroadcast(updatedBroadcast);
-					debouncedSave(updatedBroadcast);
-				}}
-				uploadOptions={{
-					path: `${broadcast.id}`,
-				}}
-			/>
-			<div className="flex items-center justify-between">
+			<div className="sticky bottom-0 left-0 right-0 bg-background border-t border-border p-4 flex items-center justify-between">
 				<div className="flex items-center space-x-2">
 					<Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
 						<DialogTrigger asChild>
