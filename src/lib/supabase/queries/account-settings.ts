@@ -31,3 +31,16 @@ export async function getAccountByStripeCustomerId(supabase: Client, stripeCusto
   if (error) throw new Error(`Failed to fetch account by Stripe customer ID: ${error.message}`)
   return data
 }
+
+export async function fetchAPIKeys(accountId: string) {
+  const supabase = createClient()
+
+  const { data, error } = await supabase
+    .from('api_keys')
+    .select('*')
+    .eq('account_id', accountId)
+    .order('created_at', { ascending: false })
+
+  if (error) throw new Error(`Failed to fetch API keys: ${error.message}`)
+  return data
+}
