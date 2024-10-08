@@ -1,20 +1,29 @@
-import { Suspense } from 'react'
-import { AccountDetails } from '@/components/account/account-details'
-import { AccountSkeleton } from '@/components/account/account-skeleton'
-import DashboardLayout from '@/components/layouts/dashboard-layout'
-
+import { Suspense } from "react";
+import { AccountDetails } from "@/components/account/account-details";
+import { AccountSkeleton } from "@/components/account/account-skeleton";
+import DashboardLayout from "@/components/layouts/dashboard-layout";
+import { getUser } from "@/lib/supabase/queries/user.cached";
+import { PageHeader } from "@/components/page-header";
 export const metadata = {
-  title: 'Account Details',
-  description: 'View and manage your account details',
-}
+	title: "Account Details",
+	description: "View and manage your account details",
+};
 
-export default function AccountPage() {
-  return (
-    <DashboardLayout>
-      <h1 className="text-3xl font-bold mb-6">Account Details</h1>
-      <Suspense fallback={<AccountSkeleton />}>
-        <AccountDetails />
-      </Suspense>
-    </DashboardLayout>
-  )
+export default async function AccountPage() {
+	const { data: user, error } = await getUser();
+
+	if (error) {
+		console.error(error);
+		return <div>Error fetching user data</div>;
+	}
+
+	return (
+		<div className="space-y-4">
+			<PageHeader title="Your account" />
+
+			<Suspense fallback={<AccountSkeleton />}>
+				<AccountDetails initialData={user} />
+			</Suspense>
+		</div>
+	);
 }
