@@ -10,6 +10,20 @@ const supabase = createClient()
 
 type Email = Database['public']['Tables']['emails']['Row']
 
+
+export async function createEmail({ account_id, from_name, from_email }: { account_id: string, from_name: string, from_email: string }) {
+  // Otherwise create a new email
+  const { data, error } = await supabase
+    .from('emails')
+    .insert({ account_id, from_name, from_email })
+    .select()
+    .single()
+    .throwOnError()
+
+  if (error) throw new Error(`Failed to create email: ${error.message}`)
+  return data.id
+}
+
 interface CreateOrUpdateEmailMutationProps extends Omit<Email, 'id' | 'account_id' | 'created_at' | 'updated_at' | 'sent_at'> {
   id: string | null
   account_id: string

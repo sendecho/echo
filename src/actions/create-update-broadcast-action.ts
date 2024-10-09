@@ -2,7 +2,7 @@
 
 import { z } from 'zod'
 import { authSafeAction } from "@/lib/safe-action"
-import { createOrUpdateEmailMutation } from '@/lib/supabase/mutations/broadcasts'
+import { createEmail, createOrUpdateEmailMutation } from '@/lib/supabase/mutations/broadcasts'
 
 const schema = z.object({
   id: z.string().optional().nullable(),
@@ -12,6 +12,24 @@ const schema = z.object({
   from_name: z.string().min(1, 'From name is required').optional().nullish(),
   from_email: z.string().min(1, 'From email is required').optional().nullish(),
 })
+
+export const createEmailAction = authSafeAction
+  .schema(z.object({}))
+  .metadata({ name: 'create-email-action' })
+  .action(
+    async ({ ctx: { user } }) => {
+      try {
+        const result = await createEmail({ account_id: user.account_id as string, from_name: user.account?.from_name || user?.full_name || '', from_email: `no-reply@${user.account?.domain || ''}` })
+        return result
+      } catch (error) {
+        if (error instanceof Error) {
+          throw new Error(error.message)
+        }
+        throw new Error('An unexpected error occurred')
+      }
+    }
+  )
+
 
 export const createUpdateEmailAction = authSafeAction
   .schema(schema)

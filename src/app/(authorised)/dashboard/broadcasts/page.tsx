@@ -1,20 +1,20 @@
 import { Suspense } from "react";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { BroadcastsTable } from "@/components/broadcasts-table";
 import { TableSkeleton } from "@/components/table-skeleton";
 import DashboardLayout from "@/components/layouts/dashboard-layout";
+import CreateBroadcastButton from "@/components/create-broadcast-button";
+import { PageHeader } from "@/components/page-header";
 
 export default function BroadcastsPage() {
 	return (
 		<DashboardLayout>
 			<div className="flex flex-col gap-8">
-				<div className="flex justify-between items-center">
-					<h1 className="text-3xl font-bold">Broadcasts</h1>
-					<Link href="/dashboard/broadcasts/new">
-						<Button>Create New Broadcast</Button>
-					</Link>
-				</div>
+				<PageHeader
+					title="Broadcasts"
+					description="Create and manage your broadcasts"
+					actions={[<CreateBroadcastButton key="create-broadcast-button" />]}
+				/>
 				<Suspense fallback={<TableSkeleton />}>
 					<BroadcastsTable />
 				</Suspense>
