@@ -115,7 +115,7 @@ export function AccountDetails({ initialData }: AccountDetailsProps) {
 													alt="Avatar"
 												/>
 												<AvatarFallback>
-													{initialData.full_name.charAt(0).toUpperCase()}
+													{initialData.full_name?.charAt(0).toUpperCase() || ""}
 												</AvatarFallback>
 											</Avatar>
 											<Button
