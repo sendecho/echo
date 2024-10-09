@@ -9,6 +9,9 @@ export async function middleware(request: NextRequest) {
     return NextResponse.rewrite(new URL("/api/track-email-open", request.url))
   }
 
+  if (domain === "t.localhost:3000" && request.nextUrl.pathname.startsWith("/l")) {
+    return NextResponse.rewrite(new URL("/api/track-email-link", request.url))
+  }
 
   return await updateSession(request)
 }
