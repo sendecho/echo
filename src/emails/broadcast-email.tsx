@@ -37,7 +37,7 @@ export const BroadcastEmail = ({
 	trackingId, // Add this new prop
 }: BroadcastEmailProps) => {
 	const replacedContent = replaceVariables(content, variables);
-	const parsedContent = parseHtmlContent(replacedContent);
+	const parsedContent = parseHtmlContent(replacedContent, trackingId);
 	const trackingUrl = `${getTrackingURL()}o?id=${trackingId}`;
 
 	return (
@@ -90,7 +90,7 @@ function replaceVariables(
 	);
 }
 
-function parseHtmlContent(content: string) {
+function parseHtmlContent(content: string, trackingId: string) {
 	const options: HTMLReactParserOptions = {
 		replace: (domNode) => {
 			if (domNode instanceof Element) {
@@ -125,6 +125,14 @@ function parseHtmlContent(content: string) {
 									{domToReact(domNode.children as DOMNode[], options)}
 								</Text>
 							</li>
+						);
+					case "a":
+						const href = domNode.attribs.href;
+						const trackingUrl = `${getTrackingURL()}l?id=${trackingId}&url=${encodeURIComponent(href)}`;
+						return (
+							<Link href={trackingUrl}>
+								{domToReact(domNode.children as DOMNode[], options)}
+							</Link>
 						);
 					default:
 						return undefined;

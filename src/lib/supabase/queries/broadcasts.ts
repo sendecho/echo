@@ -82,7 +82,13 @@ export async function deleteBroadcast(id: string) {
   return data
 }
 
-export async function getBroadcastStats(supabase: Client, broadcastId: string): Promise<{ totalSent: number; totalOpens: number; uniqueOpens: number; sentAt: string | null }> {
+export async function getBroadcastStats(supabase: Client, broadcastId: string): Promise<{
+  totalSent: number;
+  totalOpens: number;
+  uniqueOpens: number;
+  totalLinkClicks: number;
+  sentAt: string | null;
+}> {
   const { count: totalSent, error: countError } = await supabase
     .from('outbound_emails')
     .select('*', { count: 'exact', head: true })
@@ -104,15 +110,22 @@ export async function getBroadcastStats(supabase: Client, broadcastId: string): 
     .select('outbound_emails!inner(email_id)', { count: 'exact', head: true })
     .eq('outbound_emails.email_id', broadcastId)
 
-  if (countError || emailError || totalOpensError || uniqueOpensError) {
-    console.error('Error fetching broadcast stats:', countError || emailError || totalOpensError || uniqueOpensError)
-    throw countError || emailError || totalOpensError || uniqueOpensError
+  const { count: totalLinkClicks, error: totalLinkClicksError } = await supabase
+    .from('email_link_clicks')
+    .select('outbound_emails!inner(email_id)', { count: 'exact', head: true })
+    .eq('outbound_emails.email_id', broadcastId)
+
+
+  if (countError || emailError || totalOpensError || uniqueOpensError || totalLinkClicksError) {
+    console.error('Error fetching broadcast stats:', countError || emailError || totalOpensError || uniqueOpensError || totalLinkClicksError)
+    throw countError || emailError || totalOpensError || uniqueOpensError || totalLinkClicksError
   }
 
   return {
     totalSent: totalSent ?? 0,
     totalOpens: totalOpens ?? 0,
     uniqueOpens: uniqueOpens ?? 0,
+    totalLinkClicks: totalLinkClicks ?? 0,
     sentAt: emailData?.sent_at ?? null
   }
 }
