@@ -4,6 +4,7 @@ import { sendEmail } from '@/emails'
 import BroadcastEmail from '@/emails/broadcast-email'
 import { createClient } from '@/lib/supabase/server'
 import type { Database } from '@/types'
+import { v4 as uuidv4 } from 'uuid';
 
 const supabase = createClient()
 
@@ -86,6 +87,8 @@ export async function sendBroadcastMutation({ emailId, listIds, contactIds }: Se
   // Send emails using Resend
   for (const contact of allContacts) {
     try {
+      const trackingId = uuidv4(); // Generate a unique tracking ID
+
       const variables = {
         first_name: contact?.first_name || '',
         last_name: contact?.last_name || '',
@@ -101,22 +104,28 @@ export async function sendBroadcastMutation({ emailId, listIds, contactIds }: Se
           content: emailData.content,
           preview: emailData.preview,
           unsubscribeId: contact.id,
-          variables
+          variables,
+          trackingId, // Add the tracking ID here
         }),
       })
 
       if (sendError) throw new Error(`Failed to send email: ${sendError.message}`)
 
-      // if sent successfully, update the outbound_emails table
+      // Update the outbound_emails table with the tracking ID
       await supabase
         .from('outbound_emails')
-        .insert({ email_id: emailId, contact_id: contact.id, sent_at: new Date().toISOString(), resend_id: sendData?.id })
+        .insert({
+          email_id: emailId,
+          contact_id: contact.id,
+          sent_at: new Date().toISOString(),
+          resend_id: sendData?.id,
+          tracking_id: trackingId, // This should now be a UUID
+        })
         .select()
         .throwOnError()
 
     } catch (error) {
       console.error(`Failed to send email to ${contact.email}:`, error)
-      // Consider adding error handling or logging here
     }
   }
 

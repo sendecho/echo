@@ -11,6 +11,7 @@ import {
 	Link,
 	Button,
 	Heading,
+	Img,
 } from "@react-email/components";
 import parse, {
 	domToReact,
@@ -18,12 +19,14 @@ import parse, {
 	Element,
 	type DOMNode,
 } from "html-react-parser";
+import { getURL } from "@/lib/utils";
 
 interface BroadcastEmailProps {
 	content: string;
 	preview?: string;
 	unsubscribeId: string;
 	variables: Record<string, string>;
+	trackingId: string; // Add this new prop
 }
 
 export const BroadcastEmail = ({
@@ -31,9 +34,11 @@ export const BroadcastEmail = ({
 	preview,
 	unsubscribeId,
 	variables,
+	trackingId, // Add this new prop
 }: BroadcastEmailProps) => {
 	const replacedContent = replaceVariables(content, variables);
 	const parsedContent = parseHtmlContent(replacedContent);
+	const trackingUrl = `${getTrackingURL()}o?id=${trackingId}`;
 
 	return (
 		<Html>
@@ -41,6 +46,14 @@ export const BroadcastEmail = ({
 			{preview && <Preview>{preview}</Preview>}
 			<Tailwind>
 				<Body className="font-sans px-2 my-auto mx-auto">
+					{/* Visible but tiny tracking pixel */}
+					<Img
+						src={trackingUrl}
+						width="1"
+						height="1"
+						alt=""
+						style={{ display: "block", width: "1px", height: "1px" }}
+					/>
 					<Container>
 						<Section>{parsedContent}</Section>
 						<Hr />
@@ -177,3 +190,11 @@ BroadcastEmail.PreviewProps = {
 };
 
 export default BroadcastEmail;
+
+// Add this function to get the tracking URL
+function getTrackingURL() {
+	const url = getURL();
+	const trackingUrl = new URL(url);
+	trackingUrl.hostname = `t.${trackingUrl.hostname}`;
+	return trackingUrl.toString();
+}

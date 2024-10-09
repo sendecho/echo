@@ -1,7 +1,15 @@
-import type { NextRequest } from 'next/server'
+import { NextResponse, type NextRequest } from 'next/server'
 import { updateSession } from '@/lib/supabase/middleware'
 
 export async function middleware(request: NextRequest) {
+  const domain = request.headers.get("host")
+
+  // Handle tracking requests
+  if (domain === "t.localhost:3000" && request.nextUrl.pathname.startsWith("/o")) {
+    return NextResponse.rewrite(new URL("/api/track-email-open", request.url))
+  }
+
+
   return await updateSession(request)
 }
 
