@@ -19,6 +19,7 @@ import TiptapImage from "@tiptap/extension-image";
 import Dropcursor from '@tiptap/extension-dropcursor'
 import GapCursor from '@tiptap/extension-gapcursor'
 import Youtube from '@tiptap/extension-youtube'
+import HorizontalRule from '@tiptap/extension-horizontal-rule'
 import SlashCommand from './extensions/slash-command'
 import { UploadImagesPlugin } from './plugins/upload-images'
 import { TweetExtension } from './extensions/tweet-extension'
@@ -41,6 +42,7 @@ export const defaultExtensions = [
       class: cx("text-muted-foreground underline underline-offset-[3px] hover:text-primary transition-colors cursor-pointer"),
     },
   }),
+  HorizontalRule,
   BulletList,
   OrderedList,
   CodeBlock,

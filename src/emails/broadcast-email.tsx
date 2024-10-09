@@ -26,7 +26,7 @@ interface BroadcastEmailProps {
 	preview?: string;
 	unsubscribeId: string;
 	variables: Record<string, string>;
-	trackingId: string; // Add this new prop
+	trackingId?: string;
 }
 
 export const BroadcastEmail = ({
@@ -34,11 +34,13 @@ export const BroadcastEmail = ({
 	preview,
 	unsubscribeId,
 	variables,
-	trackingId, // Add this new prop
+	trackingId,
 }: BroadcastEmailProps) => {
 	const replacedContent = replaceVariables(content, variables);
 	const parsedContent = parseHtmlContent(replacedContent, trackingId);
-	const trackingUrl = `${getTrackingURL()}o?id=${trackingId}`;
+	const trackingUrl = trackingId
+		? `${getTrackingURL()}o?id=${trackingId}`
+		: undefined;
 
 	return (
 		<Html>
@@ -46,21 +48,22 @@ export const BroadcastEmail = ({
 			{preview && <Preview>{preview}</Preview>}
 			<Tailwind>
 				<Body className="font-sans px-2 my-auto mx-auto">
-					{/* Visible but tiny tracking pixel */}
-					<Img
-						src={trackingUrl}
-						width="1"
-						height="1"
-						alt=""
-						style={{ display: "block", width: "1px", height: "1px" }}
-					/>
+					{trackingUrl && (
+						<Img
+							src={trackingUrl}
+							width="1"
+							height="1"
+							alt=""
+							style={{ display: "block", width: "1px", height: "1px" }}
+						/>
+					)}
 					<Container>
 						<Section>{parsedContent}</Section>
 						<Hr />
 						<Section>
 							<Text style={styles.footer}>
 								To unsubscribe, click{" "}
-								<Link href={`https://sendecho.co/unsubscribe/${unsubscribeId}`}>
+								<Link href={`${getURL()}/unsubscribe/${unsubscribeId}`}>
 									here
 								</Link>
 							</Text>
@@ -90,10 +93,15 @@ function replaceVariables(
 	);
 }
 
-function parseHtmlContent(content: string, trackingId: string) {
+function parseHtmlContent(content: string, trackingId?: string) {
 	const options: HTMLReactParserOptions = {
 		replace: (domNode) => {
 			if (domNode instanceof Element) {
+				const href = domNode.attribs.href;
+				const linkUrl = trackingId
+					? `${getTrackingURL()}l?id=${trackingId}&url=${encodeURIComponent(href)}`
+					: href;
+
 				switch (domNode.name) {
 					case "p":
 						return (
@@ -127,10 +135,8 @@ function parseHtmlContent(content: string, trackingId: string) {
 							</li>
 						);
 					case "a":
-						const href = domNode.attribs.href;
-						const trackingUrl = `${getTrackingURL()}l?id=${trackingId}&url=${encodeURIComponent(href)}`;
 						return (
-							<Link href={trackingUrl}>
+							<Link href={linkUrl}>
 								{domToReact(domNode.children as DOMNode[], options)}
 							</Link>
 						);

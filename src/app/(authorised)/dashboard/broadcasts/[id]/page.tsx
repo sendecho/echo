@@ -13,10 +13,8 @@ export const generateMetadata = async ({
 }: { params: { id: string } }) => {
 	const broadcast = await fetchBroadcastById(params.id);
 	return {
-		title: broadcast ? `${broadcast.subject}` : "Broadcast Details",
-		description: broadcast
-			? broadcast.preview
-			: "View the details of a broadcast",
+		title: broadcast.subject ? `${broadcast.subject}` : "Broadcast Details",
+		description: broadcast.preview ? broadcast.preview : "View the details of a broadcast",
 	};
 };
 

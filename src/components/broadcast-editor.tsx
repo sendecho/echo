@@ -11,7 +11,7 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
-import { createUpdateEmailAction } from "@/actions/create-update-broadcast-action";
+import { updateEmailAction } from "@/actions/create-update-broadcast-action";
 import { sendBroadcastAction } from "@/actions/send-broadcast-action";
 import { toast } from "@/components/ui/use-toast";
 import { useDebouncedCallback } from "use-debounce";
@@ -24,32 +24,24 @@ import { Database } from "@/types/supabase";
 import { Label } from "./ui/label";
 import { ListSelector } from "@/components/list-selector";
 
-type Email = Database["public"]["Tables"]["emails"]["Row"];
-
-interface Broadcast {
-	id: Email["id"] | null;
-	subject: Email["subject"];
-	content: Email["content"];
-	preview: Email["preview"];
-	from_name: Email["from_name"];
-	from_email: Email["from_email"];
-}
+import type { UpdateBroadcastType } from "@/lib/schemas/broadcast-schema";
 
 interface BroadcastEditorProps {
-	initialBroadcast?: Email;
+	initialBroadcast?: UpdateBroadcastType;
 }
 
 export function BroadcastEditor({ initialBroadcast }: BroadcastEditorProps) {
-	const [broadcast, setBroadcast] = useState<Broadcast>(
+	const [broadcast, setBroadcast] = useState<UpdateBroadcastType>(
 		initialBroadcast || {
-			id: null,
+			id: "",
 			subject: "",
 			content: "",
-			preview: null,
+			preview: "",
 			from_name: "",
 			from_email: "",
 		},
 	);
+
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
 	const [savingStatus, setSavingStatus] = useState<"idle" | "saving" | "saved">(
 		initialBroadcast ? "saved" : "idle",
@@ -63,39 +55,35 @@ export function BroadcastEditor({ initialBroadcast }: BroadcastEditorProps) {
 	const pathname = usePathname();
 
 	const debouncedSave = useDebouncedCallback(
-		async (updatedBroadcast: Broadcast) => {
-			if (updatedBroadcast.subject.trim() && updatedBroadcast.content.trim()) {
-				try {
-					setSavingStatus("saving");
-					const result = await createUpdateEmailAction(updatedBroadcast);
+		async (updatedBroadcast: UpdateBroadcastType) => {
+			try {
+				setSavingStatus("saving");
+				const result = await updateEmailAction(updatedBroadcast);
 
-					console.log("result", result);
-					const newId = result?.data.id ?? null;
-					setBroadcast((prev) => ({ ...prev, id: newId }));
+				console.log("result", result);
+				const newId = result?.data.id ?? null;
+				setBroadcast((prev) => ({ ...prev, id: newId }));
 
-					// Update URL if it's a new broadcast and we got an ID
-					if (newId && pathname === "/dashboard/broadcasts/new") {
-						router.push(`/dashboard/broadcasts/${newId}`);
-					}
-
-					setTimeout(() => setSavingStatus("saved"), 1000);
-				} catch (error) {
-					console.error("Failed to save draft:", error);
-					setSavingStatus("idle");
-					toast({
-						title: "Error",
-						description: "Failed to save draft",
-						variant: "destructive",
-					});
+				// Update URL if it's a new broadcast and we got an ID
+				if (newId && pathname === "/dashboard/broadcasts/new") {
+					router.push(`/dashboard/broadcasts/${newId}`);
 				}
-			} else {
+
+				setTimeout(() => setSavingStatus("saved"), 1000);
+			} catch (error) {
+				console.error("Failed to save draft:", error);
 				setSavingStatus("idle");
+				toast({
+					title: "Error",
+					description: "Failed to save draft",
+					variant: "destructive",
+				});
 			}
 		},
 		1000,
 	);
 
-	function handleChange<T extends keyof Broadcast>(field: T) {
+	function handleChange<T extends keyof UpdateBroadcastType>(field: T) {
 		return (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
 			let value = e.target.value;
 			const updatedBroadcast = { ...broadcast, [field]: value };
@@ -175,7 +163,7 @@ export function BroadcastEditor({ initialBroadcast }: BroadcastEditorProps) {
 
 	return (
 		<div className="flex flex-col h-full">
-			<div className="flex-grow overflow-y-auto space-y-4 pb-20">
+			<div className="flex-grow space-y-4 pb-20">
 				<div className="flex items-center gap-2 border-b border-border">
 					<Label htmlFor="from" className="w-24 text-muted-foreground">
 						From
@@ -204,11 +192,6 @@ export function BroadcastEditor({ initialBroadcast }: BroadcastEditorProps) {
 						</div>
 					</div>
 				</div>
-				{/* TODO: work out if we can / need to show the to options here. otherwise we handle this when we send the broadcast */}
-				{/* <div className="flex items-center gap-2 border-b border-border">
-        <Label htmlFor="from" className="w-24 text-muted-foreground">To</Label>
-        <ContactSelector onChange={(selectedContacts) => console.log(selectedContacts)} />
-      </div> */}
 				<div className="flex items-center gap-2 border-b border-border">
 					<Label htmlFor="subject" className="w-24 text-muted-foreground">
 						Subject

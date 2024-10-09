@@ -24,37 +24,25 @@ export async function createEmail({ account_id, from_name, from_email }: { accou
   return data.id
 }
 
-interface CreateOrUpdateEmailMutationProps extends Omit<Email, 'id' | 'account_id' | 'created_at' | 'updated_at' | 'sent_at'> {
-  id: string | null
-  account_id: string
+interface updateEmailMutationProps {
+  id: string
+  subject?: string | null
+  content?: string | null
+  preview?: string | null
+  from_name?: string | null
+  from_email?: string | null
 }
 
-export async function createOrUpdateEmailMutation({ id, subject, content, preview, account_id, from_name, from_email }: CreateOrUpdateEmailMutationProps) {
-  if (id) {
-    const { data, error } = await supabase
-      .from('emails')
-      .update({ subject, content, preview, from_name, from_email })
-      .eq('id', id)
-      .select()
-      .single()
-      .throwOnError()
-
-    if (error) throw new Error(`Failed to update email: ${error.message}`)
-    return data
-  }
-
-  // Otherwise create a new email
-  console.log('Creating new email')
+export async function updateEmailMutation({ id, subject, content, preview, from_name, from_email }: updateEmailMutationProps) {
   const { data, error } = await supabase
     .from('emails')
-    .insert({ subject, content, preview, account_id, from_name, from_email })
+    .update({ subject, content, preview, from_name, from_email })
+    .eq('id', id)
     .select()
     .single()
     .throwOnError()
 
-  console.log(data, error)
-
-  if (error) throw new Error(`Failed to create email: ${error.message}`)
+  if (error) throw new Error(`Failed to update email: ${error.message}`)
   return data
 }
 
