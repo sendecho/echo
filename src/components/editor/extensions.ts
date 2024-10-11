@@ -32,7 +32,7 @@ export const defaultExtensions = [
   Text,
   Document,
   Placeholder.configure({
-    placeholder: "Write here...",
+    placeholder: "Write or type '/' for commands",
   }),
   Typography,
   Paragraph,

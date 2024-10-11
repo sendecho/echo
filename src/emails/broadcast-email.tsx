@@ -140,6 +140,21 @@ function parseHtmlContent(content: string, trackingId?: string) {
 								{domToReact(domNode.children as DOMNode[], options)}
 							</Link>
 						);
+					case "img":
+						return (
+							<Img
+								src={domNode.attribs.src}
+								alt={domNode.attribs.alt || ""}
+								width={domNode.attribs.width}
+								height={domNode.attribs.height}
+								style={{
+									maxWidth: "800px",
+									height: "auto",
+									display: "block",
+									margin: "0 auto",
+								}}
+							/>
+						);
 					default:
 						return undefined;
 				}

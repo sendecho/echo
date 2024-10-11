@@ -20,9 +20,7 @@ import type { UploadOptions } from "./image-upload";
 
 interface EditorProps {
 	className?: string;
-
 	defaultValue?: JSONContent | string;
-
 	/**
 	 * Extensions to use, in addition to the default ones
 	 * defaults to defaultExtensions
@@ -80,7 +78,7 @@ export default function Editor({
 
 	return (
 		<div className={cn("relative w-full rounded-md", className)}>
-			{editor && <Toolbar editor={editor} />}
+			{editor && <Toolbar editor={editor} uploadOptions={uploadOptions} />}
 			{editor && <BubbleMenu editor={editor} />}
 			<EditorContent editor={editor} spellCheck="false" />
 		</div>
