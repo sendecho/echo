@@ -148,7 +148,6 @@ export function BroadcastEditor({ initialBroadcast }: BroadcastEditorProps) {
 					title: "Test email sent",
 					description: "Your test email has been sent successfully.",
 				});
-				// setIsPreviewOpen(false)
 			}
 		} catch (error) {
 			toast({
@@ -159,6 +158,7 @@ export function BroadcastEditor({ initialBroadcast }: BroadcastEditorProps) {
 			});
 		}
 		setIsSendingEmail(false);
+		setIsPreviewOpen(false);
 	}
 
 	return (

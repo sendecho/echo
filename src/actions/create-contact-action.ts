@@ -1,9 +1,9 @@
 "use server";
 
 import { z } from "zod";
-import { actionClient, authSafeAction } from "@/lib/safe-action";
+import { authSafeAction } from "@/lib/safe-action";
 import { createClient } from "@/lib/supabase/server";
-import { revalidatePath } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { getCurrentPlan } from "@/lib/pricing";
 
 const supabase = createClient();
@@ -52,7 +52,7 @@ export const createContactAction = authSafeAction
       throw new Error("Failed to add contact");
     }
 
-    revalidatePath("/dashboard/contacts");
+    revalidateTag(`contacts_${user.account_id}`);
 
     return data;
   });

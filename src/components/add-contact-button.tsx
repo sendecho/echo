@@ -14,7 +14,7 @@ import { Label } from "@/components/ui/label";
 import { useAction } from "next-safe-action/hooks";
 import { createContactAction } from "@/actions/create-contact-action";
 import { toast } from "@/components/ui/use-toast";
-
+import { useRouter } from "next/navigation";
 type AddContactButtonProps = {
 	variant?: "outline" | "default";
 	size?: "default" | "sm" | "lg";
@@ -25,6 +25,7 @@ export default function AddContactButton({
 	size = "default",
 }: AddContactButtonProps) {
 	const [open, setOpen] = useState(false);
+	const router = useRouter();
 	const { executeAsync, status } = useAction(createContactAction, {
 		onSuccess: () => {
 			toast({
@@ -32,6 +33,8 @@ export default function AddContactButton({
 				description: "Contact added successfully",
 			});
 			setOpen(false);
+
+			router.refresh();
 		},
 		onError: (error) => {
 			console.log(error);
