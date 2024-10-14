@@ -1,11 +1,14 @@
 import { createAdminClient } from '@/lib/supabase/admin'
-import { NextRequest, NextResponse } from 'next/server'
+import { type NextRequest, NextResponse } from 'next/server'
 
 const supabase = createAdminClient()
 
 export async function GET(request: NextRequest) {
   const trackingId = request.nextUrl.searchParams.get('id')
   const url = request.nextUrl.searchParams.get('url')
+
+  console.log('trackingId', trackingId)
+  console.log('url', url)
 
   if (!trackingId || !url) {
     return new NextResponse('Missing tracking ID or URL', { status: 400 })

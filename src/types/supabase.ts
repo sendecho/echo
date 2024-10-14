@@ -261,39 +261,94 @@ export type Database = {
           },
         ]
       }
+      email_link_clicks: {
+        Row: {
+          clicked_at: string
+          id: string
+          link_url: string
+          tracking_id: string
+        }
+        Insert: {
+          clicked_at: string
+          id?: string
+          link_url: string
+          tracking_id: string
+        }
+        Update: {
+          clicked_at?: string
+          id?: string
+          link_url?: string
+          tracking_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "email_link_clicks_tracking_id_fkey"
+            columns: ["tracking_id"]
+            isOneToOne: false
+            referencedRelation: "outbound_emails"
+            referencedColumns: ["tracking_id"]
+          },
+        ]
+      }
+      email_opens: {
+        Row: {
+          id: string
+          opened_at: string
+          tracking_id: string
+        }
+        Insert: {
+          id?: string
+          opened_at: string
+          tracking_id: string
+        }
+        Update: {
+          id?: string
+          opened_at?: string
+          tracking_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "email_opens_tracking_id_fkey"
+            columns: ["tracking_id"]
+            isOneToOne: false
+            referencedRelation: "outbound_emails"
+            referencedColumns: ["tracking_id"]
+          },
+        ]
+      }
       emails: {
         Row: {
           account_id: string | null
-          content: string
+          content: string | null
           created_at: string | null
           from_email: string | null
           from_name: string | null
           id: string
           preview: string | null
           sent_at: string | null
-          subject: string
+          subject: string | null
         }
         Insert: {
           account_id?: string | null
-          content: string
+          content?: string | null
           created_at?: string | null
           from_email?: string | null
           from_name?: string | null
           id?: string
           preview?: string | null
           sent_at?: string | null
-          subject: string
+          subject?: string | null
         }
         Update: {
           account_id?: string | null
-          content?: string
+          content?: string | null
           created_at?: string | null
           from_email?: string | null
           from_name?: string | null
           id?: string
           preview?: string | null
           sent_at?: string | null
-          subject?: string
+          subject?: string | null
         }
         Relationships: [
           {
@@ -383,6 +438,7 @@ export type Database = {
           id: string
           resend_id: string | null
           sent_at: string | null
+          tracking_id: string | null
         }
         Insert: {
           contact_id?: string | null
@@ -390,6 +446,7 @@ export type Database = {
           id?: string
           resend_id?: string | null
           sent_at?: string | null
+          tracking_id?: string | null
         }
         Update: {
           contact_id?: string | null
@@ -397,6 +454,7 @@ export type Database = {
           id?: string
           resend_id?: string | null
           sent_at?: string | null
+          tracking_id?: string | null
         }
         Relationships: [
           {

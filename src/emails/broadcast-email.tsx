@@ -59,7 +59,7 @@ export const BroadcastEmail = ({
 					)}
 					<Container>
 						<Section>{parsedContent}</Section>
-						<Hr />
+						{/* <Hr /> */}
 						{/* <Section>
 							<Text style={styles.footer}>
 								To unsubscribe, click{" "}
