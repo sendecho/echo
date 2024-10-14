@@ -6,7 +6,7 @@ import { unsubscribeMutation } from '@/lib/supabase/mutations/unsubscribe'
 import { revalidatePath } from 'next/cache'
 
 const schema = z.object({
-  contactId: z.number(),
+  contactId: z.string(),
 })
 
 export const unsubscribeAction = actionClientWithMetadata

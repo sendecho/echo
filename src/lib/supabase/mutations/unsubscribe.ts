@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 
 const supabase = createClient()
 
-export async function unsubscribeMutation(contactId: number) {
+export async function unsubscribeMutation(contactId: string) {
   const { data, error } = await supabase
     .from('contacts')
     .update({ unsubscribed_at: new Date().toISOString() })

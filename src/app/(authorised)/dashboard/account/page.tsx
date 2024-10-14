@@ -4,6 +4,7 @@ import { AccountSkeleton } from "@/components/account/account-skeleton";
 import DashboardLayout from "@/components/layouts/dashboard-layout";
 import { getUser } from "@/lib/supabase/queries/user.cached";
 import { PageHeader } from "@/components/page-header";
+
 export const metadata = {
 	title: "Account Details",
 	description: "View and manage your account details",

@@ -39,7 +39,7 @@ export const BroadcastEmail = ({
 	const replacedContent = replaceVariables(content, variables);
 	const parsedContent = parseHtmlContent(replacedContent, trackingId);
 	const trackingUrl = trackingId
-		? `${getTrackingURL()}o?id=${trackingId}`
+		? `${getTrackingURL()}/o?id=${trackingId}`
 		: undefined;
 
 	return (
@@ -99,7 +99,7 @@ function parseHtmlContent(content: string, trackingId?: string) {
 			if (domNode instanceof Element) {
 				const href = domNode.attribs.href;
 				const linkUrl = trackingId
-					? `${getTrackingURL()}l?id=${trackingId}&url=${encodeURIComponent(href)}`
+					? `${getTrackingURL()}/l?id=${trackingId}&url=${encodeURIComponent(href)}`
 					: href;
 
 				switch (domNode.name) {
