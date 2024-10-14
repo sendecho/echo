@@ -1,23 +1,13 @@
-import { NextResponse, type NextRequest } from 'next/server'
+import { NextResponse, type NextRequest, type NextFetchEvent } from 'next/server'
 import { updateSession } from '@/lib/supabase/middleware'
 import { APP_URL, TRACKING_HOSTNAMES } from '@/lib/constants/main'
-export async function middleware(request: NextRequest) {
-  const domain = request.headers.get("host") as string;
+import TrackingMiddleware from '@/lib/middleware/tracking'
 
+export async function middleware(request: NextRequest, event: NextFetchEvent) {
+  const domain = request.headers.get("host") as string;
   // Handle tracking requests
   if (TRACKING_HOSTNAMES.has(domain)) {
-
-    console.log(request.nextUrl.searchParams)
-
-
-    if (request.nextUrl.pathname.startsWith("/o")) {
-      return NextResponse.rewrite(new URL("/api/track-email-open", request.url))
-    }
-
-    if (request.nextUrl.pathname.startsWith("/l")) {
-      return NextResponse.rewrite(new URL("/api/track-email-link", request.url))
-    }
-    return NextResponse.redirect(new URL(APP_URL))
+    return TrackingMiddleware(request, event)
   }
 
 
