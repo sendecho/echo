@@ -6,6 +6,11 @@ import DashboardLayout from "@/components/layouts/dashboard-layout";
 import CreateBroadcastButton from "@/components/create-broadcast-button";
 import { PageHeader } from "@/components/page-header";
 
+export const metadata = {
+	title: "Broadcasts",
+	description: "Create and manage your broadcasts",
+};
+
 export default function BroadcastsPage() {
 	return (
 		<DashboardLayout>
