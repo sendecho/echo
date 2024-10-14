@@ -1,16 +1,16 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import { type NextRequest, NextResponse } from 'next/server'
 
-export const runtime = "edge";
-
 const supabase = createAdminClient()
-
 
 export async function GET(request: NextRequest) {
 
   console.log(request)
-  const trackingId = request.nextUrl.searchParams.get('id')
-  const url = request.nextUrl.searchParams.get('url')
+  const searchParams = new URL(request.url).searchParams;
+  console.log(searchParams)
+
+  const trackingId = searchParams.get('id')
+  const url = searchParams.get('url')
 
   console.log('trackingId', trackingId)
   console.log('url', url)

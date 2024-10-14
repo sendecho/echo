@@ -6,6 +6,10 @@ export async function middleware(request: NextRequest) {
 
   // Handle tracking requests
   if (TRACKING_HOSTNAMES.has(domain)) {
+
+    console.log(request.nextUrl.searchParams)
+
+
     if (request.nextUrl.pathname.startsWith("/o")) {
       return NextResponse.rewrite(new URL("/api/track-email-open", request.url))
     }
