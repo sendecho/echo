@@ -20,6 +20,7 @@ import Audiences from "@/components/marketing/audiences";
 import { createClient } from "@/lib/supabase/server";
 import { getProducts, getSubscription } from "@/lib/supabase/queries/stripe";
 import PricingCards from "@/components/pricing-cards";
+import { SiX, SiGithub } from "react-icons/si";
 
 export default async function Home() {
 	const supabase = createClient();
@@ -47,10 +48,10 @@ export default async function Home() {
 							<br />
 							<span className="italic">Personal Newsletters</span>
 							<br />
-							Amplified
+							simplified
 						</h1>
 						<p className="text-xl text-gray-600 dark:text-white mb-8">
-							Connect with your network through simple, powerful broadcasts
+							Connect with your network through simple, powerful newsletters
 						</p>
 
 						<WaitlistForm />
@@ -85,22 +86,22 @@ export default async function Home() {
 						At Echo, we believe in the power of genuine connections
 					</h2>
 					<p className="text-xl text-gray-900 dark:text-gray-400 mb-8 leading-relaxed">
-						In a world of endless notifications and fleeting interactions, we're
-						on a mission to make networking personal again. Echo isn't just
-						another tool it's your partner in building meaningful relationships.
-						We've stripped away the complexity of traditional CRMs and the
-						impersonal nature of mass email platforms. With Echo, you can
-						effortlessly nurture your network, share your voice, and grow your
-						influence—all from one simple, intuitive interface. Whether you're a
-						solo entrepreneur, a creative professional, or a seasoned networker,
-						Echo adapts to your unique style. We're not about vanity metrics or
-						endless contact lists. We're about quality connections, authentic
-						communication, and amplifying your unique voice. Join us in
-						reimagining how we connect in the digital age. Let's make every
-						interaction count.
+						In a world of endless notifications and fleeting interactions,
+						we&apos;re on a mission to make networking personal again. Echo
+						isn&apos;t just another newsletter tool it&apos;s your partner in
+						building meaningful relationships. We&apos;ve removed the complexity
+						of traditional CRMs and the impersonal nature of mass email
+						platforms to bring the focus back to what works - simplicity and
+						connection. Whether you&apos;re a solo entrepreneur, a creative
+						professional, or a seasoned networker, Echo adapts to you.
+						We&apos;re not about vanity metrics or endless contact lists,
+						we&apos;re about quality connections, authentic communication, and
+						putting the power back in your hands. Through one intuitive
+						interface you can connect with and nurture your network on your
+						terms.
 						<br />
 						<br />
-						Welcome to Echo. Your network, amplified.
+						Welcome to Echo.
 					</p>
 				</section>
 
@@ -136,20 +137,19 @@ export default async function Home() {
 						<AccordionItem value="item-1" className="px-4">
 							<AccordionTrigger>What is Echo?</AccordionTrigger>
 							<AccordionContent>
-								Echo is a modern relationship management tool that connects your
-								contacts, notes, and communications in one place, making
-								networking easier and more effective.
+								Echo is a personal newsletter tool that makes it easy to connect
+								with your network.
 							</AccordionContent>
 						</AccordionItem>
 						<AccordionItem value="item-2" className="px-4">
 							<AccordionTrigger>
-								How is Echo different from other CRM tools?
+								How is Echo different from other newsletter tools?
 							</AccordionTrigger>
 							<AccordionContent>
-								Echo focuses on personal relationship management, offering a
-								seamless integration of contacts, notes, and newsletters.
-								It&apos;s designed for individuals who want to elevate their
-								networking game.
+								Echo is a modern take on personal newsletters. We've stripped
+								away the complexity of traditional CRMs and the impersonal
+								nature of mass email platforms to bring the focus back to what
+								works - simplicity and connection.
 							</AccordionContent>
 						</AccordionItem>
 						<AccordionItem value="item-3" className="px-4">
@@ -186,11 +186,29 @@ export default async function Home() {
 				</section>
 			</main>
 
-			<footer className="bg-gray-100 dark:bg-gray-900 py-8">
+			<footer className="py-8">
 				<div className="container mx-auto px-4">
 					<div className="flex flex-row justify-between w-full items-center">
+						<div className="flex flex-row gap-2">
+							<Link
+								href="https://x.com/sendwithecho"
+								target="_blank"
+								aria-label="Follow on X"
+							>
+								<SiX />
+								<p className="sr-only">Follow on X</p>
+							</Link>
+							<Link
+								href="https://github.com/sendecho"
+								target="_blank"
+								aria-label="Follow on Github"
+							>
+								<SiGithub />
+								<p className="sr-only">Follow on Github</p>
+							</Link>
+						</div>
 						<p className="text-gray-600 dark:text-gray-400">
-							© 2024 Echo. All rights reserved.
+							Copyright © 2024 Echo. All rights reserved.
 						</p>
 					</div>
 				</div>
