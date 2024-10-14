@@ -2,17 +2,14 @@ import { type NextFetchEvent, type NextRequest, NextResponse } from "next/server
 import { createAdminClient } from "../supabase/admin";
 
 export default async function TrackingMiddleware(request: NextRequest, event: NextFetchEvent) {
-
+  // Create a supabase admin client
   const supabase = createAdminClient()
+  // Get the search params
   const searchParams = new URL(request.url).searchParams;
-  console.log(Object.fromEntries(searchParams.entries()))
 
-
+  // Get the tracking id and url
   const trackingId = searchParams.get("id");
   const url = searchParams.get("url");
-
-  console.log("trackingId", trackingId);
-  console.log("url", url);
 
   // Link tracking
   if (request.nextUrl.pathname.startsWith("/l")) {
@@ -34,18 +31,16 @@ export default async function TrackingMiddleware(request: NextRequest, event: Ne
       if (error) throw error
 
       // Redirect to the original URL
-      return NextResponse.redirect(url)
+      return NextResponse.redirect(url, { status: 302, headers: { 'X-Robots-Tag': 'googlebot: noindex' } })
     } catch (error) {
       console.error('Error tracking email link click:', error)
       // If there's an error, still redirect to avoid breaking the user experience
-      return NextResponse.redirect(url)
+      return NextResponse.redirect(url, { status: 302, headers: { 'X-Robots-Tag': 'googlebot: noindex' } })
     }
-
   }
 
-  // Link tracking
+  // Open tracking
   if (request.nextUrl.pathname.startsWith("/o")) {
-
     // Insert a new record for each open event
     const { error } = await supabase
       .from('email_opens')
@@ -65,8 +60,6 @@ export default async function TrackingMiddleware(request: NextRequest, event: Ne
         'Expires': '0',
       },
     })
-
-    // return NextResponse.rewrite(new URL("/api/track-email-link", request.url))
   }
 
   return NextResponse.next();
