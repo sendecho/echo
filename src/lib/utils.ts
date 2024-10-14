@@ -1,6 +1,7 @@
 import type { Tables } from "@/types";
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
+import { TRACKING_URL } from "./constants/main";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -31,26 +32,7 @@ export const getURL = (path: string = '') => {
 };
 export const getTrackingURL = (path: string = '') => {
   // Check if NEXT_PUBLIC_SITE_URL is set and non-empty. Set this to your site URL in production env.
-  let url =
-    process?.env?.NEXT_PUBLIC_SITE_URL &&
-      process.env.NEXT_PUBLIC_SITE_URL.trim() !== ''
-      ? process.env.NEXT_PUBLIC_SITE_URL
-      : // If not set, check for NEXT_PUBLIC_VERCEL_URL, which is automatically set by Vercel.
-      process?.env?.NEXT_PUBLIC_VERCEL_URL &&
-        process.env.NEXT_PUBLIC_VERCEL_URL.trim() !== ''
-        ? process.env.NEXT_PUBLIC_VERCEL_URL
-        : // If neither is set, default to localhost for local development.
-        'localhost:3000';
-
-  // Trim the URL and remove trailing slash if exists.
-  url = url.replace(/\/+$/, '');
-
-  // Add 't.' subdomain and appropriate protocol
-  if (url.includes('localhost')) {
-    url = `http://t.${url}`;
-  } else {
-    url = `https://t.${url}`;
-  }
+  const url = TRACKING_URL
 
   // Ensure path starts without a slash to avoid double slashes in the final URL.
   const cleanPath = path.replace(/^\/+/, '');

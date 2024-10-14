@@ -60,14 +60,14 @@ export const BroadcastEmail = ({
 					<Container>
 						<Section>{parsedContent}</Section>
 						<Hr />
-						<Section>
+						{/* <Section>
 							<Text style={styles.footer}>
 								To unsubscribe, click{" "}
 								<Link href={`${getURL()}/unsubscribe/${unsubscribeId}`}>
 									here
 								</Link>
 							</Text>
-						</Section>
+						</Section> */}
 						<Section>
 							<Button style={styles.button} href="https://sendecho.co">
 								Powered by Echo
