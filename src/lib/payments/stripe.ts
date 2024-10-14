@@ -8,6 +8,7 @@ import {
 import { updateAccountSubscription, updateAccountSubscriptionDetails } from '../supabase/mutations/account-settings';
 import { createClient } from '../supabase/server';
 import { getAccountByStripeCustomerId } from '../supabase/queries/account-settings';
+import { APP_URL } from '../constants/main';
 
 export const stripe = new Stripe(env.STRIPE_SECRET_KEY, {
   apiVersion: '2024-06-20',
@@ -37,8 +38,8 @@ export async function createCheckoutSession({
       },
     ],
     mode: 'subscription',
-    success_url: `${env.BASE_URL}/api/stripe/checkout?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${env.BASE_URL}/dashboard/settings/billing`,
+    success_url: `${APP_URL}/api/stripe/checkout?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${APP_URL}/dashboard/settings/billing`,
     customer: user.data.account.stripe_customer_id || undefined,
     client_reference_id: user.data.id.toString(),
     allow_promotion_codes: true,
@@ -111,7 +112,7 @@ export async function createCustomerPortalSession(account: Account) {
 
   return stripe.billingPortal.sessions.create({
     customer: account.stripe_customer_id as string,
-    return_url: `${process.env.BASE_URL}/dashboard`,
+    return_url: `${APP_URL}/dashboard`,
     configuration: configuration.id,
   });
 }

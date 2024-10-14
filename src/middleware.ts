@@ -1,17 +1,21 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { updateSession } from '@/lib/supabase/middleware'
-
+import { APP_URL, TRACKING_HOSTNAMES } from '@/lib/constants/main'
 export async function middleware(request: NextRequest) {
-  const domain = request.headers.get("host")
+  const domain = request.headers.get("host") as string;
 
   // Handle tracking requests
-  if (domain === "t.localhost:3000" && request.nextUrl.pathname.startsWith("/o")) {
-    return NextResponse.rewrite(new URL("/api/track-email-open", request.url))
+  if (TRACKING_HOSTNAMES.has(domain)) {
+    if (request.nextUrl.pathname.startsWith("/o")) {
+      return NextResponse.rewrite(new URL("/api/track-email-open", request.url))
+    }
+
+    if (request.nextUrl.pathname.startsWith("/l")) {
+      return NextResponse.rewrite(new URL("/api/track-email-link", request.url))
+    }
+    return NextResponse.redirect(new URL(APP_URL))
   }
 
-  if (domain === "t.localhost:3000" && request.nextUrl.pathname.startsWith("/l")) {
-    return NextResponse.rewrite(new URL("/api/track-email-link", request.url))
-  }
 
   return await updateSession(request)
 }

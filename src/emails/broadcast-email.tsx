@@ -19,7 +19,7 @@ import parse, {
 	Element,
 	type DOMNode,
 } from "html-react-parser";
-import { getURL } from "@/lib/utils";
+import { getURL, getTrackingURL } from "@/lib/utils";
 
 interface BroadcastEmailProps {
 	content: string;
@@ -219,11 +219,3 @@ BroadcastEmail.PreviewProps = {
 };
 
 export default BroadcastEmail;
-
-// Add this function to get the tracking URL
-function getTrackingURL() {
-	const url = getURL();
-	const trackingUrl = new URL(url);
-	trackingUrl.hostname = `t.${trackingUrl.hostname}`;
-	return trackingUrl.toString();
-}

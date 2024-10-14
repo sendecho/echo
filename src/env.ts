@@ -8,7 +8,6 @@ export const env = createEnv({
     NODE_ENV: z.string().optional(),
     STRIPE_SECRET_KEY_LIVE: z.string().optional(),
     STRIPE_SECRET_KEY: z.string().min(1),
-    BASE_URL: z.string().min(1),
     STRIPE_WEBHOOK_SECRET: z.string().min(1),
     SUPABASE_SERVICE_KEY: z.string().min(1),
     SIGNUP_SECRET_TOKEN: z.string().optional(),
@@ -18,6 +17,7 @@ export const env = createEnv({
      * See {@link getURL} in utils.ts for how this is used
      * @see {@link @/lib/utils.ts}
      */
+    NEXT_PUBLIC_ROOT_DOMAIN: z.string().min(1),
     NEXT_PUBLIC_SITE_URL: z.string().optional(),
     NEXT_PUBLIC_SUPABASE_URL: z.string().min(1),
     NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
@@ -28,7 +28,7 @@ export const env = createEnv({
     NEXT_PUBLIC_DISABLE_SIGNUP: z.string().transform((s) => s !== "false" && s !== "0"),
   },
   runtimeEnv: {
-    BASE_URL: process.env.BASE_URL, // Production URL (https://sendecho.co) - this could be replaced with NEXT_PUBLIC_SITE_URL in the future
+    NEXT_PUBLIC_ROOT_DOMAIN: process.env.NEXT_PUBLIC_ROOT_DOMAIN, // Production URL without https:// (sendecho.co) - this could be replaced with NEXT_PUBLIC_SITE_URL in the future
     NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL, // Production URL (https://sendecho.co)
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
