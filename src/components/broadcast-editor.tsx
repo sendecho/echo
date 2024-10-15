@@ -109,7 +109,8 @@ export function BroadcastEditor({ initialBroadcast }: BroadcastEditorProps) {
 				listIds: selectedLists,
 				contactIds: selectedContacts, // Convert numbers to strings
 			});
-			if (result?.data?.success) {
+
+			if (result?.data?.event?.output?.success) {
 				toast({
 					title: "Broadcast sent",
 					description: "Your broadcast has been sent successfully.",
