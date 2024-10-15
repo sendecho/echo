@@ -111,16 +111,17 @@ export const updateListAction = authSafeAction
   })
 
 export const deleteListAction = authSafeAction
-  .schema(z.object({ id: z.number() }))
+  .schema(z.object({ id: z.string() }))
   .metadata({
     name: 'delete-list'
   })
-  .action(async ({ parsedInput, ctx: { user } }) => {
+  .action(async ({ parsedInput: { id }, ctx: { user } }) => {
     const supabase = createClient()
     const { error } = await supabase
       .from('lists')
       .delete()
-      .eq('id', parsedInput.id)
+      .eq('id', id)
+      .throwOnError();
 
     if (error) throw new Error(error.message)
     return { success: true }
