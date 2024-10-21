@@ -1,6 +1,6 @@
 "use server";
 
-import { actionClient, authSafeAction } from "@/lib/safe-action";
+import { authSafeAction } from "@/lib/safe-action";
 import {
   emailSetupSchema,
   domainVerificationSchema,
