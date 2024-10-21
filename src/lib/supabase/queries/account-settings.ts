@@ -1,7 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import { Client } from '@/types'
+import type { Client } from '@/types'
 
 export async function fetchAccountSettings(accountId?: string) {
   // If no accountId is provided, return null

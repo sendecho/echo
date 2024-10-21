@@ -59,6 +59,23 @@ export const emailSetupAction = authSafeAction
     // Check if the domain already exists
     const domainExists = domains?.data?.data.find((d) => d.name === domain);
     if (domainExists) {
+      // In dev mode, we'll allow the domain to be used
+      if (process.env.NODE_ENV === "development") {
+        console.log("Domain already exists in dev mode, skipping creation");
+
+        // Add the domain to the account
+        const { error: addDomainError } = await supabase
+          .from("accounts")
+          .update({ resend_domain_id: domainExists.id })
+          .eq("id", accountId)
+          .throwOnError();
+
+        if (addDomainError) throw new Error("Failed to add domain to account");
+
+        // Return the domain details in the response
+        return { success: true };
+      }
+
       // TODO: Should we update the domain instead of throwing an error?
       // What's the privacy concern here?
       throw new Error("Domain already exists");

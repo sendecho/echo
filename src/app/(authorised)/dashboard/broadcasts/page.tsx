@@ -14,7 +14,7 @@ export const metadata = {
 export default function BroadcastsPage() {
 	return (
 		<DashboardLayout>
-			<div className="flex flex-col gap-8">
+			<div className="flex flex-col">
 				<PageHeader
 					title="Broadcasts"
 					description="Create and manage your broadcasts"

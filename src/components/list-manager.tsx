@@ -29,9 +29,8 @@ import {
 	updateListAction,
 	deleteListAction,
 } from "@/actions/list-actions";
-import { fetchContacts } from "@/lib/supabase/queries/contacts";
 import { MultiSelect } from "@/components/ui/multi-select";
-import { fetchContactsForList, fetchLists } from "@/lib/supabase/queries/lists";
+import { fetchContactsForList } from "@/lib/supabase/queries/lists";
 import {
 	Table,
 	TableBody,
@@ -41,6 +40,7 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { createClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
 
 const listSchema = z.object({
 	name: z.string().min(1, "Name is required"),
@@ -70,6 +70,7 @@ export function ListManager({
 	contacts,
 	lists,
 }: { accountId: string; contacts: Contact[]; lists: List[] }) {
+	const router = useRouter();
 	// const [lists, setLists] = useState<List[]>([]);
 	// const [contacts, setContacts] = useState<Contact[]>([]);
 	const [editingList, setEditingList] = useState<List | null>(null);
@@ -94,6 +95,7 @@ export function ListManager({
 			onSuccess: () => {
 				toast({ title: "List created successfully" });
 				handleCloseModal();
+				router.refresh();
 			},
 			onError: (error) =>
 				toast({
@@ -110,6 +112,9 @@ export function ListManager({
 			onSuccess: () => {
 				toast({ title: "List updated successfully" });
 				handleCloseModal();
+
+				// Refresh the page to update the list
+				router.refresh();
 			},
 			onError: (error) =>
 				toast({
@@ -125,6 +130,10 @@ export function ListManager({
 		{
 			onSuccess: () => {
 				toast({ title: "List deleted successfully" });
+				handleCloseModal();
+
+				// Refresh the page to update the list
+				router.refresh();
 			},
 			onError: (error) =>
 				toast({

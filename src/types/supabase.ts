@@ -9,18 +9,6 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      account_id: {
-        Row: {
-          account_id: string | null
-        }
-        Insert: {
-          account_id?: string | null
-        }
-        Update: {
-          account_id?: string | null
-        }
-        Relationships: []
-      }
       account_users: {
         Row: {
           account_id: string | null
@@ -156,30 +144,27 @@ export type Database = {
         Row: {
           account_id: string | null
           created_at: string | null
-          first_chars: string | null
-          hashed_key: string | null
+          first_chars: string
           id: string
-          key: string | null
+          key: string
           last_used_at: string | null
           name: string
         }
         Insert: {
           account_id?: string | null
           created_at?: string | null
-          first_chars?: string | null
-          hashed_key?: string | null
+          first_chars: string
           id?: string
-          key?: string | null
+          key: string
           last_used_at?: string | null
           name: string
         }
         Update: {
           account_id?: string | null
           created_at?: string | null
-          first_chars?: string | null
-          hashed_key?: string | null
+          first_chars?: string
           id?: string
-          key?: string | null
+          key?: string
           last_used_at?: string | null
           name?: string
         }
@@ -319,36 +304,36 @@ export type Database = {
       emails: {
         Row: {
           account_id: string | null
-          content: string | null
+          content: string
           created_at: string | null
           from_email: string | null
           from_name: string | null
           id: string
           preview: string | null
           sent_at: string | null
-          subject: string | null
+          subject: string
         }
         Insert: {
           account_id?: string | null
-          content?: string | null
+          content: string
           created_at?: string | null
           from_email?: string | null
           from_name?: string | null
           id?: string
           preview?: string | null
           sent_at?: string | null
-          subject?: string | null
+          subject: string
         }
         Update: {
           account_id?: string | null
-          content?: string | null
+          content?: string
           created_at?: string | null
           from_email?: string | null
           from_name?: string | null
           id?: string
           preview?: string | null
           sent_at?: string | null
-          subject?: string | null
+          subject?: string
         }
         Relationships: [
           {
@@ -356,6 +341,51 @@ export type Database = {
             columns: ["account_id"]
             isOneToOne: false
             referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      invitations: {
+        Row: {
+          accepted_at: string | null
+          account_id: string
+          created_at: string | null
+          email: string
+          id: string
+          invited_by: string
+          role: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          account_id: string
+          created_at?: string | null
+          email: string
+          id?: string
+          invited_by: string
+          role: string
+        }
+        Update: {
+          accepted_at?: string | null
+          account_id?: string
+          created_at?: string | null
+          email?: string
+          id?: string
+          invited_by?: string
+          role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invitations_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invitations_invited_by_fkey"
+            columns: ["invited_by"]
+            isOneToOne: false
+            referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]
@@ -473,24 +503,6 @@ export type Database = {
           },
         ]
       }
-      policy_logs: {
-        Row: {
-          created_at: string | null
-          id: number
-          message: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          id?: number
-          message?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          id?: number
-          message?: string | null
-        }
-        Relationships: []
-      }
       users: {
         Row: {
           account_id: string | null
@@ -559,6 +571,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      accept_invitation: {
+        Args: {
+          invite_id: string
+          user_id: string
+        }
+        Returns: undefined
+      }
       authenticate_api_key: {
         Args: {
           api_key: string
@@ -571,10 +590,6 @@ export type Database = {
           domain: string
           user_id: string
         }
-        Returns: string
-      }
-      debug_jwt_claims: {
-        Args: Record<PropertyKey, never>
         Returns: string
       }
       get_account_by_stripe_customer_id: {
@@ -605,21 +620,11 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: string[]
       }
-      get_headers: {
-        Args: Record<PropertyKey, never>
-        Returns: Json
-      }
       hash_api_key: {
         Args: {
           api_key: string
         }
         Returns: string
-      }
-      log_policy_evaluation: {
-        Args: {
-          message: string
-        }
-        Returns: boolean
       }
     }
     Enums: {

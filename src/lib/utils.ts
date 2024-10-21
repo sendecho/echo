@@ -30,6 +30,7 @@ export const getURL = (path: string = '') => {
   // Concatenate the URL and the path.
   return path ? `${url}/${path}` : url;
 };
+
 export const getTrackingURL = (path: string = '') => {
   // Check if NEXT_PUBLIC_SITE_URL is set and non-empty. Set this to your site URL in production env.
   const url = TRACKING_URL

@@ -1,11 +1,10 @@
 'use server'
 
 import { z } from 'zod'
-import { actionClient, authSafeAction } from "@/lib/safe-action"
-import { sendBroadcastMutation } from '@/lib/supabase/mutations/broadcasts'
+import { authSafeAction } from "@/lib/safe-action"
 import { revalidatePath } from 'next/cache'
 import { tasks } from '@trigger.dev/sdk/v3'
-import { sendBroadcastTask } from '@/trigger/send-broadcast'
+import type { sendBroadcastTask } from '@/trigger/send-broadcast'
 
 const schema = z.object({
   emailId: z.string(),
@@ -21,9 +20,7 @@ export const sendBroadcastAction = authSafeAction
   .action(
     async ({ parsedInput: { emailId, listIds, contactIds } }) => {
       try {
-        // const result = await sendBroadcastMutation({ emailId, listIds, contactIds })
-
-        const event = await tasks.triggerAndPoll<typeof sendBroadcastTask>(
+        const event = await tasks.trigger<typeof sendBroadcastTask>(
           'send-broadcast',
           {
             emailId,
