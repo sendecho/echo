@@ -22,7 +22,6 @@ export const getUser = async () => {
   }
 
   const supabase = createClient();
-
   return unstable_cache(
     async () => {
       return getUserQuery(supabase, userId);

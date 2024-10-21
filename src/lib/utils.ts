@@ -41,3 +41,15 @@ export const getTrackingURL = (path: string = '') => {
   // Concatenate the URL and the path.
   return cleanPath ? `${url}/${cleanPath}` : url;
 };
+
+// Add these functions to your existing utils.ts file
+
+export function showLoadingOverlay() {
+  const overlay = document.getElementById('loading-overlay');
+  if (overlay) overlay.classList.remove('hidden');
+}
+
+export function hideLoadingOverlay() {
+  const overlay = document.getElementById('loading-overlay');
+  if (overlay) overlay.classList.add('hidden');
+}

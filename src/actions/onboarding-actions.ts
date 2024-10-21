@@ -19,38 +19,19 @@ export const emailSetupAction = authSafeAction
   .action(async ({ parsedInput: { name, domain }, ctx: { user } }) => {
     const supabase = createClient();
 
-    let accountId: string | null = null;
+    // Create a new account and link the user
+    const { data: newAccountId, error: newAccountError } = await supabase
+      .rpc("create_account_and_link_user", {
+        name: name,
+        domain: domain,
+        user_id: user.id,
+      })
+      .throwOnError();
 
-    // Check if user has an account already
-    if (user.account_id) {
-      // then update the account
-      const { error: updateError } = await supabase
-        .from("accounts")
-        .update({
-          name: name,
-          domain: domain,
-        })
-        .eq("id", user.account_id)
-        .throwOnError();
-      accountId = user.account_id;
+    console.log("newAccountId", newAccountId);
 
-      if (updateError)
-        throw new Error(`Failed to update account: ${updateError.message}`);
-    } else {
-      // Create a new account and link the user
-      const { data: newAccountData, error: newAccountError } = await supabase
-        .rpc("create_account_and_link_user", {
-          name: name,
-          domain: domain,
-          user_id: user.id,
-        })
-        .throwOnError();
-
-      if (newAccountError)
-        throw new Error("Failed to create account and link user");
-
-      accountId = newAccountData;
-    }
+    if (newAccountError)
+      throw new Error("Failed to create account and link user");
 
     // Create a domain in Resend
     const resend = new Resend(process.env.RESEND_API_KEY);
@@ -63,17 +44,19 @@ export const emailSetupAction = authSafeAction
       if (process.env.NODE_ENV === "development") {
         console.log("Domain already exists in dev mode, skipping creation");
 
+        console.log(domainExists);
+
         // Add the domain to the account
         const { error: addDomainError } = await supabase
           .from("accounts")
           .update({ resend_domain_id: domainExists.id })
-          .eq("id", accountId)
+          .eq("id", newAccountId)
           .throwOnError();
 
         if (addDomainError) throw new Error("Failed to add domain to account");
 
         // Return the domain details in the response
-        return { success: true };
+        return { success: true, data: newAccountId };
       }
 
       // TODO: Should we update the domain instead of throwing an error?
@@ -94,13 +77,13 @@ export const emailSetupAction = authSafeAction
     const { error: addDomainError } = await supabase
       .from("accounts")
       .update({ resend_domain_id: resendDomain.data?.id })
-      .eq("id", accountId)
+      .eq("id", newAccountId)
       .throwOnError();
 
     if (addDomainError) throw new Error("Failed to add domain to account");
 
     // Return the domain details in the response
-    return { success: true };
+    return { success: true, data: newAccountId };
   });
 
 export const domainVerificationAction = authSafeAction

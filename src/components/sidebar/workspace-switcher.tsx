@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { ChevronsUpDown, PlusCircle } from "lucide-react";
+import { ChevronsUpDown, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
 	Popover,
@@ -10,9 +10,14 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { getUserAccountsQuery } from "@/lib/supabase/queries/user";
+import {
+	getCurrentUserAccountQuery,
+	getUserAccountsQuery,
+} from "@/lib/supabase/queries/user";
+import { CreateAccountDialog } from "@/components/create-account-dialog";
+import { useAction } from "next-safe-action/hooks";
+import { switchAccountAction } from "@/actions/account-actions";
 
 interface Account {
 	id: string;
@@ -30,14 +35,23 @@ export function WorkspaceSwitcher() {
 	const [triggerWidth, setTriggerWidth] = React.useState<number | undefined>(
 		undefined,
 	);
-	const router = useRouter();
+
+	const { execute: switchAccount, status: switchAccountStatus } = useAction(
+		switchAccountAction,
+		{
+			onSuccess: () => {
+				// Use Next.js router to refresh the current route
+				window.location.reload();
+			},
+		},
+	);
 
 	React.useEffect(() => {
 		const fetchAccounts = async () => {
 			const supabase = createClient();
-			const {
-				data: { user },
-			} = await supabase.auth.getUser();
+
+			const { data: user } = await getCurrentUserAccountQuery(supabase);
+			console.log("user", user);
 
 			if (user) {
 				const accountsData = await getUserAccountsQuery(supabase, user.id);
@@ -49,7 +63,15 @@ export function WorkspaceSwitcher() {
 						plan_name: item.account?.plan_name ?? null,
 					}));
 				setAccounts(formattedAccounts);
-				if (formattedAccounts.length > 0) {
+
+				// Find the account that matches the user's account_id
+				const userAccount = formattedAccounts.find(
+					(account) => account.id === user.account_id,
+				);
+				if (userAccount) {
+					setSelectedAccount(userAccount);
+				} else if (formattedAccounts.length > 0) {
+					// Fallback to the first account if the user's account is not found
 					setSelectedAccount(formattedAccounts[0]);
 				}
 			}
@@ -63,16 +85,10 @@ export function WorkspaceSwitcher() {
 		}
 	}, [selectedAccount]);
 
-	const handleSelectAccount = (account: Account) => {
-		setSelectedAccount(account);
-		setOpen(false);
-		console.log(`Selected account: ${account.name}`);
-		// Implement account switching logic here
-	};
-
-	const handleCreateAccount = () => {
-		console.log("Create new account");
-		// Implement account creation logic here
+	const handleSelectAccount = async (account: Account) => {
+		if (account.id !== selectedAccount?.id) {
+			await switchAccount({ accountId: account.id });
+		}
 	};
 
 	if (!selectedAccount) return null;
@@ -110,13 +126,21 @@ export function WorkspaceSwitcher() {
 				</Button>
 			</PopoverTrigger>
 			<PopoverContent className="p-0" style={{ width: triggerWidth }}>
-				<div className="space-y-1">
+				<div className="space-y-1 p-1">
+					<div className="text-xs text-muted-foreground font-medium px-2 pt-2">
+						Accounts
+					</div>
 					{accounts.map((account) => (
 						<Button
 							key={account.id}
 							variant="ghost"
-							className="w-full justify-start"
+							className={cn(
+								"w-full justify-start px-2",
+								selectedAccount?.id === account.id &&
+									"bg-accent text-accent-foreground",
+							)}
 							onClick={() => handleSelectAccount(account)}
+							disabled={switchAccountStatus === "executing"}
 						>
 							<Avatar className="h-6 w-6 mr-2">
 								<AvatarImage
@@ -124,17 +148,20 @@ export function WorkspaceSwitcher() {
 								/>
 								<AvatarFallback>{account.name.charAt(0)}</AvatarFallback>
 							</Avatar>
-							{account.name}
+							<div className="flex flex-col items-start flex-grow">
+								<span className="flex-grow text-left text-sm font-normal text-grey-800">
+									{account.name}
+								</span>
+								<span className="text-xs text-muted-foreground">
+									{account.plan_name || "Free plan"}
+								</span>
+							</div>
+							{selectedAccount?.id === account.id && (
+								<Check className="h-4 w-4 ml-2 flex-shrink-0" />
+							)}
 						</Button>
 					))}
-					<Button
-						variant="ghost"
-						className="w-full justify-start"
-						onClick={handleCreateAccount}
-					>
-						<PlusCircle className="mr-2 h-4 w-4" />
-						Create Account
-					</Button>
+					<CreateAccountDialog />
 				</div>
 			</PopoverContent>
 		</Popover>

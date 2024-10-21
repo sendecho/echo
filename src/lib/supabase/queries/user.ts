@@ -17,7 +17,10 @@ export async function getUserQuery(supabase: Client, userId: string) {
 export async function getCurrentUserAccountQuery(supabase: Client) {
   const {
     data: { session },
+    error
   } = await supabase.auth.getSession();
+
+  if (error) throw error;
 
   if (!session?.user) {
     return;
