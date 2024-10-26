@@ -5,6 +5,7 @@ import { fetchContacts } from "@/lib/supabase/queries/contacts";
 import { fetchLists } from "@/lib/supabase/queries/lists";
 import { getContacts } from "@/lib/supabase/queries/contacts.cached";
 import { createClient } from "@/lib/supabase/server";
+import { PageHeader } from "@/components/page-header";
 
 export const metadata = {
 	title: "Mailing Lists",
@@ -24,7 +25,10 @@ export default async function ListsPage() {
 	return (
 		<DashboardLayout>
 			<div className="flex flex-col gap-8">
-				<h1 className="text-3xl font-bold">Mailing Lists</h1>
+				<PageHeader
+					title="Mailing Lists"
+					description="Create and manage your mailing lists"
+				/>
 				<ListManager
 					accountId={accountId || ""}
 					lists={lists}

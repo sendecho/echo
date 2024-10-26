@@ -1,7 +1,7 @@
 "use client";
 
 import { createClient } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -59,6 +59,8 @@ export default function SignUp() {
 	const [error, setError] = useState<string | null>(null);
 	const [passwordStrength, setPasswordStrength] = useState(0);
 	const router = useRouter();
+	const searchParams = useSearchParams();
+	const inviteId = searchParams.get("inviteId");
 	const form = useForm<SignUpValues>({
 		resolver: zodResolver(signUpSchema),
 		defaultValues: {
@@ -80,7 +82,11 @@ export default function SignUp() {
 			return;
 		}
 
-		router.push("/onboarding");
+		if (inviteId) {
+			router.push(`/invite/${inviteId}`);
+		} else {
+			router.push("/onboarding");
+		}
 	}
 
 	function onPasswordChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -167,6 +173,9 @@ export default function SignUp() {
 									)}
 								/>
 								{error && <p className="text-sm text-red-500">{error}</p>}
+								{inviteId && (
+									<input type="hidden" name="inviteId" value={inviteId} />
+								)}
 								<Button type="submit" className="w-full">
 									Sign Up
 								</Button>

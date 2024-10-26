@@ -7,10 +7,10 @@ export default function SettingsLayout({
 	return (
 		<DashboardLayout>
 			<div className="flex flex-col gap-8">
-				<h1 className="text-3xl font-bold">Settings</h1>
 				<SecondaryMenu
 					items={[
 						{ path: "/dashboard/settings", label: "General" },
+						{ path: "/dashboard/settings/people", label: "People" },
 						{ path: "/dashboard/settings/billing", label: "Billing" },
 						{ path: "/dashboard/settings/api-keys", label: "API Keys" },
 					]}

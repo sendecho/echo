@@ -30,6 +30,7 @@ export const getURL = (path: string = '') => {
   // Concatenate the URL and the path.
   return path ? `${url}/${path}` : url;
 };
+
 export const getTrackingURL = (path: string = '') => {
   // Check if NEXT_PUBLIC_SITE_URL is set and non-empty. Set this to your site URL in production env.
   const url = TRACKING_URL
@@ -40,3 +41,15 @@ export const getTrackingURL = (path: string = '') => {
   // Concatenate the URL and the path.
   return cleanPath ? `${url}/${cleanPath}` : url;
 };
+
+// Add these functions to your existing utils.ts file
+
+export function showLoadingOverlay() {
+  const overlay = document.getElementById('loading-overlay');
+  if (overlay) overlay.classList.remove('hidden');
+}
+
+export function hideLoadingOverlay() {
+  const overlay = document.getElementById('loading-overlay');
+  if (overlay) overlay.classList.add('hidden');
+}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import {
 	Card,
@@ -33,6 +33,8 @@ export default function LoginPage() {
 	const [error, setError] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
 	const router = useRouter();
+	const searchParams = useSearchParams();
+	const inviteId = searchParams.get("inviteId");
 	const supabase = createClient();
 
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,7 +50,11 @@ export default function LoginPage() {
 		try {
 			const { error } = await supabase.auth.signInWithPassword(formData);
 			if (error) throw error;
-			router.push("/dashboard");
+			if (inviteId) {
+				router.push(`/invite/${inviteId}`);
+			} else {
+				router.push("/dashboard");
+			}
 		} catch (err) {
 			setError(
 				err instanceof Error ? err.message : "An unexpected error occurred",
@@ -121,6 +127,9 @@ export default function LoginPage() {
 									required
 								/>
 							</div>
+							{inviteId && (
+								<input type="hidden" name="inviteId" value={inviteId} />
+							)}
 							<Button type="submit" className="w-full" disabled={isLoading}>
 								{isLoading ? "Signing in..." : "Sign In"}
 							</Button>

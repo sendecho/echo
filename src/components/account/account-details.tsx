@@ -17,6 +17,7 @@ import {
 	FormItem,
 	FormLabel,
 	FormMessage,
+	FormDescription,
 } from "@/components/ui/form";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { useRouter } from "next/navigation";
@@ -25,6 +26,7 @@ import { toast } from "@/components/ui/use-toast";
 const schema = z.object({
 	full_name: z.string().min(1, "Name is required"),
 	avatar: z.any().optional(),
+	email: z.string().email("Invalid email address"),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -33,6 +35,7 @@ interface AccountDetailsProps {
 	initialData: {
 		full_name: string;
 		avatar_url?: string | null;
+		email: string;
 	};
 }
 
@@ -64,6 +67,7 @@ export function AccountDetails({ initialData }: AccountDetailsProps) {
 		resolver: zodResolver(schema),
 		defaultValues: {
 			full_name: initialData.full_name,
+			email: initialData.email,
 		},
 	});
 
@@ -152,6 +156,31 @@ export function AccountDetails({ initialData }: AccountDetailsProps) {
 									<FormControl>
 										<Input {...field} />
 									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+					</div>
+
+					<div>
+						<FormField
+							control={form.control}
+							name="email"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Email</FormLabel>
+									<FormControl>
+										<Input {...field} disabled readOnly />
+									</FormControl>
+									<FormDescription>
+										If you need to change your email address, please contact{" "}
+										<a
+											href="mailto:hello@sendecho.co?subject=Change%20Email%20Address"
+											className="text-primary underline"
+										>
+											support
+										</a>
+									</FormDescription>
 									<FormMessage />
 								</FormItem>
 							)}

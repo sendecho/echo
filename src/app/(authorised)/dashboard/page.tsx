@@ -7,7 +7,7 @@ import { TableSkeleton } from "@/components/table-skeleton";
 import { PlusCircle } from "lucide-react";
 import DashboardLayout from "@/components/layouts/dashboard-layout";
 import { getContacts } from "@/lib/supabase/queries/contacts.cached";
-
+import { PageHeader } from "@/components/page-header";
 export const metadata = {
 	title: "Dashboard",
 };
@@ -82,7 +82,7 @@ async function RecentBroadcasts() {
 export default function Dashboard() {
 	return (
 		<DashboardLayout>
-			<h1 className="text-3xl font-bold mb-6">Dashboard</h1>
+			<PageHeader title="Dashboard" />
 			<div className="grid md:grid-cols-2 gap-6">
 				<Card className="border-border">
 					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

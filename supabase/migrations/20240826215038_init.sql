@@ -334,3 +334,16 @@ $$;
 
 -- Grant execute permission to authenticated users
 grant execute on function get_account_by_stripe_customer_id(text) to authenticated;
+
+-- Add RLS policies for account_users table
+alter table public.account_users enable row level security;
+
+-- Update the RLS policy for account_users
+CREATE POLICY "Users can view their account_users entries"
+ON public.account_users FOR SELECT
+USING (account_id IN (SELECT public.get_accounts_for_authenticated_user()));
+
+-- Update the RLS policy for accounts
+CREATE POLICY "Users can view accounts they belong to"
+ON public.accounts FOR SELECT
+USING (id IN (SELECT public.get_accounts_for_authenticated_user()));

@@ -59,8 +59,6 @@ export function BroadcastEditor({ initialBroadcast }: BroadcastEditorProps) {
 			try {
 				setSavingStatus("saving");
 				const result = await updateEmailAction(updatedBroadcast);
-
-				console.log("result", result);
 				const newId = result?.data.id ?? null;
 				setBroadcast((prev) => ({ ...prev, id: newId }));
 
@@ -110,13 +108,12 @@ export function BroadcastEditor({ initialBroadcast }: BroadcastEditorProps) {
 				contactIds: selectedContacts, // Convert numbers to strings
 			});
 
-			if (result?.data?.event?.output?.success) {
-				toast({
-					title: "Broadcast sent",
-					description: "Your broadcast has been sent successfully.",
-				});
-				router.push("/dashboard/broadcasts");
-			}
+			toast({
+				title: "Broadcast sent",
+				description:
+					"Your broadcast is queued for sending. Check back soon for updates.",
+			});
+			router.push("/dashboard/broadcasts");
 		} catch (error) {
 			toast({
 				title: "Error",
