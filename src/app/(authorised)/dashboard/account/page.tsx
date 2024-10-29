@@ -18,13 +18,17 @@ export default async function AccountPage() {
 		return <div>Error fetching user data</div>;
 	}
 
-	return (
-		<div className="space-y-4">
-			<PageHeader title="Your account" />
+	const breadcrumbs = [{ label: "Account" }];
 
-			<Suspense fallback={<AccountSkeleton />}>
-				<AccountDetails initialData={user} />
-			</Suspense>
-		</div>
+	return (
+		<DashboardLayout breadcrumbs={breadcrumbs}>
+			<div className="space-y-4">
+				<PageHeader title="Your account" />
+
+				<Suspense fallback={<AccountSkeleton />}>
+					<AccountDetails initialData={user} />
+				</Suspense>
+			</div>
+		</DashboardLayout>
 	);
 }

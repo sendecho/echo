@@ -12,8 +12,10 @@ export const metadata = {
 };
 
 export default function BroadcastsPage() {
+	const breadcrumbs = [{ label: "Broadcasts" }];
+
 	return (
-		<DashboardLayout>
+		<DashboardLayout breadcrumbs={breadcrumbs}>
 			<div className="flex flex-col">
 				<PageHeader
 					title="Broadcasts"

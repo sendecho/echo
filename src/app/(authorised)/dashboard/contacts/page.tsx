@@ -15,8 +15,10 @@ export const metadata = {
 export default async function ContactsPage() {
 	const contacts = await getContacts();
 
+	const breadcrumbs = [{ label: "Contacts" }];
+
 	return (
-		<DashboardLayout>
+		<DashboardLayout breadcrumbs={breadcrumbs}>
 			<div className="flex flex-col">
 				<PageHeader
 					title="Contacts"

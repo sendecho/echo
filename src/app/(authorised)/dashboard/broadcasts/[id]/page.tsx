@@ -14,7 +14,9 @@ export const generateMetadata = async ({
 	const broadcast = await fetchBroadcastById(params.id);
 	return {
 		title: broadcast.subject ? `${broadcast.subject}` : "Broadcast Details",
-		description: broadcast.preview ? broadcast.preview : "View the details of a broadcast",
+		description: broadcast.preview
+			? broadcast.preview
+			: "View the details of a broadcast",
 	};
 };
 
@@ -31,8 +33,13 @@ export default async function BroadcastPage({
 	const isSent = !!broadcast.sent_at;
 	const stats = isSent ? await getBroadcastStats(supabase, params.id) : null;
 
+	const breadcrumbs = [
+		{ label: "Broadcasts", href: "/dashboard/broadcasts" },
+		{ label: broadcast.subject || "New Broadcast" },
+	];
+
 	return (
-		<DashboardLayout>
+		<DashboardLayout breadcrumbs={breadcrumbs}>
 			<h1 className="text-2xl font-bold mb-6">{broadcast.subject}</h1>
 			{isSent ? (
 				<BroadcastAnalytics stats={stats!} />

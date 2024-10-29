@@ -13,6 +13,8 @@ export const metadata = {
 };
 
 export default async function ListsPage() {
+	const breadcrumbs = [{ label: "Lists" }];
+
 	const supabase = createClient();
 	const user = await getUser();
 	const accountId = user?.data?.account_id;
@@ -23,7 +25,7 @@ export default async function ListsPage() {
 	]);
 
 	return (
-		<DashboardLayout>
+		<DashboardLayout breadcrumbs={breadcrumbs}>
 			<div className="flex flex-col gap-8">
 				<PageHeader
 					title="Mailing Lists"

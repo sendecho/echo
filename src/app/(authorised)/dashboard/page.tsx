@@ -8,6 +8,7 @@ import { PlusCircle } from "lucide-react";
 import DashboardLayout from "@/components/layouts/dashboard-layout";
 import { getContacts } from "@/lib/supabase/queries/contacts.cached";
 import { PageHeader } from "@/components/page-header";
+
 export const metadata = {
 	title: "Dashboard",
 };
@@ -79,7 +80,8 @@ async function RecentBroadcasts() {
 	);
 }
 
-export default function Dashboard() {
+export default function DashboardPage() {
+	// const breadcrumbs = [{ label: "Dashboard" }];
 	return (
 		<DashboardLayout>
 			<PageHeader title="Dashboard" />

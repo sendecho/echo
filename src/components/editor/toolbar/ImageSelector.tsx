@@ -53,7 +53,7 @@ export function ImageSelector({ editor, uploadOptions }: ImageSelectorProps) {
 			<button
 				type="button"
 				onClick={() => fileInputRef.current?.click()}
-				className="p-2 text-gray-600 hover:bg-gray-100 rounded-md"
+				className="p-2 text-foreground hover:bg-muted rounded-md"
 				title="Insert image"
 			>
 				<Image className="w-5 h-5" />

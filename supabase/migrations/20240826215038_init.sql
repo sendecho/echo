@@ -39,8 +39,8 @@ create table account_users (
 create table emails (
   id uuid primary key default gen_random_uuid(),
   account_id uuid references accounts (id),
-  subject text not null,
-  content text not null,
+  subject text,
+  content text,
   preview text,
   from_name text,
   from_email text,
