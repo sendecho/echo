@@ -17,7 +17,7 @@ interface ToolbarProps {
 
 const Toolbar = ({ editor, uploadOptions }: ToolbarProps) => {
 	return (
-		<div className="bg-background z-10 sticky top-2 shadow-sm border border-border rounded-md p-2 mb-4">
+		<div className="bg-background z-10 sticky top-2 shadow-sm border border-border rounded-md p-2 mb-6">
 			<div className="flex items-center space-x-2">
 				<NodeSelector editor={editor} />
 				<BoldButton editor={editor} />

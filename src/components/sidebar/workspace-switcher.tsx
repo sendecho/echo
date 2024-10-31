@@ -40,8 +40,8 @@ export function WorkspaceSwitcher() {
 		switchAccountAction,
 		{
 			onSuccess: () => {
-				// Use Next.js router to refresh the current route
-				window.location.reload();
+				// Do a hard reload to the /dashboard route to ensure the new account is loaded
+				window.location.href = "/dashboard";
 			},
 		},
 	);
@@ -51,7 +51,6 @@ export function WorkspaceSwitcher() {
 			const supabase = createClient();
 
 			const { data: user } = await getCurrentUserAccountQuery(supabase);
-			console.log("user", user);
 
 			if (user) {
 				const accountsData = await getUserAccountsQuery(supabase, user.id);

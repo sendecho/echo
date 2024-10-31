@@ -43,7 +43,7 @@ export async function BroadcastsTable() {
 						<TableCell>
 							<Link
 								href={`/dashboard/broadcasts/${broadcast.id}`}
-								className="text-blue-600 hover:underline"
+								className="text-foreground font-bold hover:underline"
 							>
 								{broadcast.subject || "New broadcast"}
 							</Link>
