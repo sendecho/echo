@@ -36,6 +36,8 @@ Echo is an all-in-one solution for personal CRM and newsletter platform. This ap
 5. Start the development server:
    ```
    npm run dev
+   npx trigger.dev@latest dev
+   npm run supabase
    ```
 
 ## Third-Party Services
