@@ -24,6 +24,7 @@
     "trigger:deploy": "npx trigger.dev@latest deploy"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^0.0.70",
     "@hookform/resolvers": "^3.9.0",
     "@radix-ui/react-accordion": "^1.2.0",
     "@radix-ui/react-aspect-ratio": "^1.1.0",
@@ -66,6 +67,8 @@
     "@tiptap/starter-kit": "^2.6.6",
     "@tiptap/suggestion": "^2.6.6",
     "@trigger.dev/sdk": "^3.0.12",
+    "@uidotdev/usehooks": "^2.4.1",
+    "ai": "^3.4.27",
     "bcrypt": "^5.1.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",

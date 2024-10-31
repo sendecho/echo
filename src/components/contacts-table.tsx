@@ -198,7 +198,7 @@ function ContactDetails({ contact }: { contact: Contact }) {
 								className="bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition p-2 px-4 text-sm rounded"
 							>
 								<Link
-									href={`/dashboard/broadcasts/${broadcast.id}`}
+									href={`/dashboard/broadcasts/${broadcast.email.id}`}
 									aria-label={`View email: ${broadcast?.email?.subject}`}
 								>
 									<p className="font-medium">{broadcast?.email?.subject}</p>

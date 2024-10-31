@@ -11,6 +11,7 @@ export const env = createEnv({
     STRIPE_WEBHOOK_SECRET: z.string().min(1),
     SUPABASE_SERVICE_KEY: z.string().min(1),
     SIGNUP_SECRET_TOKEN: z.string().optional(),
+    OPENAI_API_KEY: z.string().min(1),
   },
   client: {
     /**
@@ -45,5 +46,6 @@ export const env = createEnv({
     SUPABASE_SERVICE_KEY: process.env.SUPABASE_SERVICE_KEY,
     NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
     NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
+    OPENAI_API_KEY: process.env.OPENAI_API_KEY,
   },
 });

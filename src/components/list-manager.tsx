@@ -197,72 +197,78 @@ export function ListManager({
 					<Button onClick={() => handleOpenModal()}>Add New List</Button>
 				</DialogTrigger>
 				<DialogContent>
-					<DialogHeader>
-						<DialogTitle>
-							{editingList ? "Edit List" : "Create New List"}
-						</DialogTitle>
-					</DialogHeader>
-					<Form {...form}>
-						<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-							<FormField
-								control={form.control}
-								name="name"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>Name</FormLabel>
-										<FormControl>
-											<Input {...field} />
-										</FormControl>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
-							<FormField
-								control={form.control}
-								name="description"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>Description</FormLabel>
-										<FormControl>
-											<Textarea {...field} />
-										</FormControl>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
-							<FormItem>
-								<FormLabel>Contacts</FormLabel>
-								<div>
-									<MultiSelect
-										title="Select Contacts"
-										options={contacts?.map((contact) => ({
-											label: `${contact.first_name} ${contact.last_name} (${contact.email})`,
-											value: contact.id,
-										}))}
-										selectedValues={selectedContacts}
-										onSelectionChange={setSelectedContacts}
-									/>
+					<div>
+						<DialogHeader>
+							<DialogTitle>
+								{editingList ? "Edit List" : "Create New List"}
+							</DialogTitle>
+						</DialogHeader>
+						<Form {...form}>
+							<form
+								onSubmit={form.handleSubmit(onSubmit)}
+								className="space-y-4"
+							>
+								<FormField
+									control={form.control}
+									name="name"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Name</FormLabel>
+											<FormControl>
+												<Input {...field} />
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+								<FormField
+									control={form.control}
+									name="description"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Description</FormLabel>
+											<FormControl>
+												<Textarea {...field} />
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+								<FormItem>
+									<FormLabel>Contacts</FormLabel>
+									<div>
+										<MultiSelect
+											title="Select Contacts"
+											options={contacts?.map((contact) => ({
+												label: `${contact.first_name} ${contact.last_name} (${contact.email})`,
+												value: contact.id,
+											}))}
+											selectedValues={selectedContacts}
+											onSelectionChange={setSelectedContacts}
+										/>
+									</div>
+								</FormItem>
+								<div className="flex justify-end space-x-2">
+									<Button
+										type="button"
+										variant="outline"
+										onClick={handleCloseModal}
+									>
+										Cancel
+									</Button>
+									<Button
+										type="submit"
+										disabled={
+											createStatus === "executing" ||
+											updateStatus === "executing"
+										}
+									>
+										{editingList ? "Update" : "Create"} List
+									</Button>
 								</div>
-							</FormItem>
-							<div className="flex justify-end space-x-2">
-								<Button
-									type="button"
-									variant="outline"
-									onClick={handleCloseModal}
-								>
-									Cancel
-								</Button>
-								<Button
-									type="submit"
-									disabled={
-										createStatus === "executing" || updateStatus === "executing"
-									}
-								>
-									{editingList ? "Update" : "Create"} List
-								</Button>
-							</div>
-						</form>
-					</Form>
+							</form>
+						</Form>
+					</div>
 				</DialogContent>
 			</Dialog>
 
@@ -270,20 +276,22 @@ export function ListManager({
 				<Table>
 					<TableHeader>
 						<TableRow>
-							<TableHead>ID</TableHead>
 							<TableHead>List Name</TableHead>
 							<TableHead>Description</TableHead>
 							<TableHead>Number of Contacts</TableHead>
+							<TableHead>ID</TableHead>
 							<TableHead>Actions</TableHead>
 						</TableRow>
 					</TableHeader>
 					<TableBody>
 						{lists.map((list) => (
 							<TableRow key={list.id}>
-								<TableCell>{list.id}</TableCell>
 								<TableCell>{list.name}</TableCell>
 								<TableCell>{list.description}</TableCell>
 								<TableCell>{list.contactCount}</TableCell>
+								<TableCell>
+									<span className="block truncate w-32">{list.id}</span>
+								</TableCell>
 								<TableCell>
 									<div className="flex space-x-2">
 										<Button onClick={() => handleOpenModal(list)}>Edit</Button>
