@@ -8,6 +8,8 @@ import { PlusCircle } from "lucide-react";
 import DashboardLayout from "@/components/layouts/dashboard-layout";
 import { getContacts } from "@/lib/supabase/queries/contacts.cached";
 import { PageHeader } from "@/components/page-header";
+import { getUser } from "@/lib/supabase/queries/user.cached";
+import { Badge } from "@/components/ui/badge";
 
 export const metadata = {
 	title: "Dashboard",
@@ -44,7 +46,8 @@ async function RecentContacts() {
 }
 
 async function RecentBroadcasts() {
-	const broadcasts = await fetchBroadcasts();
+	const { data: user } = await getUser();
+	const broadcasts = await fetchBroadcasts(user?.account_id);
 	const recentBroadcasts = broadcasts.slice(0, 5);
 
 	if (recentBroadcasts.length === 0) {
@@ -71,9 +74,12 @@ async function RecentBroadcasts() {
 					>
 						<span>{broadcast.subject}</span>
 					</Link>
-					<span className="text-sm text-gray-500">
-						{new Date(broadcast.created_at).toLocaleDateString()}
-					</span>
+					<div className="flex items-center gap-2">
+						<span className="text-sm text-gray-500">
+							{new Date(broadcast.created_at).toLocaleDateString()}
+						</span>
+						<Badge>{broadcast.sent_at ? "Sent" : "Draft"}</Badge>
+					</div>
 				</li>
 			))}
 		</ul>

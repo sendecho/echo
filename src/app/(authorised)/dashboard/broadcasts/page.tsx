@@ -1,5 +1,4 @@
 import { Suspense } from "react";
-import { Button } from "@/components/ui/button";
 import { BroadcastsTable } from "@/components/broadcasts-table";
 import { TableSkeleton } from "@/components/table-skeleton";
 import DashboardLayout from "@/components/layouts/dashboard-layout";

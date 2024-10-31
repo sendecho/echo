@@ -1,12 +1,13 @@
 import { createClient } from '@/lib/supabase/server'
 import type { Client } from '@/types'
 
-export async function fetchBroadcasts() {
+export async function fetchBroadcasts(accountId: string) {
   const supabase = createClient()
 
   const { data: broadcasts, error } = await supabase
     .from('emails')
     .select('*')
+    .eq('account_id', accountId)
     .order('created_at', { ascending: false })
     .limit(10)
 

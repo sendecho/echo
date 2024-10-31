@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { fetchBroadcasts } from "@/lib/supabase/queries/broadcasts";
 import { Badge } from "./ui/badge";
-import { Button } from "./ui/button";
 import {
 	Table,
 	TableHeader,
@@ -12,9 +11,11 @@ import {
 } from "./ui/table";
 import { BroadcastTableActions } from "./broadcast-table-actions";
 import CreateBroadcastButton from "./create-broadcast-button";
+import { getUser } from "@/lib/supabase/queries/user.cached";
 
 export async function BroadcastsTable() {
-	const broadcasts = await fetchBroadcasts();
+	const { data: user } = await getUser();
+	const broadcasts = await fetchBroadcasts(user?.account_id);
 
 	if (broadcasts.length === 0) {
 		return (
