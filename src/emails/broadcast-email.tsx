@@ -142,15 +142,13 @@ function parseHtmlContent(content: string, trackingId?: string) {
 						);
 					case "img":
 						return (
-							<Section>
-								<Img
-									src={domNode.attribs.src}
-									alt={domNode.attribs.alt || ""}
-									width={domNode.attribs.width}
-									height={domNode.attribs.height}
-									className="block w-full mx-auto max-w-[600px] h-auto"
-								/>
-							</Section>
+							<Img
+								src={domNode.attribs.src}
+								alt={domNode.attribs.alt || ""}
+								width={domNode.attribs.width}
+								height={domNode.attribs.height}
+								className="block w-full mx-auto max-w-[600px] h-auto"
+							/>
 						);
 					default:
 						return undefined;
