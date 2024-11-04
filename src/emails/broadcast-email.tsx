@@ -47,7 +47,7 @@ export const BroadcastEmail = ({
 			<Head />
 			{preview && <Preview>{preview}</Preview>}
 			<Tailwind>
-				<Body className="font-sans px-2 my-auto mx-auto">
+				<Body className="font-sans my-auto mx-auto px-2">
 					{trackingUrl && (
 						<Img
 							src={trackingUrl}
@@ -57,7 +57,7 @@ export const BroadcastEmail = ({
 							style={{ display: "block", width: "1px", height: "1px" }}
 						/>
 					)}
-					<Container>
+					<Container className="max-w-[600px] mx-auto w-full my-[20px] p-[20px]">
 						<Section>{parsedContent}</Section>
 						<Hr />
 						<Section>
@@ -142,18 +142,15 @@ function parseHtmlContent(content: string, trackingId?: string) {
 						);
 					case "img":
 						return (
-							<Img
-								src={domNode.attribs.src}
-								alt={domNode.attribs.alt || ""}
-								width={domNode.attribs.width}
-								height={domNode.attribs.height}
-								style={{
-									maxWidth: "800px",
-									height: "auto",
-									display: "block",
-									margin: "0 auto",
-								}}
-							/>
+							<Section>
+								<Img
+									src={domNode.attribs.src}
+									alt={domNode.attribs.alt || ""}
+									width={domNode.attribs.width}
+									height={domNode.attribs.height}
+									className="block w-full mx-auto max-w-[600px] h-auto"
+								/>
+							</Section>
 						);
 					default:
 						return undefined;

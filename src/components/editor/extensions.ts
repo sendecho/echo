@@ -20,6 +20,7 @@ import Dropcursor from '@tiptap/extension-dropcursor'
 import GapCursor from '@tiptap/extension-gapcursor'
 import Youtube from '@tiptap/extension-youtube'
 import HorizontalRule from '@tiptap/extension-horizontal-rule'
+import History from '@tiptap/extension-history'
 import SlashCommand from './extensions/slash-command'
 import { UploadImagesPlugin } from './plugins/upload-images'
 import { TweetExtension } from './extensions/tweet-extension'
@@ -82,6 +83,7 @@ export const defaultExtensions = [
     class: "drop-cursor"
   }),
   GapCursor,
+  History,
 
   // Custom Variable Extension
   VariableExtension,

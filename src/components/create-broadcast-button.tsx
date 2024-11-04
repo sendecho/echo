@@ -1,12 +1,9 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { createEmail } from "@/lib/supabase/mutations/broadcasts";
 import { useAction } from "next-safe-action/hooks";
-import { toast } from "sonner";
 import { createEmailAction } from "@/actions/create-update-broadcast-action";
+import { SubmitButton } from "./ui/submit-button";
 
 export default function CreateBroadcastButton() {
 	const router = useRouter();
@@ -18,8 +15,12 @@ export default function CreateBroadcastButton() {
 	});
 
 	return (
-		<Button onClick={() => execute({})} disabled={status === "executing"}>
-			{status === "executing" ? "Creating..." : "Create New Broadcast"}
-		</Button>
+		<SubmitButton
+			type="button"
+			isSubmitting={status === "executing" || status === "hasSucceeded"}
+			onClick={() => execute({})}
+		>
+			Create New Broadcast
+		</SubmitButton>
 	);
 }
