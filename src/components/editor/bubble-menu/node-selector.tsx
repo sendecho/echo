@@ -64,8 +64,8 @@ const NodeSelector: React.FC<NodeSelectorProps> = ({ editor }) => {
 
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
-			<PopoverTrigger asChild>
-				<BubbleMenuButton action={() => {}} isActive={false}>
+			<PopoverTrigger>
+				<BubbleMenuButton isActive={false} action={() => setOpen(true)}>
 					{activeNode}
 					<ChevronDown className="w-4 h-4" />
 				</BubbleMenuButton>

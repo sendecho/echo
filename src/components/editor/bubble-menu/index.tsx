@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { AIMenu } from "./ai-menu";
 import BubbleMenuButton from "./bubble-menu-button";
+import LinkSelector from "./link-selector";
 
 export interface BubbleMenuItem {
 	name: string;
@@ -34,25 +35,25 @@ export const BubbleMenu = (props: BubbleMenuProps) => {
 
 	const items: BubbleMenuItem[] = [
 		{
-			name: "bold",
+			name: "Bold",
 			isActive: () => editor.isActive("bold"),
 			command: () => editor.chain().focus().toggleBold().run(),
 			icon: BoldIcon,
 		},
 		{
-			name: "italic",
+			name: "Italic",
 			isActive: () => editor.isActive("italic"),
 			command: () => editor.chain().focus().toggleItalic().run(),
 			icon: ItalicIcon,
 		},
 		{
-			name: "highlight",
+			name: "Highlight",
 			isActive: () => editor.isActive("highlight"),
 			command: () => editor.chain().focus().toggleHighlight().run(),
 			icon: HighlighterIcon,
 		},
 		{
-			name: "code",
+			name: "Code",
 			isActive: () => editor.isActive("code"),
 			command: () => editor.chain().focus().toggleCode().run(),
 			icon: CodeIcon,
@@ -96,6 +97,7 @@ export const BubbleMenu = (props: BubbleMenuProps) => {
 								key={item.name}
 								action={item.command}
 								isActive={item.isActive()}
+								tooltip={item.name}
 							>
 								<item.icon
 									className={cn(
@@ -107,6 +109,7 @@ export const BubbleMenu = (props: BubbleMenuProps) => {
 							</BubbleMenuButton>
 						))}
 					</div>
+					<LinkSelector editor={editor} />
 				</>
 			)}
 		</TiptapBubbleMenu>
