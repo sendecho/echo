@@ -17,6 +17,13 @@ export interface UploadResult {
 	publicUrl: string;
 }
 
+/**
+ * Upload an image to Supabase Storage
+ *
+ * @param file - File to upload
+ * @param options - Upload options
+ * @returns Promise<string> - Public URL of the uploaded image
+ */
 const upload = async ({
 	file,
 	bucket = "images",
@@ -53,13 +60,20 @@ const upload = async ({
 	}
 };
 
+/**
+ * Upload an image
+ *
+ * @param file - File to upload
+ * @param options - Upload options
+ * @returns Promise<string> - Public URL of the uploaded image
+ */
 const onUpload = (file: File, options: UploadOptions) => {
 	return new Promise((resolve) => {
 		toast.promise(
 			upload({ file, bucket: options.bucket, path: options.path }).then(
 				(publicUrl) => {
 					// preload the image
-					let image = new Image();
+					const image = new Image();
 					image.src = publicUrl;
 					image.onload = () => {
 						resolve(publicUrl);
@@ -75,17 +89,28 @@ const onUpload = (file: File, options: UploadOptions) => {
 	});
 };
 
+/**
+ * Create an image upload function
+ *
+ * @param options - Upload options
+ * @returns Image upload function
+ */
 export const uploadFn = (options: UploadOptions) =>
 	createImageUpload({
 		onUpload: (file: File) => onUpload(file, options),
 		validateFn: (file) => {
+			// check if file is an image
 			if (!file.type.includes("image/")) {
 				toast.error("File type not supported.");
 				return false;
-			} else if (file.size / 1024 / 1024 > 20) {
+			}
+
+			// 20MB max
+			if (file.size / 1024 / 1024 > 20) {
 				toast.error("File size too big (max 20MB).");
 				return false;
 			}
+
 			return true;
 		},
 	});

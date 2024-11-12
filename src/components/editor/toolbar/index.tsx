@@ -9,7 +9,7 @@ import {
 import { ImageSelector } from "./ImageSelector";
 import NodeSelector from "./NodeSelector";
 import VariableSelector from "./VariableSelector";
-
+import ImageDialog from "./image-dialog";
 interface ToolbarProps {
 	editor: Editor;
 	uploadOptions?: UploadOptions;
@@ -24,6 +24,7 @@ const Toolbar = ({ editor, uploadOptions }: ToolbarProps) => {
 				<ItalicButton editor={editor} />
 				<CodeButton editor={editor} />
 				<HighlightButton editor={editor} />
+				<ImageDialog editor={editor} uploadOptions={uploadOptions} />
 				<ImageSelector editor={editor} uploadOptions={uploadOptions} />
 				<VariableSelector editor={editor} />
 			</div>

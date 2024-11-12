@@ -63,6 +63,7 @@ export function LinkSelector({ editor }: { editor: Editor }) {
 								if (inputRef.current) {
 									inputRef.current.value = "";
 								}
+								setValue("");
 								setOpen(false);
 							}}
 							size="icon"

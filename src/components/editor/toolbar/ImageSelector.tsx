@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import type { Editor } from "@tiptap/core";
-import { Image } from "lucide-react";
+import { ImageIcon } from "lucide-react";
 import { uploadFn } from "../image-upload";
 import { toast } from "sonner";
 import type { UploadOptions } from "../image-upload";
@@ -56,7 +56,7 @@ export function ImageSelector({ editor, uploadOptions }: ImageSelectorProps) {
 				className="p-2 text-foreground hover:bg-muted rounded-md"
 				title="Insert image"
 			>
-				<Image className="w-5 h-5" />
+				<ImageIcon className="w-5 h-5" />
 			</button>
 			<input
 				type="file"
