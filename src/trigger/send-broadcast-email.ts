@@ -1,4 +1,4 @@
-import { logger, task } from "@trigger.dev/sdk/v3"
+import { logger, task, wait } from "@trigger.dev/sdk/v3"
 import { createAdminClient } from "@/lib/supabase/admin";
 import { sendEmail } from "@/emails";
 import { v4 as uuidv4 } from "uuid";
@@ -6,6 +6,9 @@ import BroadcastEmail from "@/emails/broadcast-email";
 
 export const sendBroadcastEmail = task({
   id: "send-broadcast-email",
+  queue: {
+    concurrencyLimit: 2,
+  },
   run: async (payload: { emailId: string, emailData: { from_name: string, from_email: string, subject: string, content: string, preview: string }, contact: { id: string, first_name?: string, last_name?: string, email: string } }, { ctx }) => {
 
     const { emailId, emailData, contact } = payload;
@@ -28,6 +31,10 @@ export const sendBroadcastEmail = task({
         email: contact?.email,
       })
 
+      // Wait for 5 seconds to avoid rate limiting
+      await wait.for({ seconds: 5 });
+
+      // Send the email
       return await sendEmail({
         from: `${emailData.from_name} <${emailData.from_email}>`,
         email: contact.email,
