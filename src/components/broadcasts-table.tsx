@@ -53,8 +53,15 @@ export async function BroadcastsTable() {
 							{new Date(broadcast.created_at).toLocaleDateString()}
 						</TableCell>
 						<TableCell>
-							<Badge variant={broadcast.sent_at ? "default" : "secondary"}>
-								{broadcast.sent_at ? "Sent" : "Draft"}
+							<Badge
+								variant={broadcast.sent_at ? "default" : "secondary"}
+								className="capitalize"
+							>
+								{broadcast.sent_at
+									? "Sent"
+									: broadcast.status
+										? broadcast.status
+										: "Draft"}
 							</Badge>
 						</TableCell>
 						<TableCell>

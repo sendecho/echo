@@ -25,6 +25,7 @@ import { Label } from "./ui/label";
 import { ListSelector } from "@/components/list-selector";
 
 import type { UpdateBroadcastType } from "@/lib/schemas/broadcast-schema";
+import SendLaterButton from "./send-later-button";
 
 interface BroadcastEditorProps {
 	initialBroadcast?: UpdateBroadcastType;
@@ -90,7 +91,7 @@ export function BroadcastEditor({ initialBroadcast }: BroadcastEditorProps) {
 		};
 	}
 
-	async function handleSend(selectedContacts: string[]) {
+	async function handleSend(selectedContacts: string[], selectedDate?: Date) {
 		if (!broadcast.id) {
 			toast({
 				title: "Error",
@@ -106,6 +107,7 @@ export function BroadcastEditor({ initialBroadcast }: BroadcastEditorProps) {
 				emailId: broadcast.id,
 				listIds: selectedLists,
 				contactIds: selectedContacts, // Convert numbers to strings
+				sendAt: selectedDate,
 			});
 
 			toast({
@@ -248,12 +250,22 @@ export function BroadcastEditor({ initialBroadcast }: BroadcastEditorProps) {
 									setSelectedContacts(selectedContacts)
 								}
 							/>
-							<SubmitButton
-								isSubmitting={isSendingEmail}
-								onClick={() => handleSend(selectedContacts)}
-							>
-								{isSendingEmail ? "Sending..." : "Send"}
-							</SubmitButton>
+							<div className="flex items-center space-x-2">
+								<SendLaterButton
+									onScheduleSend={(date) => handleSend(selectedContacts, date)}
+									buttonProps={{
+										disabled:
+											selectedContacts.length === 0 &&
+											selectedLists.length === 0,
+									}}
+								/>
+								<SubmitButton
+									isSubmitting={isSendingEmail}
+									onClick={() => handleSend(selectedContacts)}
+								>
+									{isSendingEmail ? "Sending..." : "Send now"}
+								</SubmitButton>
+							</div>
 						</DialogContent>
 					</Dialog>
 

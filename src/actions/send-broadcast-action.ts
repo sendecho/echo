@@ -10,6 +10,7 @@ const schema = z.object({
   emailId: z.string(),
   listIds: z.array(z.string()).optional(),
   contactIds: z.array(z.string()).optional(),
+  sendAt: z.date().optional(),
 })
 
 export const sendBroadcastAction = authSafeAction
@@ -18,7 +19,7 @@ export const sendBroadcastAction = authSafeAction
     name: 'send-broadcast',
   })
   .action(
-    async ({ parsedInput: { emailId, listIds, contactIds } }) => {
+    async ({ parsedInput: { emailId, listIds, contactIds, sendAt } }) => {
       try {
         const event = await tasks.trigger<typeof sendBroadcastTask>(
           'send-broadcast',
@@ -26,6 +27,7 @@ export const sendBroadcastAction = authSafeAction
             emailId,
             listIds,
             contactIds,
+            sendAt,
           }
         );
 

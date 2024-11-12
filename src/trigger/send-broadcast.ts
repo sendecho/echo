@@ -1,20 +1,22 @@
-import { logger, task, tasks, wait } from "@trigger.dev/sdk/v3";
+import { logger, task, tasks } from "@trigger.dev/sdk/v3";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { sendEmail } from "@/emails";
-import { v4 as uuidv4 } from "uuid";
-import BroadcastEmail from "@/emails/broadcast-email";
 import type { sendBroadcastEmail } from "./send-broadcast-email";
 
 export const sendBroadcastTask = task({
   id: "send-broadcast",
   maxDuration: 300, // 5 minutes
   run: async (
-    payload: { emailId: string; listIds?: string[]; contactIds?: string[] },
+    payload: {
+      emailId: string;
+      listIds?: string[];
+      contactIds?: string[];
+      sendAt?: Date;
+    },
     { ctx },
   ) => {
     logger.info("Sending broadcast", { payload, ctx });
 
-    const { emailId, listIds, contactIds } = payload;
+    const { emailId, listIds, contactIds, sendAt } = payload;
 
     const supabase = createAdminClient();
 
@@ -32,6 +34,17 @@ export const sendBroadcastTask = task({
 
     if (emailError)
       throw new Error(`Failed to fetch email content: ${emailError.message}`);
+
+    // Set the status to sending
+    const { error: updateSendingStatusError } = await supabase
+      .from("emails")
+      .update({ status: sendAt ? "scheduled" : "sending" })
+      .eq("id", emailId);
+
+    if (updateSendingStatusError)
+      throw new Error(
+        `Failed to update email status: ${updateSendingStatusError.message}`,
+      );
 
     // Fetch contacts from individual contactIds
     const { data: individualContacts, error: individualContactsError } =
@@ -74,7 +87,7 @@ export const sendBroadcastTask = task({
 
     if (allContacts.length === 0) throw new Error("No contacts found");
 
-    await tasks.batchTrigger<typeof sendBroadcastEmail>(
+    await tasks.batchTriggerAndWait<typeof sendBroadcastEmail>(
       "send-broadcast-email",
       allContacts.map((contact) => ({
         payload: {
@@ -92,7 +105,10 @@ export const sendBroadcastTask = task({
             last_name: contact?.last_name || "",
             email: contact?.email || "",
           },
-        }
+        },
+        options: {
+          delay: sendAt ?? undefined,
+        },
       })),
     );
 
@@ -102,7 +118,7 @@ export const sendBroadcastTask = task({
       async () => {
         return await supabase
           .from("emails")
-          .update({ sent_at: new Date().toISOString() })
+          .update({ sent_at: new Date().toISOString(), status: "sent" })
           .eq("id", emailId);
       },
     );
