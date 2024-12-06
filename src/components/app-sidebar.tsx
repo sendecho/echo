@@ -4,9 +4,9 @@ import * as React from "react";
 import { BookOpen, Home, LifeBuoy, Send, Settings2, Users } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
-import { NavProjects } from "@/components/nav-projects";
 import { NavSecondary } from "@/components/nav-secondary";
 import { NavUser } from "@/components/nav-user";
+import { VerificationStatusBanner } from "@/components/verification-status-banner";
 import {
 	Sidebar,
 	SidebarContent,
@@ -20,11 +20,6 @@ import { WorkspaceSwitcher } from "@/components/sidebar/workspace-switcher";
 import Image from "next/image";
 
 const data = {
-	user: {
-		name: "shadcn",
-		email: "m@example.com",
-		avatar: "/avatars/shadcn.jpg",
-	},
 	navMain: [
 		{
 			title: "Home",
@@ -106,6 +101,11 @@ export function AppSidebar({
 			<SidebarContent>
 				<NavMain items={data.navMain} />
 				<NavSecondary items={data.navSecondary} className="mt-auto" />
+				{user?.data?.account?.domain_verification_status && (
+					<VerificationStatusBanner
+						status={user?.data?.account?.domain_verification_status}
+					/>
+				)}
 			</SidebarContent>
 			<SidebarFooter>
 				<NavUser

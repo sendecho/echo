@@ -10,10 +10,10 @@ import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import EmailSetup from "@/components/email-setup";
-import type { EmailSetupData } from "@/lib/schemas/onboarding-schema";
-import { emailSetupSchema } from "@/lib/schemas/onboarding-schema";
-import { emailSetupAction } from "@/actions/onboarding-actions";
+import EmailSetup from "@/components/account-details";
+import type { AccountDetailsData } from "@/lib/schemas/onboarding-schema";
+import { accountDetailsSchema } from "@/lib/schemas/onboarding-schema";
+import { accountDetailsAction } from "@/actions/onboarding-actions";
 import { useAction } from "next-safe-action/hooks";
 import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
@@ -26,14 +26,14 @@ export function CreateAccountDialog() {
 	const [open, setOpen] = useState(false);
 	const router = useRouter();
 
-	const methods = useForm<EmailSetupData>({
-		resolver: zodResolver(emailSetupSchema),
+	const methods = useForm<AccountDetailsData>({
+		resolver: zodResolver(accountDetailsSchema),
 		defaultValues: { name: "", domain: "" },
 	});
 
-	const { execute, status } = useAction(emailSetupAction, {
+	const { execute, status } = useAction(accountDetailsAction, {
 		onSuccess: () => {
-			toast({ title: "Email setup completed successfully" });
+			toast({ title: "Account created successfully" });
 			router.push("/onboarding/domain-verification");
 		},
 		onError: (error) =>

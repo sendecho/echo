@@ -44,3 +44,21 @@ export async function fetchAPIKeys(accountId: string) {
   if (error) throw new Error(`Failed to fetch API keys: ${error.message}`)
   return data
 }
+
+export async function fetchDomainSettings(accountId?: string) {
+  // If no accountId is provided, return null
+  if (!accountId) {
+    return null
+  }
+
+  const supabase = createClient()
+
+  const { data, error } = await supabase
+    .from('accounts')
+    .select('id, domain, domain_verification_status, resend_domain_id')
+    .eq('id', accountId)
+    .single()
+
+  if (error) throw new Error(`Failed to fetch domain settings: ${error.message}`)
+  return data
+}

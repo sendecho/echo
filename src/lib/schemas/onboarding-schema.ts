@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const emailSetupSchema = z.object({
+export const accountDetailsSchema = z.object({
   name: z.string().min(1, 'Account name is required'),
   domain: z.string().min(1, 'Domain is required'),
 })
@@ -21,7 +21,13 @@ export const mailingAddressSchema = z.object({
   country: z.string().min(1, 'Country is required'),
 })
 
-export type EmailSetupData = z.infer<typeof emailSetupSchema>
+export const personalDetailsSchema = z.object({
+  fullName: z.string().min(1, "Full name is required"),
+  avatar: z.any().optional(),
+});
+
+export type AccountDetailsData = z.infer<typeof accountDetailsSchema>
 export type DomainVerificationData = z.infer<typeof domainVerificationSchema>
 export type MailingAddressData = z.infer<typeof mailingAddressSchema>
 export type UserData = z.infer<typeof userSchema>
+export type PersonalDetailsSchema = z.infer<typeof personalDetailsSchema>;

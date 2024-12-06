@@ -1,14 +1,16 @@
 import { useFormContext } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { EmailSetupData } from "@/lib/schemas/onboarding-schema";
+import type { AccountDetailsData } from "@/lib/schemas/onboarding-schema";
 import { FormDescription } from "./ui/form";
+import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
+import { AlertCircleIcon } from "lucide-react";
 
-export default function EmailSetup() {
+export default function AccountDetails() {
 	const {
 		register,
 		formState: { errors },
-	} = useFormContext<EmailSetupData>();
+	} = useFormContext<AccountDetailsData>();
 
 	return (
 		<div className="space-y-8">
@@ -28,6 +30,15 @@ export default function EmailSetup() {
 				<FormDescription>
 					This is the domain name that will be used to send the emails.
 				</FormDescription>
+
+				<Alert className="mt-4 text-muted-foreground border-muted">
+					<AlertCircleIcon className="h-4 w-4" />
+					<AlertDescription>
+						We recommend using a subdomain for your account to avoid any issues
+						with email providers.
+					</AlertDescription>
+				</Alert>
+
 				{errors.domain && (
 					<p className="text-sm text-red-500">{errors.domain.message}</p>
 				)}

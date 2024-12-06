@@ -10,6 +10,7 @@ export default function SettingsLayout({
 				<SecondaryMenu
 					items={[
 						{ path: "/dashboard/settings", label: "General" },
+						{ path: "/dashboard/settings/domain", label: "Domain" },
 						{ path: "/dashboard/settings/people", label: "People" },
 						{ path: "/dashboard/settings/billing", label: "Billing" },
 						{ path: "/dashboard/settings/api-keys", label: "API Keys" },

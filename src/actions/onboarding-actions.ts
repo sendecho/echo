@@ -2,19 +2,20 @@
 
 import { authSafeAction } from "@/lib/safe-action";
 import {
-  emailSetupSchema,
-  domainVerificationSchema,
+  accountDetailsSchema,
   mailingAddressSchema,
 } from "@/lib/schemas/onboarding-schema";
 import { createClient } from "@/lib/supabase/server";
 import { Resend } from "resend";
-import { fetchAccountSettings } from "@/lib/supabase/queries/account-settings";
-import { verifyDomainResend } from "@/lib/resend";
+import { fetchAccountSettings, fetchDomainSettings } from "@/lib/supabase/queries/account-settings";
+import { getDomainDetails, triggerDomainVerification } from "@/lib/resend";
+import { z } from "zod";
+import { setDomainVerificationStatus } from "./domain-actions";
 
-export const emailSetupAction = authSafeAction
-  .schema(emailSetupSchema)
+export const accountDetailsAction = authSafeAction
+  .schema(accountDetailsSchema)
   .metadata({
-    name: "email-setup",
+    name: "account-details",
   })
   .action(async ({ parsedInput: { name, domain }, ctx: { user } }) => {
     const supabase = createClient();
@@ -86,21 +87,6 @@ export const emailSetupAction = authSafeAction
     return { success: true, data: newAccountId };
   });
 
-export const domainVerificationAction = authSafeAction
-  .schema(domainVerificationSchema)
-  .metadata({
-    name: "domain-verification",
-  })
-  .action(async ({ parsedInput: { domainVerified } }) => {
-    const supabase = createClient();
-    const { error } = await supabase
-      .from("accounts")
-      .upsert({ domain_verified: domainVerified });
-
-    if (error) throw new Error("Failed to save domain verification data");
-    return { success: true };
-  });
-
 export const mailingAddressAction = authSafeAction
   .schema(mailingAddressSchema)
   .metadata({
@@ -136,12 +122,14 @@ export const verifyDomain = authSafeAction
     const accountData = await fetchAccountSettings(
       user?.account_id || undefined,
     );
+
     if (!accountData?.resend_domain_id) {
       return { success: false, error: "No domain found for verification" };
     }
 
     try {
-      const result = await verifyDomainResend(accountData.resend_domain_id);
+      const result = await triggerDomainVerification(accountData.resend_domain_id);
+
       if (result.status === "verified") {
         return { success: true };
       }
@@ -156,6 +144,145 @@ export const verifyDomain = authSafeAction
       return {
         success: false,
         error: "An error occurred while verifying the domain",
+      };
+    }
+  });
+
+export const personalDetailsAction = authSafeAction
+  .schema(z.object({
+    fullName: z.string().min(1, "Full name is required"),
+    avatarUrl: z.string().optional(),
+  }))
+  .metadata({
+    name: "personal-details",
+  })
+  .action(async ({ parsedInput: { fullName, avatarUrl }, ctx: { user } }) => {
+    const supabase = createClient();
+
+    const { error } = await supabase
+      .from("users")
+      .update({
+        full_name: fullName,
+        avatar_url: avatarUrl,
+      })
+      .eq("id", user.id)
+      .throwOnError();
+
+    if (error) throw new Error("Failed to update personal details");
+    return { success: true };
+  });
+
+// Initiates the domain verification process
+export const initiateDomainVerification = authSafeAction
+  .metadata({
+    name: "initiate-domain-verification",
+  })
+  .action(async ({ ctx: { user } }) => {
+    if (!user) {
+      return { success: false, error: "User not found" };
+    }
+
+    const accountData = await fetchDomainSettings(user?.account_id || undefined);
+
+    if (!accountData?.resend_domain_id) {
+      return { success: false, error: "No domain found for verification" };
+    }
+
+    try {
+      // Check current status
+      const status = await triggerDomainVerification(accountData.resend_domain_id);
+
+      // Update the verification status to pending
+      await setDomainVerificationStatus(
+        accountData.id,
+        'pending',
+        accountData.resend_domain_id,
+        accountData.domain
+      );
+
+      return {
+        success: true,
+        data: {
+          status: 'pending',
+          message: "Domain verification process initiated"
+        }
+      };
+    } catch (error) {
+      console.error("Error initiating domain verification:", error);
+      return {
+        success: false,
+        error: "An error occurred while initiating domain verification",
+      };
+    }
+  });
+
+// Checks the current status of domain verification
+export const checkVerificationStatus = authSafeAction
+  .metadata({
+    name: "check-verification-status",
+  })
+  .action(async ({ ctx: { user } }) => {
+    if (!user) {
+      return { success: false, error: "User not found" };
+    }
+
+    const accountData = await fetchDomainSettings(user?.account_id || undefined);
+    if (!accountData?.resend_domain_id) {
+      return { success: false, error: "No domain found" };
+    }
+
+    try {
+      // First get the current status
+      const currentStatus = await getDomainDetails(accountData.resend_domain_id);
+
+      // If the domain is verified or pending, return the status
+      // We don't want to trigger a new verification check if the domain is already verified or awaiting verification
+      if (['pending', 'verified'].includes(currentStatus.data?.status)) {
+
+        await setDomainVerificationStatus(
+          accountData.id,
+          currentStatus.data?.status,
+          accountData.resend_domain_id,
+          accountData.domain
+        );
+
+        return {
+          success: true,
+          data: { status: currentStatus.data?.status }
+        };
+      }
+
+
+      // If pending or failed, trigger a new verification check
+      if (['pending', 'failed'].includes(currentStatus.data?.status)) {
+        // Trigger a new verification check
+        await triggerDomainVerification(accountData.resend_domain_id);
+
+        // Update the verification status to pending
+        await setDomainVerificationStatus(
+          accountData.id,
+          'pending',
+          accountData.resend_domain_id,
+          accountData.domain
+        );
+
+        return {
+          success: true,
+          data: {
+            status: 'pending'
+          }
+        };
+      }
+
+      return {
+        success: false,
+        error: "Unable to verify domain status"
+      };
+    } catch (error) {
+      console.error("Error checking verification status:", error);
+      return {
+        success: false,
+        error: "An error occurred while checking verification status",
       };
     }
   });
