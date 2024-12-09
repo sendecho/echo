@@ -25,6 +25,7 @@ import SlashCommand from './extensions/slash-command'
 import { UploadImagesPlugin } from './plugins/upload-images'
 import { TweetExtension } from './extensions/tweet-extension'
 import { VariableExtension } from './extensions/variable-extension'
+import { UnsubscribeBlock } from './extensions/unsubscribe-block'
 
 import { cx } from "class-variance-authority";
 
@@ -66,6 +67,7 @@ export const defaultExtensions = [
   }),
   Youtube,
   TweetExtension,
+  UnsubscribeBlock,
 
   // Formatting
   Bold,

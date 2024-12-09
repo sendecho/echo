@@ -10,6 +10,8 @@ import { ImageSelector } from "./ImageSelector";
 import NodeSelector from "./NodeSelector";
 import VariableSelector from "./VariableSelector";
 import ImageDialog from "./image-dialog";
+import { UnsubscribeButton } from "./UnsubscribeButton";
+
 interface ToolbarProps {
 	editor: Editor;
 	uploadOptions?: UploadOptions;
@@ -27,6 +29,7 @@ const Toolbar = ({ editor, uploadOptions }: ToolbarProps) => {
 				<ImageDialog editor={editor} uploadOptions={uploadOptions} />
 				<ImageSelector editor={editor} uploadOptions={uploadOptions} />
 				<VariableSelector editor={editor} />
+				<UnsubscribeButton editor={editor} />
 			</div>
 		</div>
 	);
