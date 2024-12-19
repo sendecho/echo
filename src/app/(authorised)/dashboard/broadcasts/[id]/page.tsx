@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import {
 	fetchBroadcastById,
 	getBroadcastStats,
@@ -7,6 +8,8 @@ import { BroadcastEditor } from "@/components/broadcast-editor";
 import { BroadcastAnalytics } from "@/components/broadcast-analytics";
 import DashboardLayout from "@/components/layouts/dashboard-layout";
 import { createClient } from "@/lib/supabase/server";
+import { Button } from "@/components/ui/button";
+import { Eye } from "lucide-react";
 
 export const generateMetadata = async ({
 	params,
@@ -40,7 +43,15 @@ export default async function BroadcastPage({
 
 	return (
 		<DashboardLayout breadcrumbs={breadcrumbs}>
-			<h1 className="text-2xl font-bold mb-6">{broadcast.subject}</h1>
+			<div className="flex justify-between items-center mb-6">
+				<h1 className="text-2xl font-bold">{broadcast.subject}</h1>
+				<Button variant="outline" size="sm" asChild>
+					<Link href={`/dashboard/broadcasts/${params.id}/preview`}>
+						<Eye className="w-4 h-4 mr-2" />
+						Preview
+					</Link>
+				</Button>
+			</div>
 			{isSent ? (
 				<BroadcastAnalytics stats={stats!} />
 			) : (

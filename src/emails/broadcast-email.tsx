@@ -27,7 +27,7 @@ import { getURL, getTrackingURL } from "@/lib/utils";
 interface BroadcastEmailProps {
 	content: string;
 	preview?: string;
-	unsubscribeId: string;
+	unsubscribeId?: string;
 	variables: Record<string, string>;
 	trackingId?: string;
 }
@@ -84,17 +84,8 @@ function parseHtmlContent(
 					);
 
 				case "a": {
-					console.log("Link found:", {
-						href,
-						attribs: domNode.attribs,
-						rawHref: domNode.attribs?.href,
-						originalString: domNode.toString(),
-					});
-
 					// Handle unsubscribe links
 					if (href === "{{{unsubscribe}}}") {
-						console.log("unsubscribe");
-						console.log(`${getURL()}/unsubscribe/${unsubscribeId}`);
 						return (
 							<Link href={`${getURL()}/unsubscribe/${unsubscribeId}`}>
 								{domToReact(domNode.children as DOMNode[], options)}
@@ -114,7 +105,13 @@ function parseHtmlContent(
 					const src = domNode.attribs?.src;
 					if (!src) return;
 
-					return <Img src={src} alt={domNode.attribs?.alt || ""} width={600} />;
+					return (
+						<Img
+							src={src}
+							alt={domNode.attribs?.alt || ""}
+							style={{ maxWidth: "100%", height: "auto" }}
+						/>
+					);
 				}
 
 				case "code": {
@@ -196,7 +193,7 @@ export const BroadcastEmail = ({
 					)}
 					<Container
 						width="600"
-						style={{ maxWidth: "100%", width: "600px" }}
+						style={{ maxWidth: "100%", width: "600px", display: "block" }}
 						className="relative mx-auto my-[20px] p-[20px]"
 					>
 						<Section>{parsedContent}</Section>
@@ -254,7 +251,6 @@ const styles = {
 };
 
 BroadcastEmail.PreviewProps = {
-	subject: "Test Subject",
 	content: `
 		<h1>Welcome, {{first_name|there}}!</h1>
 		<h2>Latest Updates from {{company_name|Our Company}}</h2>
