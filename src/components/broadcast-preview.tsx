@@ -9,13 +9,26 @@ interface BroadcastPreviewProps {
 	content: string;
 }
 
+const defaultPreviewVariables = {
+	first_name: "John",
+	last_name: "Doe",
+	email: "john@example.com",
+	company_name: "Echo",
+	support_email: "support@sendecho.co",
+	unsubscribe_url: "#",
+};
+
 export function BroadcastPreview({ subject, content }: BroadcastPreviewProps) {
 	const [html, setHtml] = useState<string>("");
 
 	useEffect(() => {
 		async function renderEmail() {
 			const rendered = await render(
-				<BroadcastEmail subject={subject} content={content} />,
+				<BroadcastEmail
+					content={content}
+					preview={subject}
+					variables={defaultPreviewVariables}
+				/>,
 				{
 					pretty: true,
 				},
